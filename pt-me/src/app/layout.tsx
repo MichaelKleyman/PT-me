@@ -1,4 +1,4 @@
-import './globals.css';
+import '../styles/globals.css';
 import Link from 'next/link';
 import Logo from './logos/logo-no-background.png';
 import Image from 'next/image';
@@ -25,7 +25,7 @@ export default function RootLayout({
           <div className='flex items-center justify-between mr-[1rem] w-[60%]'>
             <div className='grid grid-cols-3 gap-1 mr-[5rem]'>
               <Link
-                href='/'
+                href='/AboutUs'
                 className='tracking-widest uppercase px-5 duration-300 hover:scale-110 hover:font-bold'
               >
                 About Us
