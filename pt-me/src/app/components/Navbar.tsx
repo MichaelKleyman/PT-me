@@ -1,10 +1,11 @@
 'use client'; //will be a client component because we're using useState
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-scroll/modules';
+// import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import Logo1 from '../logos/logo-no-background.png';
-import Logo2 from '../logos/logo-white.png';
+// import Logo2 from '../logos/logo-white.png';
 import Image from 'next/image';
 import { BsSun, BsFillMoonFill } from 'react-icons/bs';
 import { IoMdMenu, IoMdClose } from 'react-icons/io';
@@ -17,7 +18,7 @@ interface NavItem {
 const navItems: Array<NavItem> = [
   {
     label: 'About Us',
-    page: 'about us',
+    page: 'about-us',
   },
   {
     label: 'Services',
@@ -25,7 +26,7 @@ const navItems: Array<NavItem> = [
   },
   {
     label: 'Log In',
-    page: 'log in',
+    page: 'log-in',
   },
 ];
 
@@ -40,7 +41,15 @@ const Navbar = () => {
         <div>
           <div>
             <div className='flex items-center justify-between'>
-              <Link href='/' className='py-4 md:py-4 md:block'>
+              <Link
+                to='about us'
+                activeClass='active'
+                spy={true}
+                smooth={true}
+                offset={-100}
+                duration={500}
+                className='py-4 md:py-4 md:block'
+              >
                 <Image alt='/' src={Logo1} width={90} height={90} />
               </Link>
               <div className='md:hidden'>
@@ -57,13 +66,19 @@ const Navbar = () => {
           }`}
         >
           {navItems.map((item, i) => (
-            <a
+            <Link
               key={i}
+              to={item.page}
+              activeClass='active'
+              spy={true}
+              smooth={true}
+              offset={-100}
+              duration={500}
               className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
             >
               {item.label}
-            </a>
+            </Link>
           ))}
           {currentTheme === 'light' ? (
             <button
