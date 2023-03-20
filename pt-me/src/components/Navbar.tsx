@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-scroll/modules';
 // import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import Logo1 from '../logos/logo-no-background.png';
+import Logo1 from '../app/logos/logo-no-background.png';
 // import Logo2 from '../logos/logo-white.png';
 import Image from 'next/image';
 import { BsSun, BsFillMoonFill } from 'react-icons/bs';

@@ -1,6 +1,6 @@
 'use client'; //this will be a client component
 import '../styles/globals.css';
-import Navbar from './components/Navbar';
+import Navbar from '../components/Navbar';
 import { ThemeProvider } from 'next-themes';
 
 export default function RootLayout({
