@@ -10,13 +10,17 @@ const AboutUs = () => {
           <Image src={PtImage} alt='/' width={1300} height={1300} />
         </div>
         <div className='py-8'>
-          <h1>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
+          <p>
+            Physical Therapists can quickly build personalized treatment and
+            exercise plans for patients. Abstract the process of piles of
+            paperwork with treatments and have a catered portal to your clinic
+            with the necessary information to make a seemless visit for the
+            patient.
+          </p>
+          <h1 className='py-3 text-green-500 font-bold text-xl'>
+            We provide immediate access to perform onsite PT on any logged in
+            device
           </h1>
-          <p>erherherhe</p>
         </div>
       </div>
     </section>

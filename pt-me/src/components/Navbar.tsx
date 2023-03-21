@@ -1,8 +1,8 @@
 'use client'; //will be a client component because we're using useState
 
 import React, { useState } from 'react';
-import { Link } from 'react-scroll/modules';
-// import Link from 'next/link';
+import { Link as ScrollLink } from 'react-scroll/modules';
+import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import Logo1 from '../app/logos/logo-no-background.png';
 // import Logo2 from '../logos/logo-white.png';
@@ -24,10 +24,10 @@ const navItems: Array<NavItem> = [
     label: 'Services',
     page: 'services',
   },
-  {
-    label: 'Log In',
-    page: 'log-in',
-  },
+  // {
+  //   label: 'Log In',
+  //   page: 'log-in',
+  // },
 ];
 
 const Navbar = () => {
@@ -41,7 +41,7 @@ const Navbar = () => {
         <div>
           <div>
             <div className='flex items-center justify-between'>
-              <Link
+              <ScrollLink
                 to='about us'
                 activeClass='active'
                 spy={true}
@@ -51,7 +51,7 @@ const Navbar = () => {
                 className='py-4 md:py-4 md:block'
               >
                 <Image alt='/' src={Logo1} width={90} height={90} />
-              </Link>
+              </ScrollLink>
               <div className='md:hidden'>
                 <button onClick={() => setNavbar(!navbar)}>
                   {navbar ? <IoMdClose size={30} /> : <IoMdMenu size={30} />}
@@ -66,8 +66,9 @@ const Navbar = () => {
           }`}
         >
           {navItems.map((item, i) => (
-            <Link
+            <ScrollLink
               key={i}
+              href='/'
               to={item.page}
               activeClass='active'
               spy={true}
@@ -78,8 +79,15 @@ const Navbar = () => {
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
             >
               {item.label}
-            </Link>
+            </ScrollLink>
           ))}
+          <Link
+            href='/login'
+            className='tracking-widest uppercase
+            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+          >
+            Log In
+          </Link>
           {currentTheme === 'light' ? (
             <button
               onClick={() => setTheme('dark')}
