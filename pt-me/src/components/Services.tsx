@@ -1,6 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Quicksand } from '@next/font/google';
-import { IoMdFitness, IoIosFastforward } from 'react-icons/io';
+import FitnessImg from '../app/images/weightlifter.png';
+import SpeedImg from '../app/images/speedometer.png';
+import PortalImg from '../app/images/healthcare.png';
+import AppointmentImg from '../app/images/booking.png';
+import Image from 'next/image';
+import { StaticImageData } from 'next/image';
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -8,15 +13,36 @@ const quicksand = Quicksand({
 });
 
 interface Service {
-  logo: ReactElement;
+  logo: StaticImageData;
   service: string;
+  description: string;
 }
 
 const services: Array<Service> = [
-  { logo: <IoMdFitness size={30} color='blue' />, service: 'Fitness' },
-  { logo: <IoIosFastforward size={30} color='blue' />, service: 'Speed' },
-  { logo: <IoMdFitness size={30} />, service: 'fitness' },
-  { logo: <IoMdFitness size={30} />, service: 'fitness' },
+  {
+    logo: FitnessImg,
+    service: 'Exercise Database',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  },
+  {
+    logo: SpeedImg,
+    service: 'Instant Search',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  },
+  {
+    logo: PortalImg,
+    service: 'Your Own Clinic Portal',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  },
+  {
+    logo: AppointmentImg,
+    service: 'Appointment Tracking',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  },
 ];
 
 const Services = () => {
@@ -37,10 +63,12 @@ const Services = () => {
         {services.map((service, i) => (
           <div
             key={i}
-            className='w-full h-full shadow-lg shadow-gray-400 rounded-lg p-4 duration-300 hover:scale-110'
+            className='w-full h-full shadow-lg
+            shadow-slate-300 hover:shadow-lg hover:shadow-gray-400 rounded-lg p-4 duration-300 hover:scale-110'
           >
-            <div>{service.logo}</div>
+            <Image alt='/' src={service.logo} height={35} width={35} />
             <h1 className='font-bold py-4'>{service.service}</h1>
+            <p className='font-thin'>{service.description}</p>
           </div>
         ))}
       </div>
