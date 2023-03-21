@@ -32,7 +32,7 @@ const Page = () => {
                 type='email'
                 id='email-login'
                 label='Email'
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', borderRadius: '10px' }}
               />
             </div>
             <div className='py-2'>
@@ -41,9 +41,18 @@ const Page = () => {
                 type='password'
                 id='password-login'
                 label='Password'
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', borderRadius: '10px' }}
               />
             </div>
+            <button className='bg-[#3BE13B] w-full p-2 my-4 rounded-lg duration-300 hover:scale-110'>
+              Sign In
+            </button>
+            <p className='text-center text-sm text-gray-400'>
+              Not a member?{' '}
+              <span className='text-blue-600 cursor-pointer hover:underline'>
+                Sign up
+              </span>
+            </p>
           </div>
         </div>
         <div className='hidden md:block md:h-screen md:relative'>
@@ -54,7 +63,6 @@ const Page = () => {
             src={LoginImg}
             width={720}
             height={900}
-            id='login-image'
           />
         </div>
       </div>

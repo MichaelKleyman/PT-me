@@ -81,7 +81,7 @@ const Navbar = () => {
             className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
           >
-            Log In
+            Sign In
           </Link>
           {currentTheme === 'light' ? (
             <button
