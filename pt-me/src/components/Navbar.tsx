@@ -36,7 +36,7 @@ const Navbar = () => {
   const [navbar, setNavbar] = useState(false); //controlling if the navbar is in mobile view or desktop view.
 
   return (
-    <header className='w-full mx-auto px-4 shadow-lg shadow-gray-300 fixed top-0 z-50'>
+    <header className='w-full mx-auto px-4 shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
         <div>
           <div>
