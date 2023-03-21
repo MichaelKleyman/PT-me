@@ -24,10 +24,6 @@ const navItems: Array<NavItem> = [
     label: 'Services',
     page: 'services',
   },
-  // {
-  //   label: 'Log In',
-  //   page: 'log-in',
-  // },
 ];
 
 const Navbar = () => {
@@ -40,9 +36,9 @@ const Navbar = () => {
       <div className='justify-between md:items-center md:flex'>
         <div>
           <div>
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center justify-between cursor-pointer duration-300 hover:scale-110'>
               <ScrollLink
-                to='about us'
+                to='about-us'
                 activeClass='active'
                 spy={true}
                 smooth={true}
@@ -68,7 +64,6 @@ const Navbar = () => {
           {navItems.map((item, i) => (
             <ScrollLink
               key={i}
-              href='/'
               to={item.page}
               activeClass='active'
               spy={true}
