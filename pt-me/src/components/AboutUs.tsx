@@ -1,8 +1,12 @@
+'use client';
 import React from 'react';
 import Image from 'next/image';
 import PtImage from '../app/images/homepage.jpg';
+import { useRouter } from 'next/navigation';
 
 const AboutUs = () => {
+  const router = useRouter();
+
   return (
     <section id='about-us'>
       <div className='flex flex-col text-center items-center justify-center my-10 py-16 h-full'>
@@ -21,6 +25,14 @@ const AboutUs = () => {
             We provide immediate access to perform onsite PT on any logged in
             device
           </h1>
+        </div>
+      </div>
+      <div
+        onClick={() => router.push('/login')}
+        className='flex items-center justify-center'
+      >
+        <div className='md:hidden bg-[#3BE13B] p-2 rounded-xl w-[60%] text-center font-bold duration-300 hover:scale-110 '>
+          <button>Take me to my portal</button>
         </div>
       </div>
     </section>
