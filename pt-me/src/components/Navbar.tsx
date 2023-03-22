@@ -100,9 +100,9 @@ const Navbar = () => {
                   <BsSun size={20} />
                 </button>
               )}
-              <div className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '>
+              <Link href='/getstarted' className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '>
                 <button>Get Started</button>
-              </div>
+              </Link>
             </ul>
             <div className='md:hidden absolute right-5' onClick={openNav}>
               <IoMdMenu size={35} />

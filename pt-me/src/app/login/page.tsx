@@ -11,7 +11,7 @@ const Page = () => {
   const router = useRouter();
 
   return (
-    <div id='log-in'>
+    <div>
       <div className='grid grid-cols-1 md:grid-cols-2 h-full'>
         <div className='h-screen'>
           <button
@@ -49,7 +49,10 @@ const Page = () => {
             </button>
             <p className='text-center text-sm text-gray-400'>
               Not a member?{' '}
-              <span className='text-blue-600 cursor-pointer hover:underline'>
+              <span
+                onClick={() => router.push('/getstarted')}
+                className='text-blue-600 cursor-pointer hover:underline'
+              >
                 Sign up
               </span>
             </p>
