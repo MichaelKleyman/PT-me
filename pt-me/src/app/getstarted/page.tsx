@@ -23,7 +23,7 @@ const Page = () => {
         <BiArrowBack size={32} />
         <p className='px-2'>Go Back</p>
       </button>
-      <div className='mt-[1rem] bg-[#fdfff5] dark:bg-[#434343] max-w-[900px] w-full mx-auto p-5 rounded-lg shadow-lg shadow-gray-400'>
+      <div className='mt-[1rem] bg-[#fdfff5] dark:bg-[#2f2d2d] max-w-[900px] w-full mx-auto p-5 rounded-lg shadow-lg shadow-gray-400'>
         <h1 className='text-4xl font-bold pb-4'>
           Create a portal for your{' '}
           <span className='text-green-500'>clinic</span>.
