@@ -23,6 +23,16 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/main.js",
+    "src/server/db/database.js",
+    "src/server/index.js",
+    "src/server/db/index.js",
+    "src/server/db/models/Users.js"
+  ],
   "exclude": ["node_modules"]
 }

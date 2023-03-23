@@ -6,5 +6,5 @@ const db = new Sequelize(`postgres://localhost:5432/${databaseName}`, {
   logging: false, //hides the sequelize queries I believe
 });
 
-// module.exports = db;
-export default db
+module.exports = { db };
+// export default db

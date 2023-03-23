@@ -2,11 +2,13 @@
   "name": "pt-me",
   "version": "0.1.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start-server": "nodemon ./src/main.js"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -26,6 +28,7 @@
     "morgan": "^1.10.0",
     "next": "13.2.4",
     "next-themes": "^0.2.1",
+    "nodemon": "^2.0.22",
     "pg": "^8.10.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
