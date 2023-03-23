@@ -33,6 +33,6 @@
     "src/server/index.js",
     "src/server/db/index.js",
     "src/server/db/models/Users.js"
-  ],
+, "src/app/api/hello/route.ts"  ],
   "exclude": ["node_modules"]
 }

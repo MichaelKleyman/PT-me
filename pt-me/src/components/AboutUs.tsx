@@ -1,11 +1,25 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import PtImage from '../app/images/homepage.jpg';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/route');
+    console.log('>>>', response.data);
+  } catch (error) {
+    console.error('Fetch error: ', error);
+  }
+};
 
 const AboutUs = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <section id='about-us'>

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('../database');
+const { db } = require('../database');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const SALT_ROUNDS = 5;
 
-const User = database.define('user', {
+const User = db.define('user', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,

@@ -2,13 +2,15 @@
   "name": "pt-me",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001/",
   "type": "commonjs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "start-server": "nodemon ./src/main.js"
+    "start-server": "nodemon src/main.js",
+    "seed": "node src/script/seed.js"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",

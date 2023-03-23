@@ -7,7 +7,7 @@ const PORT = 3001;
 
 const init = async () => {
   try {
-    await db.sync({ force: true });
+    await db.sync();
     app.listen(PORT, () => {
       console.log(`
         Listening on port ${PORT}
