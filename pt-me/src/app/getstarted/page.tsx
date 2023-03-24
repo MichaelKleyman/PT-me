@@ -1,9 +1,10 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { Roboto } from 'next/font/google';
+import axios from 'axios';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -12,6 +13,26 @@ const roboto = Roboto({
 
 const Page = () => {
   const router = useRouter();
+  const [credentials, setCredentials] = useState({
+    email: '',
+    clinicname: '',
+    location: '',
+    password: '',
+  });
+
+  const createUser = async () => {
+    try {
+      console.log(credentials);
+      await axios.post('http://localhost:3001/api/users', credentials);
+    } catch (error) {
+      console.error(error as Error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newObject = { ...credentials, [e.target.name]: e.target.value };
+    setCredentials(newObject);
+  };
 
   return (
     <div className='h-screen'>
@@ -36,29 +57,42 @@ const Page = () => {
           <TextField
             required
             type='email'
+            name='email'
+            value={credentials.email}
+            onChange={handleChange}
             label='Email'
             sx={{ width: '100%', borderRadius: '10px' }}
           />
           <TextField
             required
             type='name'
+            value={credentials.clinicname}
+            name='clinicname'
+            onChange={handleChange}
             label='Clinic Name'
             sx={{ width: '100%', borderRadius: '10px' }}
           />
           <TextField
             required
             type='location'
+            value={credentials.location}
+            name='location'
+            onChange={handleChange}
             label='Address'
             sx={{ width: '100%', borderRadius: '10px' }}
           />
           <TextField
             required
             type='password'
+            value={credentials.password}
+            name='password'
+            onChange={handleChange}
             label='Password'
             sx={{ width: '100%', borderRadius: '10px' }}
           />
         </form>
         <div
+          onClick={createUser}
           className={`${roboto.className} flex items-center justify-center md:items-start mt-8`}
         >
           <button className='bg-[#3BE13B] uppercase tracking-wider rounded-lg p-2 text-[14px] duration-300 hover:scale-110 hover:bg-[#55ee55] hover:text-white dark:text-black'>
