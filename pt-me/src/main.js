@@ -1,6 +1,6 @@
-const { db } = require('./server/db/database.js');
+const { db } = require('../server/db/database.js');
 // import db from './server/db/database.js'
-const app = require('./server/index.js');
+const app = require('../server/index.js');
 // import app from './server/index'
 
 const PORT = 3001;

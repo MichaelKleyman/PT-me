@@ -1,4 +1,4 @@
-const { db, User } = require('../server/db/index.js');
+const { db, User } = require('../../server/db/index.js');
 
 async function seed() {
   await db.sync({ force: true });
