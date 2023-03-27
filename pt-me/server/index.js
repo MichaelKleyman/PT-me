@@ -30,6 +30,7 @@ myApp.prepare().then(() => {
 
   //body-parsing middleware
   app.use('/api', require('./api'));
+  app.use('/auth', require('./auth'));
 
   app.get('/api', (req, res) => {
     res.json({ users: ['userOne', 'userTwo'] });

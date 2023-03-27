@@ -11,6 +11,22 @@ const roboto = Roboto({
   weight: ['400', '700'],
 });
 
+interface Credentials {
+  email: String;
+  clinicname: String;
+  location: String;
+  password: String;
+}
+
+const createUser = async (credentials: Credentials) => {
+  try {
+    console.log(credentials);
+    await axios.post('http://localhost:3001/api/users', credentials);
+  } catch (error) {
+    console.error(error as Error);
+  }
+};
+
 const Page = () => {
   const router = useRouter();
   const [credentials, setCredentials] = useState({
@@ -19,15 +35,6 @@ const Page = () => {
     location: '',
     password: '',
   });
-
-  const createUser = async () => {
-    try {
-      console.log(credentials);
-      await axios.post('http://localhost:3001/api/users', credentials);
-    } catch (error) {
-      console.error(error as Error);
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newObject = { ...credentials, [e.target.name]: e.target.value };
@@ -92,7 +99,7 @@ const Page = () => {
           />
         </form>
         <div
-          onClick={createUser}
+          onClick={() => createUser(credentials)}
           className={`${roboto.className} flex items-center justify-center md:items-start mt-8`}
         >
           <button className='bg-[#3BE13B] uppercase tracking-wider rounded-lg p-2 text-[14px] duration-300 hover:scale-110 hover:bg-[#55ee55] hover:text-white dark:text-black'>
