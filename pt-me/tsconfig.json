@@ -33,7 +33,9 @@
     "server/index.js",
     "server/db/index.js",
     "server/db/models/Users.js",
-    "src/app/api/hello/route.ts"
+    "src/app/api/hello/route.ts",
+    "src/store/auth.mjs",
+    "src/store/index.mjs"
   ],
   "exclude": ["node_modules"]
 }

@@ -2,7 +2,7 @@
 import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 import { ThemeProvider } from 'next-themes';
-import { store } from '@/store';
+import store from '../store/index.mjs';
 import { Provider } from 'react-redux';
 
 export default function RootLayout({
