@@ -29,7 +29,7 @@ interface Credentials {
 // };
 
 const Page = () => {
-  const method = 'signup';
+  // const method = 'signup';
   const router = useRouter();
   // const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({
