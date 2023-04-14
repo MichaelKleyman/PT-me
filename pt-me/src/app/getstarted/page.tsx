@@ -6,7 +6,6 @@ import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { Roboto } from 'next/font/google';
 import axios from 'axios';
-import auth, { authenticate } from '@/store/auth.mjs';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -47,15 +46,7 @@ const Page = () => {
 
   const makeUser = async () => {
     // await createUser(credentials);
-    dispatch(
-      authenticate(
-        credentials.clinicname,
-        credentials.email,
-        credentials.location,
-        credentials.password,
-        method
-      )
-    );
+    
   };
 
   return (
