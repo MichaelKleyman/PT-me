@@ -100,7 +100,10 @@ const Navbar = () => {
                   <BsSun size={20} />
                 </button>
               )}
-              <Link href='/getstarted' className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '>
+              <Link
+                href='/getstarted'
+                className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '
+              >
                 <button>Get Started</button>
               </Link>
             </ul>
