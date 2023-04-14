@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
@@ -31,7 +31,7 @@ interface Credentials {
 const Page = () => {
   const method = 'signup';
   const router = useRouter();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({
     email: '',
     clinicname: '',
@@ -46,7 +46,6 @@ const Page = () => {
 
   const makeUser = async () => {
     // await createUser(credentials);
-    
   };
 
   return (
