@@ -1,11 +1,14 @@
 'use client';
 import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import type { RootState, AppDispatch } from '../Redux/store';
+import { signup } from '../Redux/Features/auth/authSlice';
 import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { Roboto } from 'next/font/google';
-import axios from 'axios';
+import { AnyAction } from 'redux';
+// import axios from 'axios';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -14,8 +17,8 @@ const roboto = Roboto({
 
 interface Credentials {
   email: String;
-  clinicname: String;
-  location: String;
+  clinicName: String;
+  address: String;
   password: String;
 }
 
@@ -31,11 +34,11 @@ interface Credentials {
 const Page = () => {
   // const method = 'signup';
   const router = useRouter();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [credentials, setCredentials] = useState({
     email: '',
-    clinicname: '',
-    location: '',
+    clinicName: '',
+    address: '',
     password: '',
   });
 
@@ -44,8 +47,10 @@ const Page = () => {
     setCredentials(newObject);
   };
 
-  const makeUser = async () => {
+  const makeUser = () => {
     // await createUser(credentials);
+    console.log(credentials);
+    dispatch(signup(credentials));
   };
 
   return (
@@ -64,8 +69,7 @@ const Page = () => {
           <span className='text-green-500'>clinic</span>.
         </h1>
         <h1 className='text-sm pb-7 text-gray-400'>
-          Appointments and exercises for each patient in one convenient
-          location.
+          Appointments and exercises for each patient in one convenient address.
         </h1>
         <form className='grid grid-cols-1 md:grid-cols-2 gap-7'>
           <TextField
@@ -80,17 +84,17 @@ const Page = () => {
           <TextField
             required
             type='name'
-            value={credentials.clinicname}
-            name='clinicname'
+            value={credentials.clinicName}
+            name='clinicName'
             onChange={handleChange}
             label='Clinic Name'
             sx={{ width: '100%', borderRadius: '10px' }}
           />
           <TextField
             required
-            type='location'
-            value={credentials.location}
-            name='location'
+            type='address'
+            value={credentials.address}
+            name='address'
             onChange={handleChange}
             label='Address'
             sx={{ width: '100%', borderRadius: '10px' }}

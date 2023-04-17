@@ -2,7 +2,7 @@
 import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 import { ThemeProvider } from 'next-themes';
-import { Provider } from 'react-redux';
+import { Providers } from './Redux/provider';
 
 export default function RootLayout({
   children,
@@ -13,10 +13,8 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <ThemeProvider enableSystem={true} attribute='class'>
-          {/* <Provider> */}
           <Navbar />
-          {children}
-          {/* </Provider> */}
+          <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
     </html>

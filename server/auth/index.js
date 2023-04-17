@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../models/user');
+const { User } = require('../models');
 
 //GET /auth/me
 router.get('/me', async (req, res, next) => {
@@ -22,6 +22,7 @@ router.post('/login', async (req, res, next) => {
 //POST /auth/signup
 router.post('/signup', async (req, res, next) => {
   try {
+    console.log(req.body);
     const newUser = await User.create(req.body);
     res.send({ token: await newUser.generateToken() });
   } catch (error) {
