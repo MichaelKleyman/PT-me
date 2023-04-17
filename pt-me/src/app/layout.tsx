@@ -2,6 +2,7 @@
 import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 import { ThemeProvider } from 'next-themes';
+import { Providers } from './Redux/provider';
 
 export default function RootLayout({
   children,
@@ -13,7 +14,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider enableSystem={true} attribute='class'>
           <Navbar />
-          {children}
+          <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
     </html>
