@@ -1,6 +1,7 @@
 'use strict';
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
@@ -24,11 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
-    },
-    (User.prototype.generateToken = function () {
-      const token = jwt.sign({ id: this.id }, process.env.JWT);
-      return token;
-    }),
+    }
+  );
+  (User.prototype.generateToken = function () {
+    const token = jwt.sign({ id: this.id }, `${process.env.JWT}`);
+    return token;
+  }),
     (User.prototype.correctPassword = function (candidatePwd) {
       //we need to compare the plain version to an encrypted version of the password
       return bcrypt.compare(candidatePwd, this.password);
@@ -44,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     }),
     (User.findByToken = async function (token) {
       try {
-        const { id } = await jwt.verify(token, process.env.JWT);
+        const { id } = await jwt.verify(token, `${process.env.JWT}`);
         const user = User.findByPk(id);
         if (!user) {
           throw 'ERROR';
@@ -66,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         user.password = await bcrypt.hash(user.password, 3);
       }
     }),
-    User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)))
-  );
+    User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
+
   return User;
 };
