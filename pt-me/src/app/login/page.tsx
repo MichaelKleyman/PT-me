@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../Redux/store';
+import { login } from '../Redux/Features/auth/authSlice';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -14,6 +17,7 @@ interface Credentials {
 
 const Page = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -26,6 +30,7 @@ const Page = () => {
 
   const loginUser = () => {
     console.log(credentials);
+    dispatch(login(credentials));
   };
 
   return (
