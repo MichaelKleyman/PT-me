@@ -1,14 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
 import LoginImg from '../images/loginimage2.jpg';
 import Image from 'next/legacy/image';
 
+interface Credentials {
+  email: String;
+  password: String;
+}
+
 const Page = () => {
   const router = useRouter();
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newObject = { ...credentials, [e.target.name]: e.target.value };
+    setCredentials(newObject);
+  };
+
+  const loginUser = () => {
+    console.log(credentials);
+  };
 
   return (
     <div>
@@ -30,6 +48,9 @@ const Page = () => {
               <TextField
                 required
                 type='email'
+                name='email'
+                onChange={handleChange}
+                value={credentials.email}
                 id='email-login'
                 label='Email'
                 sx={{ width: '100%', borderRadius: '10px' }}
@@ -39,12 +60,18 @@ const Page = () => {
               <TextField
                 required
                 type='password'
+                name='password'
+                onChange={handleChange}
+                value={credentials.password}
                 id='password-login'
                 label='Password'
                 sx={{ width: '100%', borderRadius: '10px' }}
               />
             </div>
-            <button className='bg-[#3BE13B] w-full p-2 my-4 rounded-lg duration-300 hover:scale-110'>
+            <button
+              onClick={loginUser}
+              className='bg-[#3BE13B] w-full p-2 my-4 rounded-lg duration-300 hover:scale-110'
+            >
               Sign In
             </button>
             <p className='text-center text-sm text-gray-400'>

@@ -7,8 +7,6 @@ import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { Roboto } from 'next/font/google';
-import { AnyAction } from 'redux';
-// import axios from 'axios';
 
 const roboto = Roboto({
   subsets: ['latin'],
