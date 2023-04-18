@@ -17,10 +17,26 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      email: DataTypes.STRING,
-      clinicName: DataTypes.STRING,
-      address: DataTypes.STRING,
-      password: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        validate: { notEmpty: true },
+        allowNull: false,
+      },
+      clinicName: {
+        type: DataTypes.STRING,
+        validate: { notEmpty: true },
+        allowNull: false,
+      },
+      address: {
+        type: DataTypes.STRING,
+        validate: { notEmpty: true },
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        validate: { notEmpty: true },
+        allowNull: false,
+      },
     },
     {
       sequelize,
@@ -35,10 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       //we need to compare the plain version to an encrypted version of the password
       return bcrypt.compare(candidatePwd, this.password);
     }),
-    (User.authenticate = async function ({ clinicName, password }) {
-      const user = await this.findOne({ where: { clinicName } });
+    (User.authenticate = async function ({ email, password }) {
+      const user = await this.findOne({ where: { email } });
       if (!user || !(await user.correctPassword(password))) {
-        const error = Error('Incorrect username or password.');
+        const error = Error('Incorrect email or password.');
         error.status = 401;
         throw error;
       }

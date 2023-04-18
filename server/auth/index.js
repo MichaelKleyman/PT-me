@@ -13,6 +13,7 @@ router.get('/me', async (req, res, next) => {
 //POST /auth/login
 router.post('/login', async (req, res, next) => {
   try {
+    console.log(req.body);
     res.send({ token: await User.authenticate(req.body) });
   } catch (error) {
     next(error);
