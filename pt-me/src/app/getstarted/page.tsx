@@ -33,6 +33,7 @@ const Page = () => {
   // const method = 'signup';
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [error, setError] = useState(false);
   const [credentials, setCredentials] = useState({
     email: '',
     clinicName: '',
@@ -46,10 +47,19 @@ const Page = () => {
   };
 
   const makeUser = () => {
-    // await createUser(credentials);
-    console.log(credentials);
-    dispatch(signup(credentials));
-    router.push('/');
+    if (
+      credentials.email.length &&
+      credentials.clinicName.length &&
+      credentials.address.length &&
+      credentials.password.length
+    ) {
+      console.log(credentials);
+      setError(false);
+      dispatch(signup(credentials));
+      router.push('/');
+    } else {
+      setError(true);
+    }
   };
 
   return (
@@ -116,6 +126,11 @@ const Page = () => {
             Create Account
           </button>
         </div>
+        {error && (
+          <div className='text-red-600 m-3 text-center'>
+            Fill in all fields.
+          </div>
+        )}
       </div>
     </div>
   );
