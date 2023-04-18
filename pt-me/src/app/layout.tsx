@@ -10,13 +10,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body>
-        <ThemeProvider enableSystem={true} attribute='class'>
-          <Navbar />
-          <Providers>{children}</Providers>
-        </ThemeProvider>
-      </body>
-    </html>
+    <>
+      <html lang='en'>
+        <body>
+          <ThemeProvider enableSystem={true} attribute='class'>
+            <Providers>
+              <Navbar />
+              {children}
+            </Providers>
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
   );
 }

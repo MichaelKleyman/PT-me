@@ -49,6 +49,7 @@ const Page = () => {
     // await createUser(credentials);
     console.log(credentials);
     dispatch(signup(credentials));
+    router.push('/');
   };
 
   return (

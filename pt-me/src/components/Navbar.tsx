@@ -1,6 +1,6 @@
 'use client'; //will be a client component because we're using useState
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll/modules';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
@@ -9,6 +9,10 @@ import Logo1 from '../app/logos/logo-no-background.png';
 import Image from 'next/image';
 import { BsSun, BsFillMoonFill } from 'react-icons/bs';
 import { IoMdMenu, IoMdClose } from 'react-icons/io';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/app/Redux/store';
+import { me, logout } from '@/app/Redux/Features/auth/authSlice';
+import { useRouter } from 'next/navigation';
 
 interface NavItem {
   label: string;
@@ -27,14 +31,26 @@ const navItems: Array<NavItem> = [
 ];
 
 const Navbar = () => {
+  const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const [navbar, setNavbar] = useState(false); //controlling if the navbar is in mobile view or desktop view.
 
   const [showNav, setShowNav] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    dispatch(me());
+  }, []);
 
   const openNav = () => {
     setShowNav(!showNav);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout);
+    router.push('/');
   };
 
   return (
@@ -54,37 +70,49 @@ const Navbar = () => {
           </ScrollLink>
           <div className='md:flex items-center justify-between w-[60%]'>
             <ul className='hidden md:flex items-center justify-between w-full md:space-x-6'>
-              <ScrollLink
-                to='about-us'
-                activeClass='active'
-                spy={true}
-                smooth={true}
-                offset={-100}
-                duration={500}
-                className='tracking-widest uppercase
+              {!user?.id ? (
+                <>
+                  <ScrollLink
+                    to='about-us'
+                    activeClass='active'
+                    spy={true}
+                    smooth={true}
+                    offset={-100}
+                    duration={500}
+                    className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-              >
-                About us
-              </ScrollLink>
-              <ScrollLink
-                to='services'
-                activeClass='active'
-                spy={true}
-                smooth={true}
-                offset={-100}
-                duration={500}
-                className='tracking-widest uppercase
+                  >
+                    About us
+                  </ScrollLink>
+                  <ScrollLink
+                    to='services'
+                    activeClass='active'
+                    spy={true}
+                    smooth={true}
+                    offset={-100}
+                    duration={500}
+                    className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-              >
-                Services
-              </ScrollLink>
-              <Link
-                href='/login'
-                className='tracking-widest uppercase
+                  >
+                    Services
+                  </ScrollLink>
+                  <Link
+                    href='/login'
+                    className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-              >
-                Sign In
-              </Link>
+                  >
+                    Sign In
+                  </Link>
+                </>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className='tracking-widest uppercase
+                duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+                >
+                  Logout
+                </button>
+              )}
               {currentTheme === 'light' ? (
                 <button
                   onClick={() => setTheme('dark')}

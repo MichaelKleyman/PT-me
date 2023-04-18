@@ -29,8 +29,9 @@ const Page = () => {
   };
 
   const loginUser = () => {
-    console.log(credentials);
+    // console.log(credentials);
     dispatch(login(credentials));
+    router.push('/');
   };
 
   return (

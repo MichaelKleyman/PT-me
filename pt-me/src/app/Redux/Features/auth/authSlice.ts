@@ -79,7 +79,7 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = () => {
+export const logout = (): void => {
   window.localStorage.removeItem(TOKEN);
 };
 
