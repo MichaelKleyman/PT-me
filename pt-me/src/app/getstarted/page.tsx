@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../Redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../Redux/store';
 import { signup } from '../Redux/Features/auth/authSlice';
 import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
@@ -33,6 +33,8 @@ const Page = () => {
   // const method = 'signup';
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.error);
+  console.log(user);
   const [error, setError] = useState(false);
   const [credentials, setCredentials] = useState({
     email: '',
@@ -53,12 +55,35 @@ const Page = () => {
       credentials.address.length &&
       credentials.password.length
     ) {
-      console.log(credentials);
-      setError(false);
       dispatch(signup(credentials));
+      setError(false);
+    }
+    if (
+      credentials.email.length &&
+      credentials.clinicName.length &&
+      credentials.address.length &&
+      credentials.password.length &&
+      user === 'Successful signup'
+    ) {
+      setError(false);
       router.push('/');
+      console.log('Rerouting');
+      setCredentials({
+        email: '',
+        clinicName: '',
+        address: '',
+        password: '',
+      });
     } else {
-      setError(true);
+      if (
+        !user?.length ||
+        !credentials.email.length ||
+        !credentials.clinicName.length ||
+        !credentials.address.length ||
+        !credentials.password.length
+      ) {
+        setError(true);
+      }
     }
   };
 
@@ -130,6 +155,9 @@ const Page = () => {
           <div className='text-red-600 m-3 text-center'>
             Fill in all fields.
           </div>
+        )}
+        {user?.length && !error && (
+          <div className='text-red-600 m-3 text-center'>{user}</div>
         )}
       </div>
     </div>

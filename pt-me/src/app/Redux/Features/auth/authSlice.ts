@@ -55,10 +55,12 @@ export const signup = createAsyncThunk(
         email,
         password,
       });
+      console.log(res);
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
+      return { error: 'Successful signup' };
     } catch (authError: any) {
-      return { error: authError.message };
+      return { error: authError.response.data };
     }
   }
 );
