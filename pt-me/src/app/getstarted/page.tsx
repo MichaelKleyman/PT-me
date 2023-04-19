@@ -20,17 +20,7 @@ interface Credentials {
   password: String;
 }
 
-// const createUser = async (credentials: Credentials) => {
-//   try {
-//     console.log(credentials);
-//     await axios.post('http://localhost:3001/api/users', credentials);
-//   } catch (error) {
-//     console.error(error as Error);
-//   }
-// };
-
 const Page = () => {
-  // const method = 'signup';
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.error);
@@ -49,6 +39,7 @@ const Page = () => {
   };
 
   const makeUser = () => {
+    //make the signup request only if all the fields are filled in.
     if (
       credentials.email.length &&
       credentials.clinicName.length &&
@@ -58,6 +49,7 @@ const Page = () => {
       dispatch(signup(credentials));
       setError(false);
     }
+    //now since the user variable is populated, if it returns success, then proceed
     if (
       credentials.email.length &&
       credentials.clinicName.length &&
@@ -74,10 +66,10 @@ const Page = () => {
         address: '',
         password: '',
       });
+      //if either one of the fields are empty AND if the user variable doesnt have a length, then tell the user to fill in all fields.
     } else {
       if (
-        !user?.length ||
-        !credentials.email.length ||
+        (!user?.length && !credentials.email.length) ||
         !credentials.clinicName.length ||
         !credentials.address.length ||
         !credentials.password.length
