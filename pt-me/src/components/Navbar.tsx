@@ -13,6 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/app/Redux/store';
 import { me, logout } from '@/app/Redux/Features/auth/authSlice';
 import { useRouter } from 'next/navigation';
+import { BiClinic, BiCaretDown } from 'react-icons/bi';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 interface NavItem {
   label: string;
@@ -46,6 +50,10 @@ const Navbar = () => {
 
   const openNav = () => {
     setShowNav(!showNav);
+  };
+
+  const reRoute = () => {
+    router.push(`/${user.id}`);
   };
 
   const handleLogout = () => {
@@ -105,13 +113,22 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <button
-                  onClick={handleLogout}
-                  className='tracking-widest uppercase
-                duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-                >
-                  Logout
-                </button>
+                <>
+                  <Link
+                    // onClick={handleLogout}
+                    href='/'
+                    className='tracking-widest uppercase
+              duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+                  >
+                    Home
+                  </Link>
+                  <button
+                    className='tracking-widest uppercase
+            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+                  >
+                    Second
+                  </button>
+                </>
               )}
               {currentTheme === 'light' ? (
                 <button
@@ -128,12 +145,56 @@ const Navbar = () => {
                   <BsSun size={20} />
                 </button>
               )}
-              <Link
-                href='/getstarted'
-                className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '
-              >
-                <button>Get Started</button>
-              </Link>
+              {!user?.id ? (
+                <Link
+                  href='/getstarted'
+                  className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
+                >
+                  <button>Get Started</button>
+                </Link>
+              ) : (
+                <PopupState variant='popover' popupId='demo-popup-menu'>
+                  {(popupState) => (
+                    <React.Fragment>
+                      <div
+                        {...bindTrigger(popupState)}
+                        className='bg-[#3BE13B] p-2 rounded-xl w-[100%] font-bold duration-300 hover:scale-110 grid grid-cols-3 place-items-center cursor-pointer'
+                      >
+                        <div>
+                          <BiClinic size={35} className='p-2' />
+                        </div>
+                        <div>Account</div>
+                        <div>
+                          <BiCaretDown className='flex items-end' />
+                        </div>
+                      </div>
+                      <Menu {...bindMenu(popupState)}>
+                        <MenuItem
+                          onClick={() => {
+                            reRoute();
+                            popupState.close;
+                          }}
+                        >
+                          Clinic Account
+                        </MenuItem>
+                        {/* <MenuItem onClick={popupState.close}>
+                          My account
+                        </MenuItem> */}
+                        {/* <MenuItem onClick={popupState.close}>Logout</MenuItem> */}
+                      </Menu>
+                    </React.Fragment>
+                  )}
+                </PopupState>
+                // <div className='bg-[#3BE13B] p-2 rounded-xl w-[100%] font-bold duration-300 hover:scale-110 grid grid-cols-3 place-items-center cursor-pointer'>
+                //   <div>
+                //     <BiClinic size={35} className='p-2' />
+                //   </div>
+                //   <div>Account</div>
+                //   <div>
+                //     <BiCaretDown className='flex items-end' />
+                //   </div>
+                // </div>
+              )}
             </ul>
             <div className='md:hidden absolute right-5' onClick={openNav}>
               <IoMdMenu size={35} />
@@ -237,75 +298,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-{
-  /* <div className='justify-between md:items-center md:flex'>
-  <div>
-    <div>
-      <div className='flex items-center justify-between cursor-pointer'>
-        <ScrollLink
-          to='about-us'
-          activeClass='active'
-          spy={true}
-          smooth={true}
-          offset={-100}
-          duration={500}
-          className='py-4 md:py-4 md:block'
-        >
-          <Image alt='/' src={Logo1} width={90} height={90} />
-        </ScrollLink>
-        <div className='md:hidden'>
-          <button onClick={() => setNavbar(!navbar)}>
-            {navbar ? <IoMdClose size={30} /> : <IoMdMenu size={30} />}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className='hidden md:flex md:space-x-6 items-center justify-between w-[60%]
-            navbar px-4'
-  >
-    {navItems.map((item, i) => (
-      <ScrollLink
-        key={i}
-        to={item.page}
-        activeClass='active'
-        spy={true}
-        smooth={true}
-        offset={-100}
-        duration={500}
-        className='tracking-widest uppercase
-            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-      >
-        {item.label}
-      </ScrollLink>
-    ))}
-    <Link
-      href='/login'
-      className='tracking-widest uppercase
-            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-    >
-      Sign In
-    </Link>
-    {currentTheme === 'light' ? (
-      <button
-        onClick={() => setTheme('dark')}
-        className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
-      >
-        <BsFillMoonFill size={20} />
-      </button>
-    ) : (
-      <button
-        onClick={() => setTheme('light')}
-        className='p-2 rounded-xl duration-300 hover:scale-110'
-      >
-        <BsSun size={20} />
-      </button>
-    )}
-    <div className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '>
-      <button>Get Started</button>
-    </div>
-  </div>
-</div>; */
-}
