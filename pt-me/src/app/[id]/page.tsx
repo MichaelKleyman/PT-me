@@ -12,8 +12,7 @@ type Params = {
   params: Obj;
 };
 
-export default function Account(User: Params) {
-  const { params } = User;
+export default function Account({ params }: Params) {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   // console.log(params.id);
@@ -29,7 +28,7 @@ export default function Account(User: Params) {
 
   return (
     <div className='px-4 sm:px-6 mt-[10rem]'>
-      <p>Clinic ID: {params.id}</p>
+      <p>Clinic ID: {params.id.toString()}</p>
       <button
         onClick={handleLogout}
         className='duration-300 hover:scale-110 cursor-pointer hover:bg-slate-200 p-2 rounded-lg bg-[#3BE13B] my-2'
