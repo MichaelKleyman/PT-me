@@ -2,6 +2,7 @@
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { logout } from '@/app/Redux/Features/auth/authSlice';
+import { AppDispatch } from '../Redux/store';
 
 type Obj = {
   id: Number;
@@ -13,14 +14,14 @@ type Params = {
 
 export default function Account(User: Params) {
   const { params } = User;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   // console.log(params.id);
 
   const handleLogout = () => {
     try {
       router.push('/');
-      dispatch(logout());
+      dispatch(logout);
     } catch (error) {
       console.error('UH OH: ', error);
     }

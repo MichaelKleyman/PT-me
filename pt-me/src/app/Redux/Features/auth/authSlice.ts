@@ -81,7 +81,7 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = (): void => {
+export const logout = () => {
   window.localStorage.removeItem(TOKEN);
 };
 
