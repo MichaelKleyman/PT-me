@@ -31,7 +31,7 @@ export default function Account(User: Params) {
       <p>Clinic ID: {params.id}</p>
       <button
         onClick={handleLogout}
-        className='duration-300 hover:scale-110 cursor-pointer hover:bg-slate-200'
+        className='duration-300 hover:scale-110 cursor-pointer hover:bg-slate-200 p-2 rounded-lg bg-[#3BE13B] my-2'
       >
         Log out
       </button>

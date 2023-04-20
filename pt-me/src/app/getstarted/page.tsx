@@ -95,7 +95,8 @@ const Page = () => {
           <span className='text-green-500'>clinic</span>.
         </h1>
         <h1 className='text-sm pb-7 text-gray-400'>
-          Appointments and exercises for each patient in one convenient address.
+          Appointments and exercises for each patient in one convenient
+          location.
         </h1>
         <form className='grid grid-cols-1 md:grid-cols-2 gap-7'>
           <TextField
