@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from './Redux/store';
 import { me } from './Redux/Features/auth/authSlice';
+import Dashboard from '@/components/Dashboard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,7 +27,9 @@ export default function Home() {
           <Services />
         </React.Fragment>
       ) : (
-        <div>{user.clinicName} Dashboard</div>
+        <div>
+          <Dashboard clinicName={user.clinicName} />
+        </div>
       )}
     </main>
   );
