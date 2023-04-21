@@ -18,6 +18,7 @@ interface Credentials {
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [error, setError] = useState('');
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -29,9 +30,16 @@ const Page = () => {
   };
 
   const loginUser = () => {
-    // console.log(credentials);
-    dispatch(login(credentials));
-    router.push('/');
+    try {
+      if (credentials.email.length && credentials.password.length) {
+        dispatch(login(credentials));
+        router.push('/');
+      } else {
+        setError('Fill in all fields*');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -89,6 +97,9 @@ const Page = () => {
                 Sign up
               </span>
             </p>
+            {error && (
+              <div className='text-red-600 m-3 text-center'>{error}*</div>
+            )}
           </div>
         </div>
         <div className='hidden md:block md:h-screen md:relative'>

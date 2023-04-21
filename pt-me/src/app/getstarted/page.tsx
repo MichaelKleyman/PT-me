@@ -146,11 +146,11 @@ const Page = () => {
         </div>
         {error && (
           <div className='text-red-600 m-3 text-center'>
-            Fill in all fields.
+            Fill in all fields*
           </div>
         )}
         {user?.length && !error && (
-          <div className='text-red-600 m-3 text-center'>{user}</div>
+          <div className='text-red-600 m-3 text-center'>{user}*</div>
         )}
       </div>
     </div>
