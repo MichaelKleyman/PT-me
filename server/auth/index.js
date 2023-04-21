@@ -16,6 +16,8 @@ router.post('/login', async (req, res, next) => {
     console.log(req.body);
     res.send({ token: await User.authenticate(req.body) });
   } catch (error) {
+    console.error('>>>>>', error);
+    // res.status(401).send({ error });
     next(error);
   }
 });
