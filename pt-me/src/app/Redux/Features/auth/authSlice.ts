@@ -2,9 +2,9 @@
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Axios from 'axios';
+import { CLIENT, BASE_URL } from '@/components/api';
 
 const TOKEN = 'token';
-const BASE_URL = 'http://localhost:3001';
 
 interface AuthState {
   user: any; // Replace 'any' with your user type
@@ -32,7 +32,7 @@ export const me = createAsyncThunk(
   async (_, { dispatch }) => {
     const token = window.localStorage.getItem(TOKEN);
     if (token) {
-      const res = await Axios.get(`${BASE_URL}/auth/me`, {
+      const res = await CLIENT.get(`${BASE_URL}/auth/me`, {
         headers: {
           authorization: token,
         },
@@ -49,7 +49,7 @@ export const signup = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      const res = await Axios.post(`${BASE_URL}/auth/signup`, {
+      const res = await CLIENT.post(`${BASE_URL}/auth/signup`, {
         clinicName,
         address,
         email,
@@ -69,7 +69,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: LoginPayload, { dispatch }) => {
     try {
-      const res = await Axios.post(`${BASE_URL}/auth/login`, {
+      const res = await CLIENT.post(`${BASE_URL}/auth/login`, {
         email,
         password,
       });

@@ -1,9 +1,6 @@
-'use client';
-import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import PtImage from '../app/images/homepage.jpg';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 
 // const fetchData = async () => {
 //   try {
@@ -16,10 +13,6 @@ import axios from 'axios';
 
 const AboutUs = () => {
   const router = useRouter();
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
   return (
     <section id='about-us'>
