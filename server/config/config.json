@@ -18,6 +18,12 @@
     "password": null,
     "database": "pt-me",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "rejectUnauthorized": false,
+        "require": true
+      }
+    }
   }
 }
