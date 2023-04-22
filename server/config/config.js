@@ -17,6 +17,7 @@ module.exports = {
     // password: null,
     database: 'pt_me',
     use_env_variable: 'DATABASE_URL',
+    listen_addresses: '*',
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
