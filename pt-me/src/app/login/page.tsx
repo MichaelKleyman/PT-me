@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../Redux/store';
-import { login } from '../Redux/Features/auth/authSlice';
+import React, { useState, useEffect, use } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../Redux/store';
+import { login, me } from '../Redux/Features/auth/authSlice';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';
@@ -18,6 +18,8 @@ interface Credentials {
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state);
+  // console.log('USER: ', user);
   const [error, setError] = useState('');
   const [credentials, setCredentials] = useState({
     email: '',
@@ -29,17 +31,34 @@ const Page = () => {
     setCredentials(newObject);
   };
 
+  useEffect(() => {
+    dispatch(me());
+  }, []);
+
   const loginUser = () => {
-    try {
-      if (credentials.email.length && credentials.password.length) {
-        dispatch(login(credentials));
-        router.push('/');
-      } else {
-        setError('Fill in all fields*');
-      }
-    } catch (error) {
-      console.error(error);
+    if (credentials.email.length && credentials.password.length) {
+      dispatch(login(credentials));
+      setError('');
     }
+    if (
+      credentials.email.length &&
+      credentials.password.length &&
+      user.auth.user?.errorStatus === 'Unauthorized'
+    ) {
+      // console.log(user.auth.user?.errorStatus);
+      console.log('Incorrect email or password.');
+    } else {
+      console.log('Good to go');
+      // router.push('/');
+    }
+
+    // if (credentials.email.length && credentials.password.length) {
+    //   dispatch(login(credentials));
+    //   setError('');
+    //   // router.push('/');
+    // } else {
+    //   setError('Fill in all fields*');
+    // }
   };
 
   return (
