@@ -123,12 +123,13 @@ const Navbar = () => {
                   >
                     Home
                   </Link>
-                  <button
+                  <Link
+                    href='/exercises'
                     className='tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     Exercises
-                  </button>
+                  </Link>
                 </>
               )}
               {currentTheme === 'light' ? (
