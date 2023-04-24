@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../Redux/store';
 import { login, me } from '../Redux/Features/auth/authSlice';
@@ -30,30 +30,37 @@ const Page = () => {
     setCredentials(newObject);
   };
 
-  const loginUser = () => {
-    //if fields are empty, show error message
+  useEffect(() => {
+    if (user && user.errorStatus === 'Unauthorized') {
+      setError('Incorrect email or password.');
+    } else {
+      setError('');
+    }
+  }, [user]);
+
+  const loginUser = async () => {
+    // If fields are empty, show error message
     if (!credentials.email.length || !credentials.password.length) {
       setError('Fill in all fields.');
       console.log('Fill in all fields!');
+      return;
     }
-    //if all fields are filled in, dispatch the login action
-    if (credentials.email.length && credentials.password.length) {
-      dispatch(login(credentials));
-      setError('');
-      console.log('Dispatching login action.');
-      // console.log(user?.errorStatus);
-    }
-    if (
-      credentials.email.length &&
-      credentials.password.length &&
-      user?.errorStatus
-    ) {
+
+    // Dispatch the login action and wait for the response
+    const response = await dispatch(login(credentials));
+
+    // If the login is unsuccessful, show an error message
+    if (response.payload?.errorStatus === 'Unauthorized') {
+      setError('Incorrect email or password.');
       console.log('There was an error!');
+      return;
     }
-    if (credentials.email.length && credentials.password.length && !user) {
-      console.log('Logging user in.');
-      console.log('USER: ', user);
-    }
+
+    // If the login is successful, clear the error message and navigate to the dashboard
+    setError('');
+    console.log('Logging in');
+    router.push('/');
+    // Here you can navigate to the dashboard or any other page of your app
   };
 
   return (
@@ -132,38 +139,3 @@ const Page = () => {
 };
 
 export default Page;
-
-// const loginUser = () => {
-//   if (credentials.email.length && credentials.password.length) {
-//     dispatch(login(credentials));
-//     setError('');
-//   }
-//   if (
-//     credentials.email.length &&
-//     credentials.password.length &&
-//     user?.errorStatus === 'Unauthorized'
-//   ) {
-//     // console.log(user.errorStatus);
-//     setError('Unauthorized');
-//     console.log('Incorrect email or password.');
-//   }
-//   if (
-//     // !user?.errorStatus &&
-//     !credentials.email.length &&
-//     !credentials.password.length
-//   ) {
-//     console.log('Fill in all fields');
-//     setError('Fill in all fields');
-//     // router.push('/');
-//   } else {
-//     console.log('Good to go');
-//   }
-
-//   // if (credentials.email.length && credentials.password.length) {
-//   //   dispatch(login(credentials));
-//   //   setError('');
-//   //   // router.push('/');
-//   // } else {
-//   //   setError('Fill in all fields');
-//   // }
-// };
