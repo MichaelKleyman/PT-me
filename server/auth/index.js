@@ -1,23 +1,16 @@
 const router = require('express').Router();
 const { User } = require('../models');
 
-//GET /auth/me
-router.get('/me', async (req, res, next) => {
-  try {
-    res.send(await User.findByToken(req.headers.authorization));
-  } catch (error) {
-    next(error);
-  }
-});
-
 //POST /auth/login
 router.post('/login', async (req, res, next) => {
   try {
     console.log(req.body);
-    res.send({ token: await User.authenticate(req.body) });
+    const usersToken = await User.authenticate(req.body);
+    res.send({ token: usersToken });
   } catch (error) {
     console.error('>>>>>', error);
-    // res.status(401).send({ error });
+    res.status(401).send({ authError: error });
+    // res.send({ error });
     next(error);
   }
 });
@@ -46,6 +39,15 @@ router.post('/signup', async (req, res, next) => {
     } else {
       next(error);
     }
+  }
+});
+
+//GET /auth/me
+router.get('/me', async (req, res, next) => {
+  try {
+    res.send(await User.findByToken(req.headers.authorization));
+  } catch (error) {
+    next(error);
   }
 });
 
