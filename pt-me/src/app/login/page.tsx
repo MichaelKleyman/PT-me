@@ -18,8 +18,8 @@ interface Credentials {
 const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state);
-  // console.log('USER: ', user);
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log('USER: ', user);
   const [error, setError] = useState('');
   const [credentials, setCredentials] = useState({
     email: '',
@@ -31,10 +31,6 @@ const Page = () => {
     setCredentials(newObject);
   };
 
-  useEffect(() => {
-    dispatch(me());
-  }, []);
-
   const loginUser = () => {
     if (credentials.email.length && credentials.password.length) {
       dispatch(login(credentials));
@@ -43,13 +39,22 @@ const Page = () => {
     if (
       credentials.email.length &&
       credentials.password.length &&
-      user.auth.user?.errorStatus === 'Unauthorized'
+      user?.errorStatus === 'Unauthorized'
     ) {
-      // console.log(user.auth.user?.errorStatus);
+      // console.log(user.errorStatus);
+      setError('Unauthorized');
       console.log('Incorrect email or password.');
+    }
+    if (
+      // !user?.errorStatus &&
+      !credentials.email.length &&
+      !credentials.password.length
+    ) {
+      console.log('Fill in all fields');
+      setError('Fill in all fields');
+      // router.push('/');
     } else {
       console.log('Good to go');
-      // router.push('/');
     }
 
     // if (credentials.email.length && credentials.password.length) {
