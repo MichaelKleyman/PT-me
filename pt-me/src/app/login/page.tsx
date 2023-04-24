@@ -47,7 +47,7 @@ const Page = () => {
     }
 
     // Dispatch the login action and wait for the response
-    const response = await dispatch(login(credentials));
+    const response: any = await dispatch(login(credentials));
 
     // If the login is unsuccessful, show an error message
     if (response.payload?.errorStatus === 'Unauthorized') {
@@ -59,8 +59,8 @@ const Page = () => {
     // If the login is successful, clear the error message and navigate to the dashboard
     setError('');
     console.log('Logging in');
-    router.push('/');
     // Here you can navigate to the dashboard or any other page of your app
+    router.push('/');
   };
 
   return (

@@ -1,8 +1,9 @@
 'use client';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/app/Redux/Features/auth/authSlice';
-import { AppDispatch } from '../Redux/store';
+import { logout, me } from '@/app/Redux/Features/auth/authSlice';
+import { AppDispatch, RootState } from '../Redux/store';
 
 type Obj = {
   id: Number;
@@ -14,8 +15,16 @@ type Params = {
 
 export default function Account({ params }: Params) {
   const dispatch = useDispatch<AppDispatch>();
+  const clinic = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
-  // console.log(params.id);
+  // console.log(clinic);
+
+  useEffect(() => {
+    async function getClinic() {
+      await dispatch(me());
+    }
+    getClinic();
+  }, []);
 
   const handleLogout = () => {
     try {
@@ -29,6 +38,9 @@ export default function Account({ params }: Params) {
   return (
     <div className='px-4 sm:px-6 mt-[10rem]'>
       <p>Clinic ID: {params.id.toString()}</p>
+      <p>Clinic Name: {clinic?.clinicName}</p>
+      <p>Clinic Address: {clinic?.address}</p>
+      <p>Clinic Email: {clinic?.email}</p>
       <button
         onClick={handleLogout}
         className='duration-300 hover:scale-110 cursor-pointer hover:bg-slate-200 p-2 rounded-lg bg-[#3BE13B] my-2'
