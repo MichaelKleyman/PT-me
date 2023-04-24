@@ -19,7 +19,6 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log('USER: ', user);
   const [error, setError] = useState('');
   const [credentials, setCredentials] = useState({
     email: '',
@@ -32,38 +31,29 @@ const Page = () => {
   };
 
   const loginUser = () => {
+    //if fields are empty, show error message
+    if (!credentials.email.length || !credentials.password.length) {
+      setError('Fill in all fields.');
+      console.log('Fill in all fields!');
+    }
+    //if all fields are filled in, dispatch the login action
     if (credentials.email.length && credentials.password.length) {
       dispatch(login(credentials));
       setError('');
+      console.log('Dispatching login action.');
+      // console.log(user?.errorStatus);
     }
     if (
       credentials.email.length &&
       credentials.password.length &&
-      user?.errorStatus === 'Unauthorized'
+      user?.errorStatus
     ) {
-      // console.log(user.errorStatus);
-      setError('Unauthorized');
-      console.log('Incorrect email or password.');
+      console.log('There was an error!');
     }
-    if (
-      // !user?.errorStatus &&
-      !credentials.email.length &&
-      !credentials.password.length
-    ) {
-      console.log('Fill in all fields');
-      setError('Fill in all fields');
-      // router.push('/');
-    } else {
-      console.log('Good to go');
+    if (credentials.email.length && credentials.password.length && !user) {
+      console.log('Logging user in.');
+      console.log('USER: ', user);
     }
-
-    // if (credentials.email.length && credentials.password.length) {
-    //   dispatch(login(credentials));
-    //   setError('');
-    //   // router.push('/');
-    // } else {
-    //   setError('Fill in all fields*');
-    // }
   };
 
   return (
@@ -142,3 +132,38 @@ const Page = () => {
 };
 
 export default Page;
+
+// const loginUser = () => {
+//   if (credentials.email.length && credentials.password.length) {
+//     dispatch(login(credentials));
+//     setError('');
+//   }
+//   if (
+//     credentials.email.length &&
+//     credentials.password.length &&
+//     user?.errorStatus === 'Unauthorized'
+//   ) {
+//     // console.log(user.errorStatus);
+//     setError('Unauthorized');
+//     console.log('Incorrect email or password.');
+//   }
+//   if (
+//     // !user?.errorStatus &&
+//     !credentials.email.length &&
+//     !credentials.password.length
+//   ) {
+//     console.log('Fill in all fields');
+//     setError('Fill in all fields');
+//     // router.push('/');
+//   } else {
+//     console.log('Good to go');
+//   }
+
+//   // if (credentials.email.length && credentials.password.length) {
+//   //   dispatch(login(credentials));
+//   //   setError('');
+//   //   // router.push('/');
+//   // } else {
+//   //   setError('Fill in all fields');
+//   // }
+// };
