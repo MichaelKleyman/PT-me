@@ -1,4 +1,4 @@
-const shoulderExercises = [
+const Shoulders = [
   { name: 'External rotation' },
   { name: 'External rotation' },
   { name: 'External rotation' },
@@ -13,7 +13,7 @@ const shoulderExercises = [
   { name: 'External rotation' },
 ];
 
-const backExercises = [
+const Back = [
   { name: 'Childs Pose' },
   { name: 'Childs Pose' },
   { name: 'Childs Pose' },
@@ -28,7 +28,7 @@ const backExercises = [
   { name: 'Childs Pose' },
 ];
 
-const kneeExercises = [
+const Knee = [
   { name: 'Quad Stretch' },
   { name: 'Quad Stretch' },
   { name: 'Quad Stretch' },
@@ -43,7 +43,7 @@ const kneeExercises = [
   { name: 'Quad Stretch' },
 ];
 
-const hipExercises = [
+const Hip = [
   { name: 'External hip rotation' },
   { name: 'External hip rotation' },
   { name: 'External hip rotation' },
@@ -59,11 +59,8 @@ const hipExercises = [
 ];
 
 module.exports = {
-  shoulderExercises,
-  backExercises,
-  kneeExercises,
-  hipExercises,
+  Shoulders,
+  Back,
+  Knee,
+  Hip,
 };
-// export default backExercises
-// export default kneeExercises
-// export default hipExercises
