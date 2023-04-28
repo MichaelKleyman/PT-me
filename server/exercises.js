@@ -58,7 +58,12 @@ const hipExercises = [
   { name: 'External hip rotation' },
 ];
 
-module.exports = shoulderExercises;
+module.exports = {
+  shoulderExercises,
+  backExercises,
+  kneeExercises,
+  hipExercises,
+};
 // export default backExercises
 // export default kneeExercises
 // export default hipExercises
