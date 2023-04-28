@@ -17,7 +17,6 @@ module.exports = {
       [
         {
           name: 'John Doe',
-          isBetaMember: false,
         },
       ],
       {}

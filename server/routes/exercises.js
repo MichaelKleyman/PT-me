@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { User } = require('../models');
+const exercises = require('../exercises')
 
-//GET clinic
+//GET exercises
 
 module.exports = router;
