@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { CLIENT, BASE_URL } from '@/components/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 
 interface Exercise {
   name: String;
@@ -80,9 +81,16 @@ export default function Exercises() {
         {specificExercise.length ? (
           <div className='grid grid-cols-3 gap-1 mt-3 m-5'>
             {specificExercise[0].map((exercise: Exercise, i: any) => (
-              <div key={i} className='border border-gray-200 rounded-lg'>
+              <Container key={i} className='border border-gray-200 rounded-lg'>
                 <div className='p-3'>{exercise.name}</div>
-              </div>
+                <div className='ratio ratio-1x1'>
+                  <iframe
+                    src='https://www.youtube.com/embed/zpOULjyy-n8?rel=0'
+                    title='YouTube video'
+                    // allowfullscreen
+                  ></iframe>
+                </div>
+              </Container>
             ))}
           </div>
         ) : (
