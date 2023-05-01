@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { CLIENT, BASE_URL } from '@/components/api';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Exercise {
   name: String;
