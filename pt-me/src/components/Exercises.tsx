@@ -53,7 +53,12 @@ export default function Exercises() {
   // });
 
   return (
-    <div>
+    <div
+      style={{
+        width: '1380px',
+        marginRight: '0 auto',
+      }}
+    >
       <h1 className='text-green-500 text-xl uppercase tracking-widest'>
         Exercises
       </h1>
@@ -80,7 +85,7 @@ export default function Exercises() {
       </div>
       <div className='border border-gray-200 mt-3 w-[100%]'>
         {specificExercise.length ? (
-          <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-1 mt-3 m-5'>
+          <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-8 mt-3 m-5'>
             {specificExercise[0].map((exercise: Exercise, i: any) => (
               <Container key={i} className='border border-gray-200 rounded-lg'>
                 <div className='p-3'>{exercise.name}</div>
@@ -97,7 +102,7 @@ export default function Exercises() {
         ) : (
           <>
             {Object.keys(exercises).map((exercise: any, i: any) => (
-              <div key={i} className='grid sm:grid-cols-2 md:grid-cols-4 gap-1'>
+              <div key={i} className='grid sm:grid-cols-2 md:grid-cols-4 gap-8'>
                 {exercises[exercise].map((exercise: Exercise, i: any) => (
                   <Container
                     key={i}

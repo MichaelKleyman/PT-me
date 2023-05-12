@@ -7,6 +7,14 @@ body {
   background-color: #fdfff5;
 } */
 
+.nav-link {
+  color: black;
+}
+
+.dark .nav-link {
+  color: white;
+}
+
 .dark .MuiTextField-root {
   border: solid green 1px;
 }
@@ -18,3 +26,7 @@ body {
 .dark .MuiFormLabel-root {
   color: white;
 }
+/* 
+.dark #exercise-container {
+  background-color: yellow;
+} */

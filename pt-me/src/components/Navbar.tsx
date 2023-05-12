@@ -88,7 +88,7 @@ const Navbar = () => {
                     smooth={true}
                     offset={-100}
                     duration={500}
-                    className='tracking-widest uppercase
+                    className='nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     About us
@@ -100,14 +100,14 @@ const Navbar = () => {
                     smooth={true}
                     offset={-100}
                     duration={500}
-                    className='tracking-widest uppercase
+                    className='nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     Services
                   </ScrollLink>
                   <Link
                     href='/login'
-                    className='tracking-widest uppercase
+                    className='nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     Sign In
@@ -118,14 +118,14 @@ const Navbar = () => {
                   <Link
                     // onClick={handleLogout}
                     href='/'
-                    className='tracking-widest uppercase
+                    className='nav-link tracking-widest uppercase no-underline
               duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     Home
                   </Link>
                   <Link
                     href='/exercises'
-                    className='tracking-widest uppercase
+                    className='nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                   >
                     Exercises
@@ -150,7 +150,7 @@ const Navbar = () => {
               {!user?.id ? (
                 <Link
                   href='/getstarted'
-                  className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
+                  className='nav-link bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
                 >
                   <button>Get Started</button>
                 </Link>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useEffect } from 'react';
 import AboutUs from '@/components/AboutUs';
@@ -27,9 +28,9 @@ export default function Home() {
           <Services />
         </React.Fragment>
       ) : (
-        <div>
+        <React.Fragment>
           <Dashboard clinicName={user.clinicName} />
-        </div>
+        </React.Fragment>
       )}
     </main>
   );
