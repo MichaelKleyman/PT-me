@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* html,
-body {
-  background-color: #fdfff5;
-} */
-
 .nav-link {
   color: black;
 }
@@ -26,7 +21,4 @@ body {
 .dark .MuiFormLabel-root {
   color: white;
 }
-/* 
-.dark #exercise-container {
-  background-color: yellow;
-} */
+

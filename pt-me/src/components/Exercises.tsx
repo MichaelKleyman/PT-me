@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CLIENT, BASE_URL } from '@/components/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
+import '../styles/exercises.css';
 
 interface Exercise {
   map: any;
@@ -53,12 +54,7 @@ export default function Exercises() {
   // });
 
   return (
-    <div
-      style={{
-        width: '1380px',
-        marginRight: '0 auto',
-      }}
-    >
+    <div id='exercises-container'>
       <h1 className='text-green-500 text-xl uppercase tracking-widest'>
         Exercises
       </h1>
