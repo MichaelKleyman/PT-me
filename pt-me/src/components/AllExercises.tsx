@@ -16,9 +16,7 @@ export default function AllExercises() {
   //exercises state is an array, where each key is a exercise object
   const [exercises, setExercises] = useState<Exercise[]>([]);
   //specific exercises state is an array of objects where each key is a string and each value is a a string.
-  const [specificExercise, setSpecificExercise] = useState<Array<Exercise[]>>(
-    []
-  );
+  const [specificExercise, setSpecificExercise] = useState<Exercise[]>([]);
   const [exerciseOptions, setOptions] = useState<String[]>([
     'All',
     'Shoulders',
@@ -30,7 +28,7 @@ export default function AllExercises() {
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
-    console.log(data);
+    // console.log(data);
     setExercises(data);
   };
 
@@ -38,15 +36,40 @@ export default function AllExercises() {
     getAllExercises();
   }, []);
 
-  const filterExercises = (exerciseType: String) => {
+  const filterExercises = async (exerciseType: String) => {
     setSelected(exerciseType);
     if (exerciseType === 'All') {
       getAllExercises();
       setSpecificExercise([]);
     } else {
       console.log(exerciseType);
-      // const arr = exercises[filteredExerciseType[0]];
-      // setSpecificExercise([arr] as any);
+      const fetchExerciseTypeInjuryId = {
+        Shoulders: 1,
+        Back: 2,
+        Knee: 3,
+        Hip: 4,
+      };
+      if (exerciseType === 'Shoulders') {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Shoulders']}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === 'Back') {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Back']}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === 'Knee') {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Knee']}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === 'Hip') {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Hip']}`
+        );
+        setSpecificExercise(data);
+      }
     }
   };
 
@@ -71,15 +94,35 @@ export default function AllExercises() {
             className={`${
               selected === option ? 'bg-green-500 text-white' : ''
             } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
-            // className='p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white'
           >
             {option}
           </button>
         ))}
       </div>
-      <div className=' mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {exercises.map((exercise: Exercise, i: number) => (
-          <div key={i}>
+      <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
+        {selected === 'All' &&
+          exercises.map((exercise: Exercise, i: number) => (
+            <div key={i}>
+              <Container className='border border-gray-200 rounded-lg'>
+                <div className='p-3'>{exercise.name}</div>
+                <div className='ratio ratio-1x1'>
+                  <iframe
+                    width='560'
+                    height='315'
+                    // src={exercise.videoLink}
+                    title='YouTube video player'
+                    // frameborder='0'
+                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                    // allowfullscreen
+                  ></iframe>
+                </div>
+              </Container>
+            </div>
+          ))}
+      </div>
+      <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
+        {specificExercise.length &&
+          specificExercise.map((exercise: Exercise, i) => (
             <Container key={i} className='border border-gray-200 rounded-lg'>
               <div className='p-3'>{exercise.name}</div>
               <div className='ratio ratio-1x1'>
@@ -94,8 +137,7 @@ export default function AllExercises() {
                 ></iframe>
               </div>
             </Container>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
