@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Exercises.init({
     name: DataTypes.STRING,
-    // injuryId: DataTypes.INTEGER
+    injuryId: DataTypes.INTEGER,
+    videoLink: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Exercises',
