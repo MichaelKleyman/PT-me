@@ -8,9 +8,12 @@ import '../styles/exercises.css';
 interface Exercise {
   map: any;
   name: String;
+  videoLink: string;
 }
 
 export default function Exercises() {
+  const [curPage, setCurPage] = useState(1);
+  const [logsPerPage] = useState(8);
   //exercises state is an object, where each key is a string and each value is an array of objects
   const [exercises, setExercises] = useState<Record<string, Exercise>>({});
   //specific exercises state is an array of objects where each key is a string and each value is a a string.
@@ -21,7 +24,7 @@ export default function Exercises() {
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
-    // console.log(data);
+    console.log(data);
     setExercises(data);
   };
 
@@ -54,7 +57,7 @@ export default function Exercises() {
   // });
 
   return (
-    <div id='exercises-container'>
+    <div>
       <h1 className='text-green-500 text-xl uppercase tracking-widest'>
         Exercises
       </h1>
@@ -79,16 +82,19 @@ export default function Exercises() {
           </button>
         ))}
       </div>
-      <div className='border border-gray-200 mt-3 w-[100%]'>
+      <div className=' mt-3 w-[100%] p-3'>
         {specificExercise.length ? (
-          <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-8 mt-3 m-5'>
+          <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-8 mt-3 m-5'>
             {specificExercise[0].map((exercise: Exercise, i: any) => (
               <Container key={i} className='border border-gray-200 rounded-lg'>
                 <div className='p-3'>{exercise.name}</div>
                 <div className='ratio ratio-1x1'>
                   <iframe
-                    src='https://www.youtube.com/embed/zpOULjyy-n8?rel=0'
-                    title='YouTube video'
+                    width='560'
+                    height='315'
+                    src={exercise.videoLink}
+                    title='YouTube video player'
+                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                     // allowfullscreen
                   ></iframe>
                 </div>
@@ -97,8 +103,8 @@ export default function Exercises() {
           </div>
         ) : (
           <>
-            {Object.keys(exercises).map((exercise: any, i: any) => (
-              <div key={i} className='grid sm:grid-cols-2 md:grid-cols-4 gap-8'>
+            {/* {Object.keys(exercises).map((exercise: any, i: any) => (
+              <div key={i} className='grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
                 {exercises[exercise].map((exercise: Exercise, i: any) => (
                   <Container
                     key={i}
@@ -107,15 +113,19 @@ export default function Exercises() {
                     <div className='p-3'>{exercise.name}</div>
                     <div className='ratio ratio-1x1'>
                       <iframe
-                        src='https://www.youtube.com/embed/zpOULjyy-n8?rel=0'
-                        title='YouTube video'
-                        allowFullScreen
+                        width='560'
+                        height='315'
+                        src={exercise.videoLink}
+                        title='YouTube video player'
+                        // frameborder='0'
+                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                        // allowfullscreen
                       ></iframe>
                     </div>
                   </Container>
                 ))}
               </div>
-            ))}
+            ))} */}
           </>
         )}
       </div>
