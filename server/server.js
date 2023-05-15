@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const cookie = require('cookie');
 const app = express();
 
 const PORT = process.env.PORT || 3001;
@@ -11,6 +12,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
+  const cookieOptions = {
+    sameSite: 'None',
+    secure: true,
+  };
+  res.setHeader(
+    'Set-Cookie',
+    cookie.serialize('cookieName', 'cookieValue', cookieOptions)
+  );
   res.send('Server is running!');
 });
 
