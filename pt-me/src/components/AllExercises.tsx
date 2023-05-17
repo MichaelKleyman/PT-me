@@ -6,6 +6,9 @@ import { Container } from 'react-bootstrap';
 import '../styles/exercises.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import ReactPaginate from 'react-paginate';
+import TextField from '@mui/material/TextField';
+import { BsSearch } from 'react-icons/bs';
+import InputAdornment from '@mui/material/InputAdornment';
 
 interface Exercise {
   map: any;
@@ -14,8 +17,19 @@ interface Exercise {
   videoLink: string;
 }
 
+const style = {
+  '& .MuiOutlinedInput-root': {
+    '&.Mui-focused fieldset': {
+      borderColor: '#3BE13B',
+    },
+  },
+  width: '50%',
+};
+
 export default function AllExercises() {
+  const [searchInput, setSearchInput] = useState<string>('');
   const [pageNumber, setPageNumber] = useState<number>(0);
+  const [pageNumber2, setPageNumber2] = useState<number>(0);
   // const [loading, setLoading] = useState<Boolean>(true);
   //exercises state is an array, where each key is a exercise object
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -32,10 +46,8 @@ export default function AllExercises() {
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
-    // console.log(data);
     setExercises(data);
     // setLoading(false);
-    console.log('Not loading anymore');
   };
 
   useEffect(() => {
@@ -44,6 +56,8 @@ export default function AllExercises() {
 
   const filterExercises = async (exerciseType: String) => {
     setSelected(exerciseType);
+    setPageNumber(0);
+    setPageNumber2(0);
     if (exerciseType === 'All') {
       getAllExercises();
       setSpecificExercise([]);
@@ -81,6 +95,45 @@ export default function AllExercises() {
 
   const exercisesPerPage = 9;
   const pagesVisited = pageNumber * exercisesPerPage;
+  const pagesVisited2 = pageNumber2 * exercisesPerPage;
+
+  const displaySpecificExercise = specificExercise
+    .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
+    .map((exercise, i) => {
+      return (
+        <Container key={i} className='border border-gray-200 rounded-lg'>
+          <div className='p-3'>{exercise.name}</div>
+          <div className='ratio ratio-1x1'>
+            {/* {loading ? (
+        <iframe
+          width='560'
+          height='315'
+          src={exercise.videoLink}
+          referrerPolicy='same-origin'
+          title='YouTube video player'
+          // frameborder='0'
+          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+          // allowfullscreen
+        ></iframe>
+      ) : (
+        <CircularProgress />
+      )} */}
+            <iframe
+              width='560'
+              loading='lazy'
+              seamless
+              height='315'
+              src={exercise.videoLink}
+              referrerPolicy='same-origin'
+              title='YouTube video player'
+              // frameborder='0'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              // allowfullscreen
+            ></iframe>
+          </div>
+        </Container>
+      );
+    });
 
   const displayAllExercises = exercises
     .slice(pagesVisited, pagesVisited + exercisesPerPage)
@@ -109,25 +162,30 @@ export default function AllExercises() {
     });
 
   const allExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+  const specificExercisesPageCount = Math.ceil(
+    specificExercise.length / exercisesPerPage
+  );
 
-  const changePage = ({ selected }: any) => {
+  const changePageForAllExercises = ({ selected }: any) => {
     setPageNumber(selected);
+    window.scrollTo({ top: 0 });
+  };
+
+  const changePageForSpecificExercises = ({ selected }: any) => {
+    setPageNumber2(selected);
+    window.scrollTo({ top: 0 });
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
   };
 
   return (
     <div>
-      <h1 className='text-green-500 text-xl uppercase tracking-widest'>
+      <h1 className='text-green-500 text-xl uppercase tracking-widest m-4'>
         Exercises
       </h1>
       <div className='mt-1 flex'>
-        {/* <button
-          // onClick={() => filterExercises('All')}
-          className={`${
-            selected === 'All' ? 'bg-green-500 text-white' : ''
-          } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
-        >
-          All
-        </button> */}
         {exerciseOptions.map((option: String, i) => (
           <button
             onClick={() => filterExercises(option)}
@@ -140,90 +198,59 @@ export default function AllExercises() {
           </button>
         ))}
       </div>
-      <ReactPaginate
-        previousLabel='Previous'
-        nextLabel='Next'
-        pageCount={allExercisesPageCount}
-        onPageChange={changePage}
-        containerClassName='paginationBttns'
-        previousClassName='previousBttn'
-        nextLinkClassName='nextBttn'
-        activeClassName='paginationActive'
-      />
+      <div className='flex items-center justify-center'>
+        <TextField
+          id='outlined-search'
+          value={searchInput}
+          onChange={handleSearch}
+          type='search'
+          focused
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <BsSearch color='#3BE13B' />
+              </InputAdornment>
+            ),
+          }}
+          sx={style}
+          placeholder='Search Exercises'
+        />
+      </div>
       <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
         {selected === 'All' && displayAllExercises}
-        {/* exercises.map((exercise: Exercise, i: number) => (
-             <div key={i}>
-               <Container className='border border-gray-200 rounded-lg'>
-                 <div className='p-3'>{exercise.name}</div>
-                 <div className='ratio ratio-1x1'>
-                   <iframe
-                     width='560'
-                     height='315'
-                     seamless
-                     src={exercise.videoLink}
-                     loading='lazy'
-                     referrerPolicy='same-origin'
-                     title='YouTube video player'
-                      frameborder='0'
-                     allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                      allowfullscreen
-                   ></iframe>
-                   {/* {loading ? (
-                     <iframe
-                       width='560'
-                       height='315'
-                       src={exercise.videoLink}
-                       loading='eager'
-                       referrerPolicy='same-origin'
-                       title='YouTube video player'
-                        frameborder='0'
-                       allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                        allowfullscreen
-                     ></iframe>
-                   ) : (
-                     <CircularProgress />
-                   )} */}
       </div>
       <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {specificExercise.length ? (
-          specificExercise.map((exercise: Exercise, i) => (
-            <Container key={i} className='border border-gray-200 rounded-lg'>
-              <div className='p-3'>{exercise.name}</div>
-              <div className='ratio ratio-1x1'>
-                {/* {loading ? (
-                  <iframe
-                    width='560'
-                    height='315'
-                    src={exercise.videoLink}
-                    referrerPolicy='same-origin'
-                    title='YouTube video player'
-                    // frameborder='0'
-                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                    // allowfullscreen
-                  ></iframe>
-                ) : (
-                  <CircularProgress />
-                )} */}
-                <iframe
-                  width='560'
-                  loading='lazy'
-                  seamless
-                  height='315'
-                  src={exercise.videoLink}
-                  referrerPolicy='same-origin'
-                  title='YouTube video player'
-                  // frameborder='0'
-                  allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                  // allowfullscreen
-                ></iframe>
-              </div>
-            </Container>
-          ))
-        ) : (
-          <></>
-        )}
+        {selected !== 'All' && displaySpecificExercise}
       </div>
+      {selected === 'All' ? (
+        <div className='flex items-center justify-center mb-4'>
+          <ReactPaginate
+            previousLabel='Previous'
+            nextLabel='Next'
+            pageCount={allExercisesPageCount}
+            onPageChange={changePageForAllExercises}
+            containerClassName='paginationBttns'
+            previousClassName='previousBttn'
+            nextLinkClassName='nextBttn'
+            activeClassName='paginationActive'
+            activeLinkClassName='activeLink'
+          />
+        </div>
+      ) : (
+        <div className='flex items-center justify-center mb-4'>
+          <ReactPaginate
+            previousLabel='Previous'
+            nextLabel='Next'
+            pageCount={specificExercisesPageCount}
+            onPageChange={changePageForSpecificExercises}
+            containerClassName='paginationBttns2'
+            previousClassName='previousBttn2'
+            nextLinkClassName='nextBttn2'
+            activeClassName='paginationActive2'
+            activeLinkClassName='activeLink2'
+          />
+        </div>
+      )}
     </div>
   );
 }

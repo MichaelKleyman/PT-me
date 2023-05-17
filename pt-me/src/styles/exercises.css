@@ -36,6 +36,7 @@
   list-style: none;
   display: flex;
   justify-content: center;
+  margin-top: 2rem;
 }
 
 .paginationBttns a {
@@ -48,7 +49,43 @@
   text-decoration: none;
 }
 
+.paginationActive a {
+  background-color: #3be13b;
+  color: white;
+}
+
 .paginationBttns:hover a:hover {
   background-color: #3be13b;
   color: white;
 }
+
+.paginationBttns2 {
+  width: 80%;
+  height: 40px;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.paginationBttns2 a {
+  padding: 10px;
+  margin: 8px;
+  border-radius: 5px;
+  border: 1px solid #3be13b;
+  color: #3be13b;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.paginationActive2 a {
+  background-color: #3be13b;
+  color: white;
+}
+
+.paginationBttns2:hover a:hover {
+  background-color: #3be13b;
+  color: white;
+}
+
+
