@@ -108,6 +108,12 @@ export default function AllExercises() {
       );
     });
 
+  const allExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+
+  const changePage = ({ selected }: any) => {
+    setPageNumber(selected);
+  };
+
   return (
     <div>
       <h1 className='text-green-500 text-xl uppercase tracking-widest'>
@@ -134,6 +140,16 @@ export default function AllExercises() {
           </button>
         ))}
       </div>
+      <ReactPaginate
+        previousLabel='Previous'
+        nextLabel='Next'
+        pageCount={allExercisesPageCount}
+        onPageChange={changePage}
+        containerClassName='paginationBttns'
+        previousClassName='previousBttn'
+        nextLinkClassName='nextBttn'
+        activeClassName='paginationActive'
+      />
       <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
         {selected === 'All' && displayAllExercises}
         {/* exercises.map((exercise: Exercise, i: number) => (

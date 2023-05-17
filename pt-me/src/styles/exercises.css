@@ -29,3 +29,26 @@
     margin: 0 auto;
   }
 }
+
+.paginationBttns {
+  width: 80%;
+  height: 40px;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+.paginationBttns a {
+  padding: 10px;
+  margin: 8px;
+  border-radius: 5px;
+  border: 1px solid #3be13b;
+  color: #3be13b;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.paginationBttns:hover a:hover {
+  background-color: #3be13b;
+  color: white;
+}
