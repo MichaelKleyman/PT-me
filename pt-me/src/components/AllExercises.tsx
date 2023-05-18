@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate';
 import TextField from '@mui/material/TextField';
 import { BsSearch } from 'react-icons/bs';
 import InputAdornment from '@mui/material/InputAdornment';
+import Iframe from 'react-iframe';
 
 interface Exercise {
   map: any;
@@ -118,18 +119,7 @@ export default function AllExercises() {
       ) : (
         <CircularProgress />
       )} */}
-            <iframe
-              width='560'
-              loading='lazy'
-              seamless
-              height='315'
-              src={exercise.videoLink}
-              referrerPolicy='same-origin'
-              title='YouTube video player'
-              // frameborder='0'
-              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-              // allowfullscreen
-            ></iframe>
+            <Iframe url={exercise.videoLink} width='560' height='315' />
           </div>
         </Container>
       );
@@ -143,18 +133,7 @@ export default function AllExercises() {
           <Container className='border border-gray-200 rounded-lg'>
             <div className='p-3'>{exercise.name}</div>
             <div className='ratio ratio-1x1'>
-              <iframe
-                width='560'
-                height='315'
-                seamless
-                src={exercise.videoLink}
-                loading='lazy'
-                referrerPolicy='same-origin'
-                title='YouTube video player'
-                // frameborder='0'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                // allowfullscreen
-              ></iframe>
+              <Iframe url={exercise.videoLink} width='560' height='315' />
             </div>
           </Container>
         </div>
