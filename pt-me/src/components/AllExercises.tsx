@@ -102,26 +102,44 @@ export default function AllExercises() {
     .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
     .map((exercise, i) => {
       return (
-        <Container key={i} className='border border-gray-200 rounded-lg'>
-          <div className='p-3'>{exercise.name}</div>
-          <div className='ratio ratio-1x1'>
-            {/* {loading ? (
-        <iframe
-          width='560'
-          height='315'
-          src={exercise.videoLink}
-          referrerPolicy='same-origin'
-          title='YouTube video player'
-          // frameborder='0'
-          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-          // allowfullscreen
-        ></iframe>
-      ) : (
-        <CircularProgress />
-      )} */}
-            <Iframe url={exercise.videoLink} width='560' height='315' />
-          </div>
-        </Container>
+        <div key={i} className='p-2'>
+          <Container className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+            <div className='p-3 text-xl flex items-center justify-between'>
+              <p
+                className={`tracking-wide ${
+                  exercise.name.length > 21 ? 'text-[14px]' : 'text-[18px]'
+                }`}
+              >
+                {exercise.name}
+              </p>
+              <button className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'>
+                View Exercise
+              </button>
+            </div>
+            <div className='ratio ratio-1x1 p-6'>
+              {/* {loading ? (
+      <iframe
+        width='560'
+        height='315'
+        src={exercise.videoLink}
+        referrerPolicy='same-origin'
+        title='YouTube video player'
+        // frameborder='0'
+        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+        // allowfullscreen
+      ></iframe>
+    ) : (
+      <CircularProgress />
+    )} */}
+              <Iframe
+                url={exercise.videoLink}
+                width='560'
+                height='315'
+                allowFullScreen
+              />
+            </div>
+          </Container>
+        </div>
       );
     });
 
@@ -129,11 +147,27 @@ export default function AllExercises() {
     .slice(pagesVisited, pagesVisited + exercisesPerPage)
     .map((exercise, i) => {
       return (
-        <div key={i}>
-          <Container className='border border-gray-200 rounded-lg'>
-            <div className='p-3'>{exercise.name}</div>
+        <div key={i} className='p-2'>
+          <Container className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+            <div className='p-3 text-xl flex justify-between items-center'>
+              <p
+                className={`tracking-wide ${
+                  exercise.name.length > 21 ? 'text-[14px]' : 'text-[18px]'
+                }`}
+              >
+                {exercise.name}
+              </p>
+              <button className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'>
+                View Exercise
+              </button>
+            </div>
             <div className='ratio ratio-1x1'>
-              <Iframe url={exercise.videoLink} width='560' height='315' />
+              <Iframe
+                url={exercise.videoLink}
+                width='560'
+                height='815'
+                allowFullScreen
+              />
             </div>
           </Container>
         </div>
