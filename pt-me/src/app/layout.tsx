@@ -1,6 +1,7 @@
 'use client'; //this will be a client component
 import '../styles/globals.css';
 import Navbar from '../components/Navbar';
+import Navbar2 from '../components/Navbar2';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from './Redux/provider';
 
@@ -15,7 +16,7 @@ export default function RootLayout({
         <body>
           <ThemeProvider enableSystem={true} attribute='class'>
             <Providers>
-              <Navbar />
+              <Navbar2 />
               {children}
             </Providers>
           </ThemeProvider>
