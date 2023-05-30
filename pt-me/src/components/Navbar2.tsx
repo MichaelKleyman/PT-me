@@ -20,6 +20,8 @@ import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { RxSketchLogo } from 'react-icons/rx';
 import { RxDashboard } from 'react-icons/rx';
+import { GiMuscleUp } from 'react-icons/gi';
+import { IoMdPeople } from 'react-icons/io';
 
 interface NavItem {
   label: string;
@@ -37,7 +39,7 @@ const navItems: Array<NavItem> = [
   },
 ];
 
-const Navbar = () => {
+const Navbar = ({ children }: any) => {
   const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
@@ -67,7 +69,7 @@ const Navbar = () => {
   return (
     <header className='w-full mx-auto px-4 shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
-        {!user?.id && (
+        {!user?.id ? (
           <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <ScrollLink
               to='about-us'
@@ -136,103 +138,51 @@ const Navbar = () => {
                 >
                   <button>Get Started</button>
                 </Link>
-
-                {/* <Link
-                    // onClick={handleLogout}
-                    href='/'
-                    className='nav-link tracking-widest uppercase no-underline
-              duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    href='/exercises'
-                    className='nav-link tracking-widest uppercase no-underline
-            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
-                  >
-                    Exercises
-                  </Link>
-                </>
-              )}
-              {currentTheme === 'light' ? (
-                <button
-                  onClick={() => setTheme('dark')}
-                  className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
-                >
-                  <BsFillMoonFill size={20} />
-                </button>
-              ) : (
-                <button
-                  onClick={() => setTheme('light')}
-                  className='p-2 rounded-xl duration-300 hover:scale-110'
-                >
-                  <BsSun size={20} />
-                </button> */}
-
-                {/* {!user?.id ? (
-                <Link
-                  href='/getstarted'
-                  className='nav-link bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
-                >
-                  <button>Get Started</button>
-                </Link>
-              ) : (
-                <PopupState variant='popover' popupId='demo-popup-menu'>
-                  {(popupState) => (
-                    <React.Fragment>
-                      <div
-                        {...bindTrigger(popupState)}
-                        className='bg-[#3BE13B] p-2 rounded-xl w-[100%] font-bold duration-300 hover:scale-110 grid grid-cols-3 place-items-center cursor-pointer'
-                      >
-                        <div>
-                          <BiClinic size={35} className='p-2' />
-                        </div>
-                        <div>Account</div>
-                        <div>
-                          <BiCaretDown className='flex items-end' />
-                        </div>
-                      </div>
-                      <Menu {...bindMenu(popupState)}>
-                        <MenuItem
-                          onClick={() => {
-                            reRoute();
-                            popupState.close;
-                          }}
-                        >
-                          Clinic Account
-                        </MenuItem>
-                      </Menu>
-                    </React.Fragment>
-                  )}
-                </PopupState>
-              )} */}
               </ul>
             </div>
           </div>
-        )}
-        <div className='flex'>
-          <div className='fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between'>
-            <div className='flex flex-col items-center'>
-              <Link
-                href='/'
-                className='bg-[#3BE13B] text-white p-3 rounded-lg inline-block'
-              >
-                <div>
-                  <RxSketchLogo size={20} />
-                </div>
-              </Link>
-              <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
-              <Link
-                href='/'
-                className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
-              >
-                <div>
-                  <RxDashboard size={20} />
-                </div>
-              </Link>
+        ) : (
+          <div className='flex'>
+            <div className='fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between'>
+              <div className='flex flex-col items-center'>
+                <Link
+                  href={`/${user?.id}`}
+                  className='bg-[#3BE13B] text-white p-3 rounded-lg inline-block'
+                >
+                  <div>
+                    <RxSketchLogo size={20} />
+                  </div>
+                </Link>
+                <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
+                <Link
+                  href='/'
+                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                >
+                  <div>
+                    <RxDashboard size={20} />
+                  </div>
+                </Link>
+                <Link
+                  href='/exercises'
+                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                >
+                  <div>
+                    <GiMuscleUp size={20} />
+                  </div>
+                </Link>
+                <Link
+                  href='/'
+                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                >
+                  <div>
+                    <IoMdPeople size={20} />
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
         <div className='md:hidden absolute right-5' onClick={openNav}>
           <IoMdMenu size={35} />
         </div>
@@ -328,6 +278,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      {/* <main className='ml-20 w-full'>{children}</main> */}
     </header>
   );
 };
