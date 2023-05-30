@@ -18,10 +18,14 @@ import { BiClinic, BiCaretDown } from 'react-icons/bi';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { RxSketchLogo } from 'react-icons/rx';
 import { RxDashboard } from 'react-icons/rx';
 import { GiMuscleUp } from 'react-icons/gi';
 import { IoMdPeople } from 'react-icons/io';
+import { FiSettings } from 'react-icons/fi';
+import {
+  MdOutlineKeyboardArrowLeft,
+  MdOutlineKeyboardArrowRight,
+} from 'react-icons/md';
 
 interface NavItem {
   label: string;
@@ -43,9 +47,10 @@ const Navbar = ({ children }: any) => {
   const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
-  const [navbar, setNavbar] = useState(false); //controlling if the navbar is in mobile view or desktop view.
+  const [open, setOpenSideBar] = useState<boolean>(false);
+  const [navbar, setNavbar] = useState<boolean>(false); //controlling if the navbar is in mobile view or desktop view.
 
-  const [showNav, setShowNav] = useState(false);
+  const [showNav, setShowNav] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -66,8 +71,12 @@ const Navbar = ({ children }: any) => {
     router.push('/');
   };
 
+  const openSidebar = () => {
+    setOpenSideBar(!open);
+  };
+
   return (
-    <header className='w-full mx-auto px-4 shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
+    <header className='w-full shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
         {!user?.id ? (
           <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
@@ -143,40 +152,71 @@ const Navbar = ({ children }: any) => {
           </div>
         ) : (
           <div className='flex'>
-            <div className='fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between'>
+            <div
+              className={`fixed ${
+                open ? 'w-[250px] duration-300' : 'w-20'
+              } h-screen p-9 bg-[#eaece1] flex flex-col justify-between`}
+            >
+              {open ? (
+                <button
+                  onClick={openSidebar}
+                  className='absolute right-0 top-[23.7rem] bg-[#3BE13B] shadow-lg shadow-gray-400 w-[1.5rem] h-[1.5rem] rounded-full flex justify-center items-center cursor-pointer translate-x-1/2 hover:scale-110 duration-300'
+                >
+                  <MdOutlineKeyboardArrowLeft size={25} />
+                </button>
+              ) : (
+                <button
+                  onClick={openSidebar}
+                  className='absolute right-0 top-[23.7rem] bg-[#3BE13B] shadow-lg shadow-gray-400 w-[1.5rem] h-[1.5rem] rounded-full flex justify-center items-center cursor-pointer translate-x-1/2 hover:scale-110 duration-300'
+                >
+                  <MdOutlineKeyboardArrowRight size={25} />
+                </button>
+              )}
               <div className='flex flex-col items-center'>
                 <Link
                   href={`/${user?.id}`}
-                  className='bg-[#3BE13B] text-white p-3 rounded-lg inline-block'
+                  className={`bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center ${
+                    open ? 'w-[190px] gap-4 duration-300' : ''
+                  }`}
                 >
                   <div>
-                    <RxSketchLogo size={20} />
+                    <FiSettings size={20} />
                   </div>
-                </Link>
+                  {open && <p className='duration-300'>Account</p>}
+                </Link>{' '}
                 <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
                 <Link
                   href='/'
-                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                  className={`${
+                    open ? 'w-[190px] gap-4 duration-300' : ''
+                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <RxDashboard size={20} />
                   </div>
+                  {open && <p className='duration-300'>Dashboard</p>}
                 </Link>
                 <Link
                   href='/exercises'
-                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                  className={`${
+                    open ? 'w-[190px] gap-4 duration-300' : ''
+                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <GiMuscleUp size={20} />
                   </div>
+                  {open && <p className='duration-300'>Exercises</p>}
                 </Link>
                 <Link
                   href='/'
-                  className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+                  className={`${
+                    open ? 'w-[190px] gap-4 duration-300' : ''
+                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <IoMdPeople size={20} />
                   </div>
+                  {open && <p className='duration-300'>Patients</p>}
                 </Link>
               </div>
             </div>
