@@ -18,6 +18,8 @@ import { BiClinic, BiCaretDown } from 'react-icons/bi';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import { RxSketchLogo } from 'react-icons/rx';
+import { RxDashboard } from 'react-icons/rx';
 
 interface NavItem {
   label: string;
@@ -111,6 +113,23 @@ const Navbar = () => {
                 >
                   Sign In
                 </Link>
+                <>
+                  {currentTheme === 'light' ? (
+                    <button
+                      onClick={() => setTheme('dark')}
+                      className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
+                    >
+                      <BsFillMoonFill size={20} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setTheme('light')}
+                      className='p-2 rounded-xl duration-300 hover:scale-110'
+                    >
+                      <BsSun size={20} />
+                    </button>
+                  )}
+                </>
                 <Link
                   href='/getstarted'
                   className='nav-link bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
@@ -191,6 +210,29 @@ const Navbar = () => {
             </div>
           </div>
         )}
+        <div className='flex'>
+          <div className='fixed w-20 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between'>
+            <div className='flex flex-col items-center'>
+              <Link
+                href='/'
+                className='bg-[#3BE13B] text-white p-3 rounded-lg inline-block'
+              >
+                <div>
+                  <RxSketchLogo size={20} />
+                </div>
+              </Link>
+              <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
+              <Link
+                href='/'
+                className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'
+              >
+                <div>
+                  <RxDashboard size={20} />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
         <div className='md:hidden absolute right-5' onClick={openNav}>
           <IoMdMenu size={35} />
         </div>
