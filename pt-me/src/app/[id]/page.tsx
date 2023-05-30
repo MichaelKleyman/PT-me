@@ -37,7 +37,7 @@ export default function Account({ params }: Params) {
   };
 
   return (
-    <div className='px-4 sm:px-6 mt-[10rem]'>
+    <div className='px-4 sm:px-6 mt-[5rem] ml-[8rem]'>
       <p>Clinic ID: {params.id.toString()}</p>
       <p>Clinic Name: {clinic?.clinicName}</p>
       <p>Clinic Address: {clinic?.address}</p>
