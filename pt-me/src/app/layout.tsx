@@ -5,7 +5,7 @@ import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 import Navbar2 from '../components/Navbar2';
 import { ThemeProvider } from 'next-themes';
-import { Providers } from './Redux/provider';
+import { Providers } from '../Redux/provider';
 import Layoutfile from '@/components/layoutfile';
 
 export default function RootLayout({

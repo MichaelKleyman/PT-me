@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '../Redux/store';
-import { login, me } from '../Redux/Features/auth/authSlice';
+import type { AppDispatch, RootState } from '../../Redux/store';
+import { login, me } from '../../Redux/Features/auth/authSlice';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import TextField from '@mui/material/TextField';

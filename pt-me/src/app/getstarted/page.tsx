@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '../Redux/store';
-import { signup } from '../Redux/Features/auth/authSlice';
+import type { AppDispatch, RootState } from '../../Redux/store';
+import { signup } from '../../Redux/Features/auth/authSlice';
 import TextField from '@mui/material/TextField';
 import { BiArrowBack } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';

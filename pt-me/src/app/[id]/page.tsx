@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { logout, me } from '@/app/Redux/Features/auth/authSlice';
-import { AppDispatch, RootState } from '../Redux/store';
+import { logout, me } from '@/Redux/Features/auth/authSlice';
+import { AppDispatch, RootState } from '../../Redux/store';
 
 type Obj = {
   id: Number;
