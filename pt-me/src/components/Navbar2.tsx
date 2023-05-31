@@ -208,7 +208,7 @@ const Navbar = ({ children }: any) => {
                   {open && <p className='duration-300'>Exercises</p>}
                 </Link>
                 <Link
-                  href='/'
+                  href='/patients'
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
                   } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
