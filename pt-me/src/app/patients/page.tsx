@@ -3,6 +3,7 @@ import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import patients from '@/components/Patients';
+import { IoIosArrowForward } from 'react-icons/io';
 
 export default function page() {
   function stringToColor(string: string) {
@@ -39,7 +40,13 @@ export default function page() {
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>
       <div className='mt-8'>
-        <div className='grid md:grid-cols-4 gap-6 place-items-center text-gray-400 text-sm'>
+        <h1>
+          Total Number of Patients: <span>{patients.length}</span>
+        </h1>
+      </div>
+      <div className='mt-8'>
+        <div className='grid md:grid-cols-5 gap-6 place-items-center text-gray-400 text-sm'>
+          <></>
           <h1>Name</h1>
           <h1>Address</h1>
           <h1>Phone Number</h1>
@@ -48,20 +55,28 @@ export default function page() {
         {patients.map((patient, i) => (
           <div
             key={i}
-            className='bg-[#fdfff5] grid md:grid-cols-4 gap-6 place-items-center p-8 m-5 shadow-xl shadow-gray-400 rounded-lg'
+            className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-8 m-5 shadow-xl shadow-gray-400 rounded-lg'
           >
             <div className='flex items-center gap-5'>
               <Stack direction='row' spacing={2}>
                 <Avatar
                   {...stringAvatar(patient.name)}
-                  sx={{ width: 56, height: 56 }}
+                  sx={{
+                    width: 56,
+                    height: 56,
+                    bgcolor: `${stringToColor(patient.name)}`,
+                  }}
                 />
               </Stack>
-              {patient.name}
+              <p className='font-bold'>{patient.name}</p>
             </div>
             <p>{patient.address}</p>
             <p>{patient.phoneNumber}</p>
             <p>{patient.reasonForVisit}</p>
+            <button className='bg-[#f7fddf] flex items-center justify-center border border-[#3BE13B] p-1 rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 hover:bg-[#3BE13B] hover:text-white'>
+              View
+              <IoIosArrowForward className='p-2' size={30} />
+            </button>
           </div>
         ))}
       </div>
