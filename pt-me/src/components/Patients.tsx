@@ -4,7 +4,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
   {
@@ -12,7 +14,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
   {
@@ -20,7 +24,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
   {
@@ -28,7 +34,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
   {
@@ -36,7 +44,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
   {
@@ -44,7 +54,9 @@ const patients = [
     name: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
+    email: 'loganpaul@gmail.com',
     reasonForVisit: 'Torn ACL',
+    age: '31',
     injuryId: 3,
   },
 ];
