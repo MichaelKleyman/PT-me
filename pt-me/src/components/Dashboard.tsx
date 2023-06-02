@@ -10,24 +10,47 @@ import getDay from 'date-fns/getDay';
 import enUS from 'date-fns/locale/en-US';
 import addHours from 'date-fns/addHours';
 import startOfHour from 'date-fns/startOfHour';
+import patients from '@/components/Patients';
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-
+interface Patient {
+  name: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
+  address: string;
+  phoneNumber: string;
+  reasonForVisit: string;
+  injuryId: number;
+}
 
 const Dashboard: FC = ({ clinicName }: any) => {
+  // const [events, setEvents] = useState<Event[]>([
+  //   { title: 'Random title', start, end },
+  // ]);
   const [events, setEvents] = useState<Event[]>([
-    {
-      title: 'Learn cool stuff',
-      start,
-      end,
-    },
+    { title: 'Random title', start, end },
   ]);
 
   const onEventResize: withDragAndDropProps['onEventResize'] = (data) => {
+    console.log(data);
+
     const { start, end } = data;
 
+    // setEvents((currentPatients) => {
+    //   const firstEvent: Patient = {
+    //     // Initialize the missing properties of the Patient object
+    //     name: 'blah blah',
+    //     address: '',
+    //     phoneNumber: '',
+    //     reasonForVisit: '',
+    //     injuryId: 3,
+    //     start: new Date(start),
+    //     end: new Date(end),
+    //   };
+    //   return [...currentPatients, firstEvent];
+    // });
     setEvents((currentEvents) => {
       const firstEvent = {
         start: new Date(start),

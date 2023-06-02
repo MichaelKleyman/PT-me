@@ -4,6 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import patients from '@/components/Patients';
 import { IoIosArrowForward } from 'react-icons/io';
+import Link from 'next/link';
 
 export default function page() {
   function stringToColor(string: string) {
@@ -73,10 +74,13 @@ export default function page() {
             <p>{patient.address}</p>
             <p>{patient.phoneNumber}</p>
             <p>{patient.reasonForVisit}</p>
-            <button className='bg-[#f7fddf] flex items-center justify-center border border-[#3BE13B] p-1 rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 hover:bg-[#3BE13B] hover:text-white'>
+            <Link
+              href={`/patient/${patient.id}`}
+              className='bg-[#f7fddf] flex items-center justify-center border border-[#3BE13B] p-1 rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 hover:bg-[#3BE13B] hover:text-white'
+            >
               View
               <IoIosArrowForward className='p-2' size={30} />
-            </button>
+            </Link>
           </div>
         ))}
       </div>
