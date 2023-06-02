@@ -36,6 +36,6 @@
     "src/app/api/hello/route.ts",
     "src/store/auth.mjs",
     "src/store/index.mjs"
-  ],
+, "src/components/Calendarstuff/dates.js"  ],
   "exclude": ["node_modules"]
 }

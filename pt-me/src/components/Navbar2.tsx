@@ -189,7 +189,7 @@ const Navbar = ({ children }: any) => {
                   href='/'
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
-                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
+                  } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <RxDashboard size={20} />
@@ -200,7 +200,7 @@ const Navbar = ({ children }: any) => {
                   href='/exercises'
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
-                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
+                  } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <GiMuscleUp size={20} />
@@ -211,7 +211,7 @@ const Navbar = ({ children }: any) => {
                   href='/patients'
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
-                  } bg-gray-100 hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
+                  } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div>
                     <IoMdPeople size={20} />
