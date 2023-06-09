@@ -9,6 +9,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 10, 30, 0, 0),
+    end: new Date(2023, 5, 9, 12, 30, 0, 0),
   },
   {
     id: 2,
@@ -20,6 +22,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 2, 0, 0, 0),
+    end: new Date(2023, 5, 9, 4, 0, 0, 0),
   },
   {
     id: 3,
@@ -31,6 +35,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 4, 0, 0, 0),
+    end: new Date(2023, 5, 9, 6, 0, 0, 0),
   },
   {
     id: 4,
@@ -42,6 +48,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 6, 0, 0, 0),
+    end: new Date(2023, 5, 9, 8, 0, 0, 0),
   },
   {
     id: 5,
@@ -53,6 +61,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 8, 0, 0, 0),
+    end: new Date(2023, 5, 9, 10, 0, 0, 0),
   },
   {
     id: 6,
@@ -64,6 +74,8 @@ const patients = [
     age: '31',
     injuryId: 3,
     insurance: 'Fidelis',
+    start: new Date(2023, 5, 9, 10, 0, 0, 0),
+    end: new Date(2023, 5, 9, 12, 0, 0, 0),
   },
 ];
 

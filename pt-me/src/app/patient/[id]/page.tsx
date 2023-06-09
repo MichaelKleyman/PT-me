@@ -34,6 +34,8 @@ interface Patient {
   age: string;
   injuryId: number;
   insurance: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
 }
 
 export default function Patient({ params }: Params) {

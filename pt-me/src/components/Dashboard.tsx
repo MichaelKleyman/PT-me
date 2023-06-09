@@ -16,14 +16,20 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 interface Patient {
+  id: number;
   name: string;
-  start?: Date | undefined;
-  end?: Date | undefined;
   address: string;
   phoneNumber: string;
+  email: string;
   reasonForVisit: string;
+  age: string;
   injuryId: number;
+  insurance: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
 }
+
+console.log(patients);
 
 const Dashboard: FC = ({ clinicName }: any) => {
   // const [events, setEvents] = useState<Event[]>([
