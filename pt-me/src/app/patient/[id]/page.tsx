@@ -6,6 +6,9 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { GrCalendar } from 'react-icons/gr';
 import { BsDot } from 'react-icons/bs';
+import { FiPhone } from 'react-icons/fi';
+import { AiOutlineMail } from 'react-icons/ai';
+import { BsFileMedical } from 'react-icons/bs';
 
 type Obj = {
   id: Number;
@@ -24,6 +27,7 @@ interface Patient {
   reasonForVisit: string;
   age: string;
   injuryId: number;
+  insurance: string;
 }
 
 export default function Patient({ params }: Params) {
@@ -90,10 +94,16 @@ export default function Patient({ params }: Params) {
               </h1>
               <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
                 <p>Age: {patient?.age}</p>
+                <div className='hidden md:block'>
+                  <BsDot size={30} />
+                </div>
                 <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
+                <div className='hidden md:block'>
+                  <BsDot size={30} />
+                </div>
+                <p>{patient?.reasonForVisit}</p>
               </div>
-              <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between'>
+              <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
                 <div className='flex items-center'>
                   <GrCalendar className='pr-2' size={25} />
                   Arrived June 1, 2022
@@ -110,15 +120,24 @@ export default function Patient({ params }: Params) {
               </div>
             </div>
           </div>
-          <div className='flex justify-center w-full'>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.phoneNumber}
+          <div className='flex justify-center w-full gap-5'>
+            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+              <FiPhone />
+              <p className='hidden sm:block md:hidden lg:block'>
+                {patient?.phoneNumber}
+              </p>
             </div>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.email}
+            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
+              <AiOutlineMail />
+              <p className='hidden sm:block md:hidden lg:block'>
+                {patient?.email}
+              </p>
             </div>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.reasonForVisit}
+            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+              <BsFileMedical />
+              <p className='hidden sm:block md:hidden lg:block'>
+                {patient?.insurance}
+              </p>
             </div>
           </div>
         </div>
@@ -177,4 +196,3 @@ export default function Patient({ params }: Params) {
     </div>
   );
 }
-// /Users/michaelkleyman/Documents/Web development/PT-me/pt-me/src/app/patient/id/page.tsx

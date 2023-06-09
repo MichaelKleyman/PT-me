@@ -8,6 +8,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
   {
     id: 4,
@@ -38,6 +41,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
   {
     id: 5,
@@ -48,6 +52,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
   {
     id: 6,
@@ -58,6 +63,7 @@ const patients = [
     reasonForVisit: 'Torn ACL',
     age: '31',
     injuryId: 3,
+    insurance: 'Fidelis',
   },
 ];
 
