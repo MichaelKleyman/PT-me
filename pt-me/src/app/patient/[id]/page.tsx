@@ -7,8 +7,9 @@ import Stack from '@mui/material/Stack';
 import { GrCalendar } from 'react-icons/gr';
 import { BsDot } from 'react-icons/bs';
 import { FiPhone } from 'react-icons/fi';
-import { AiOutlineMail } from 'react-icons/ai';
+import { AiOutlineMail, AiOutlineFileSearch } from 'react-icons/ai';
 import { BsFileMedical } from 'react-icons/bs';
+import Link from 'next/link';
 
 type Obj = {
   id: Number;
@@ -73,7 +74,19 @@ export default function Patient({ params }: Params) {
   }
 
   return (
-    <div className='mt-[2rem] ml-[6rem] p-9'>
+    <div className='mt-[1rem] ml-[6rem] p-4'>
+      <div className='flex text-center gap-2'>
+        <Link
+          href='/patients'
+          className='mb-5 text-sm text-gray-400 hover:underline duration-300 hover:scale-110 flex items-center gap-2'
+        >
+          <AiOutlineFileSearch />
+          All Patients
+        </Link>
+        <div>/</div>
+        <div className='mb-5 text-sm'>{patient?.name}</div>
+      </div>
+
       <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
         <div className='grid lg:grid-cols-2'>
           <div className='flex gap-6 w-full'>
@@ -140,58 +153,8 @@ export default function Patient({ params }: Params) {
               </p>
             </div>
           </div>
+          <div>wfew</div>
         </div>
-        {/* <div className='flex flex-col gap-8'>
-          <div className='flex flex-col md:flex-row md:items-center md:gap-8'>
-            <Stack direction='row' spacing={2}>
-              <Avatar
-                {...stringAvatar(patient?.name || '')}
-                sx={{
-                  width: 86,
-                  height: 86,
-                  bgcolor: `${stringToColor(patient?.name || '')}`,
-                  fontSize: '2rem',
-                }}
-              />
-            </Stack>
-            <div className='w-full md:w-[27%]'>
-              <h1 className='font-medium text-[1.6rem] tracking-wider'>
-                {patient?.name}
-              </h1>
-              <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
-                <p>Age: {patient?.age}</p>
-                <p>Lorem Ipsum</p>
-                <p>Lorem Ipsum</p>
-              </div>
-              <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between'>
-                <div className='flex items-center'>
-                  <GrCalendar className='pr-2' size={25} />
-                  Arrived June 1, 2022
-                </div>
-                <div>
-                  <h2 className='tracking-wide flex items-center'>
-                    Status{' '}
-                    <span className='flex items-center'>
-                      {' '}
-                      <BsDot size={50} color='#c3e736' /> Checked in
-                    </span>
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-2 md:ml-[12rem]'>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.phoneNumber}
-            </div>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.email}
-            </div>
-            <div className='border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base'>
-              {patient?.reasonForVisit}
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );
