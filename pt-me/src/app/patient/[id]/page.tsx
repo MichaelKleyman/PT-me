@@ -7,8 +7,13 @@ import Stack from '@mui/material/Stack';
 import { GrCalendar } from 'react-icons/gr';
 import { BsDot } from 'react-icons/bs';
 import { FiPhone } from 'react-icons/fi';
-import { AiOutlineMail, AiOutlineFileSearch } from 'react-icons/ai';
-import { BsFileMedical } from 'react-icons/bs';
+import { MdOutlineEdit } from 'react-icons/md';
+import {
+  AiOutlineMail,
+  AiOutlineFileSearch,
+  AiOutlineLink,
+} from 'react-icons/ai';
+import { BsFileMedical, BsPrinter, BsSend } from 'react-icons/bs';
 import Link from 'next/link';
 
 type Obj = {
@@ -133,27 +138,43 @@ export default function Patient({ params }: Params) {
               </div>
             </div>
           </div>
-          <div className='flex justify-center w-full gap-5'>
-            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-              <FiPhone />
-              <p className='hidden sm:block md:hidden lg:block'>
-                {patient?.phoneNumber}
-              </p>
+          <div className='relative'>
+            <div className='flex justify-center w-full gap-5'>
+              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                <FiPhone />
+                <p className='hidden sm:block md:hidden lg:block'>
+                  {patient?.phoneNumber}
+                </p>
+              </div>
+              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
+                <AiOutlineMail />
+                <p className='hidden sm:block md:hidden lg:block'>
+                  {patient?.email}
+                </p>
+              </div>
+              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                <BsFileMedical />
+                <p className='hidden sm:block md:hidden lg:block'>
+                  {patient?.insurance}
+                </p>
+              </div>
             </div>
-            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
-              <AiOutlineMail />
-              <p className='hidden sm:block md:hidden lg:block'>
-                {patient?.email}
+            <div className='absolute bottom-0 right-0 flex items-center'>
+              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <BsSend className='p-2' size={35} /> Send
               </p>
-            </div>
-            <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-              <BsFileMedical />
-              <p className='hidden sm:block md:hidden lg:block'>
-                {patient?.insurance}
+              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <AiOutlineLink className='p-2' size={35} /> Share Link
+              </p>
+              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <BsPrinter className='p-2' size={35} /> Print
+              </p>
+              <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
+              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'>
+                <MdOutlineEdit className='p-2' size={35} /> Edit
               </p>
             </div>
           </div>
-          <div>wfew</div>
         </div>
       </div>
     </div>

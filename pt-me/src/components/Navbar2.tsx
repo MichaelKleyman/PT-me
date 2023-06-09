@@ -184,7 +184,7 @@ const Navbar = ({ children }: any) => {
                   </div>
                   {open && <p className='duration-300'>Account</p>}
                 </Link>{' '}
-                <span className='border-b-[1px] border-gray-200 w-full p-2'></span>
+                <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
                   href='/'
                   className={`${
