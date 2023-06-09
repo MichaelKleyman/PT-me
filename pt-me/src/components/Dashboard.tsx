@@ -15,9 +15,9 @@ import patients from '@/components/Patients';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-interface Patient {
+interface Patient extends Event {
   id: number;
-  name: string;
+  title: string;
   address: string;
   phoneNumber: string;
   email: string;
@@ -32,49 +32,41 @@ interface Patient {
 console.log(patients);
 
 const Dashboard: FC = ({ clinicName }: any) => {
-  // const [events, setEvents] = useState<Event[]>([
-  //   { title: 'Random title', start, end },
-  // ]);
-  const [events, setEvents] = useState<Event[]>([
-    { title: 'Random title', start, end },
-  ]);
+  const [events, setEvents] = useState<Patient[]>(patients);
 
   const onEventResize: withDragAndDropProps['onEventResize'] = (data) => {
     console.log(data);
 
-    const { start, end } = data;
-
-    // setEvents((currentPatients) => {
-    //   const firstEvent: Patient = {
-    //     // Initialize the missing properties of the Patient object
-    //     name: 'blah blah',
-    //     address: '',
-    //     phoneNumber: '',
-    //     reasonForVisit: '',
-    //     injuryId: 3,
-    //     start: new Date(start),
-    //     end: new Date(end),
-    //   };
-    //   return [...currentPatients, firstEvent];
-    // });
     setEvents((currentEvents) => {
-      const firstEvent = {
-        start: new Date(start),
-        end: new Date(end),
-      };
-      return [...currentEvents, firstEvent];
+      const updatedEvents = currentEvents.map((event) => {
+        if (event.id === (data.event as Patient).id) {
+          return {
+            ...event,
+            start: new Date(data.start),
+            end: new Date(data.end),
+          };
+        }
+        return event;
+      });
+      return updatedEvents;
     });
   };
 
   const onEventDrop: withDragAndDropProps['onEventDrop'] = (data) => {
     console.log(data);
+
     setEvents((currentEvents) => {
-      const firstEvent = {
-        start: new Date(data.start),
-        end: new Date(data.end),
-        title: data.event.title,
-      };
-      return [firstEvent];
+      const updatedEvents = currentEvents.map((event) => {
+        if (event.id === (data.event as Patient).id) {
+          return {
+            ...event,
+            start: new Date(data.start),
+            end: new Date(data.end),
+          };
+        }
+        return event;
+      });
+      return updatedEvents;
     });
   };
 

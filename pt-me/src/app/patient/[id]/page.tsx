@@ -26,7 +26,7 @@ type Params = {
 
 interface Patient {
   id: number;
-  name: string;
+  title: string;
   address: string;
   phoneNumber: string;
   email: string;
@@ -91,7 +91,7 @@ export default function Patient({ params }: Params) {
           All Patients
         </Link>
         <div>/</div>
-        <div className='mb-5 text-sm'>{patient?.name}</div>
+        <div className='mb-5 text-sm'>{patient?.title}</div>
       </div>
 
       <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
@@ -99,18 +99,18 @@ export default function Patient({ params }: Params) {
           <div className='flex gap-6 w-full'>
             <Stack direction='row' spacing={2}>
               <Avatar
-                {...stringAvatar(patient?.name || '')}
+                {...stringAvatar(patient?.title || '')}
                 sx={{
                   width: 86,
                   height: 86,
-                  bgcolor: `${stringToColor(patient?.name || '')}`,
+                  bgcolor: `${stringToColor(patient?.title || '')}`,
                   fontSize: '2rem',
                 }}
               />
             </Stack>
             <div>
               <h1 className='font-medium text-[1.6rem] tracking-wider'>
-                {patient?.name}
+                {patient?.title}
               </h1>
               <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
                 <p>Age: {patient?.age}</p>

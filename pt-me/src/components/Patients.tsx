@@ -1,7 +1,7 @@
 const patients = [
   {
     id: 1,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
@@ -14,7 +14,7 @@ const patients = [
   },
   {
     id: 2,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
@@ -27,7 +27,7 @@ const patients = [
   },
   {
     id: 3,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
@@ -40,7 +40,7 @@ const patients = [
   },
   {
     id: 4,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
@@ -53,7 +53,7 @@ const patients = [
   },
   {
     id: 5,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
@@ -66,7 +66,7 @@ const patients = [
   },
   {
     id: 6,
-    name: 'Logan Paul',
+    title: 'Logan Paul',
     address: '4307 Hilltop Haven Drive, Newark NJ',
     phoneNumber: '123-456-7890',
     email: 'loganpaul@gmail.com',
