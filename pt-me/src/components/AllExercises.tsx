@@ -10,8 +10,10 @@ import TextField from '@mui/material/TextField';
 import { BsSearch } from 'react-icons/bs';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iframe from 'react-iframe';
+import Link from 'next/link';
 
 interface Exercise {
+  id: number;
   map: any;
   name: String;
   injuryId: Number;
@@ -112,9 +114,12 @@ export default function AllExercises() {
               >
                 {exercise.name}
               </p>
-              <button className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'>
+              <Link
+                href={`/exercises/${exercise.id}`}
+                className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
+              >
                 View Exercise
-              </button>
+              </Link>
             </div>
             <div className='ratio ratio-1x1 p-6'>
               {/* {loading ? (
@@ -157,9 +162,12 @@ export default function AllExercises() {
               >
                 {exercise.name}
               </p>
-              <button className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'>
+              <Link
+                href={`/exercises/${exercise.id}`}
+                className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
+              >
                 View Exercise
-              </button>
+              </Link>
             </div>
             <div className='ratio ratio-1x1'>
               <Iframe

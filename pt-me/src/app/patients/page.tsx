@@ -61,15 +61,15 @@ export default function page() {
             <div className='flex items-center gap-5'>
               <Stack direction='row' spacing={2}>
                 <Avatar
-                  {...stringAvatar(patient.name)}
+                  {...stringAvatar(patient.title)}
                   sx={{
                     width: 56,
                     height: 56,
-                    bgcolor: `${stringToColor(patient.name)}`,
+                    bgcolor: `${stringToColor(patient.title)}`,
                   }}
                 />
               </Stack>
-              <p className='font-bold'>{patient.name}</p>
+              <p className='font-bold'>{patient.title}</p>
             </div>
             <p>{patient.address}</p>
             <p>{patient.phoneNumber}</p>

@@ -70,6 +70,10 @@ const Dashboard: FC = ({ clinicName }: any) => {
     });
   };
 
+  function clickEvent() {
+    
+  }
+
   return (
     <div>
       <p className='text-xl tracking-widest font-bold uppercase'>
@@ -77,6 +81,7 @@ const Dashboard: FC = ({ clinicName }: any) => {
       </p>
       <div className='mt-[2rem]'>
         <DnDCalendar
+          onSelectEvent={clickEvent}
           defaultView='week'
           events={events}
           localizer={localizer}
