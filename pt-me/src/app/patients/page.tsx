@@ -1,12 +1,43 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import patients from '@/components/Patients';
+// import patients from '@/components/Patients';
 import { IoIosArrowForward } from 'react-icons/io';
 import Link from 'next/link';
+import type { AppDispatch, RootState } from '@/Redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllPatients } from '@/Redux/Features/patients/patientSlice';
 
-export default function page() {
+interface PatientData {
+  id: number;
+  title: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  reasonForVisit: string;
+  age: string;
+  injuryId: number;
+  insurance: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
+}
+
+export default function AllPatients() {
+  const [patients, setPatients] = useState<PatientData[]>();
+  const dispatch = useDispatch<AppDispatch>();
+  const allPatients = useSelector((state: RootState) => state.patient.data);
+
+  useEffect(() => {
+    async function getPatients() {
+      const { payload } = await dispatch(fetchAllPatients(1));
+
+      setPatients(payload as PatientData[]);
+    }
+    getPatients();
+  }, []);
+
   function stringToColor(string: string) {
     let hash = 0;
     let i;
@@ -32,7 +63,7 @@ export default function page() {
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1]?.[0]}`,
     };
   }
   return (
@@ -42,7 +73,7 @@ export default function page() {
       </h1>
       <div className='mt-8'>
         <h1>
-          Total Number of Patients: <span>{patients.length}</span>
+          Total Number of Patients: <span>{patients?.length}</span>
         </h1>
       </div>
       <div className='mt-8'>
@@ -53,7 +84,7 @@ export default function page() {
           <h1>Phone Number</h1>
           <h1>Reason For Visit</h1>
         </div>
-        {patients.map((patient, i) => (
+        {patients?.map((patient, i) => (
           <div
             key={i}
             className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-8 m-5 shadow-xl shadow-gray-400 rounded-lg'

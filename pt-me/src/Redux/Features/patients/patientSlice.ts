@@ -20,23 +20,23 @@ interface PatientData {
   end?: Date | undefined;
 }
 
-type state = {
+type PatientState = {
   data: PatientData | null;
   loading: boolean;
   error: string | null;
 };
 
-const initialState: state = {
+const initialState: PatientState = {
   data: null,
   loading: false,
   error: null,
 };
 
-export const fetchAllPatients = createAsyncThunk(
-  `${BASE_URL}/api/patients`,
-  async (_, { dispatch }) => {
+export const fetchAllPatients = createAsyncThunk<PatientData, number>(
+  'patients/fetchAllPatients',
+  async (id: number, thunkAPI) => {
     try {
-      const res = await CLIENT.get(`${BASE_URL}/api/patients`);
+      const res = await CLIENT.get(`${BASE_URL}/api/patients/${id}`);
       return res.data;
     } catch (error) {
       console.log('Redux error: ', error);
