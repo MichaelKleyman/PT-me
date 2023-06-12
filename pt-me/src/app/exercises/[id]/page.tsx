@@ -13,7 +13,7 @@ type Params = {
 export default function SpecificExercise({ params }: Params) {
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
-      <div className=' flex text-center gap-2'>
+      <div className='mb-2 flex text-center gap-2'>
         <Link
           href='/exercises'
           className='mb-5 text-sm text-gray-400 hover:underline duration-300 hover:scale-110 flex items-center gap-2'
@@ -22,7 +22,7 @@ export default function SpecificExercise({ params }: Params) {
           All Exercises
         </Link>
         <div>/</div>
-        <div className='mb-5 text-sm'>Exercise</div>
+        <div className='text-sm'>Exercise</div>
       </div>
       <div> SpecificExercise: {params.id.toString()}</div>
     </div>

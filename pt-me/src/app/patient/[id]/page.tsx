@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useState, useEffect } from 'react';
@@ -177,6 +178,14 @@ export default function Patient({ params }: Params) {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+      <div className='flex mt-[1rem] gap-5'>
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] text-lg uppercase tracking-widest'>
+          Exercise List
+        </div>
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
+          Schedule
         </div>
       </div>
     </div>
