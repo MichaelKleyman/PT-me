@@ -202,9 +202,12 @@ export default function Patient({ params }: Params) {
           <table className='table-auto mt-4'>
             <thead>
               <tr>
-                <th className='border px-6 py-4'></th>
+                <th className='border border-green-500 px-6 py-4'></th>
                 {Array.from({ length: 6 }).map((_, colIndex) => (
-                  <th key={colIndex} className='border px-6 py-4'>
+                  <th
+                    key={colIndex}
+                    className='border border-green-500 px-6 py-4'
+                  >
                     Date {colIndex + 1}
                   </th>
                 ))}
@@ -212,18 +215,26 @@ export default function Patient({ params }: Params) {
             </thead>
             <tbody>
               <tr>
-                <th className='border px-6 py-4'>Exercise</th>
+                <th className='border border-green-500 px-6 py-4'>Exercise</th>
                 {Array.from({ length: 6 }).map((_, colIndex) => (
-                  <td key={colIndex} className='border px-6 py-4'>
+                  <td
+                    key={colIndex}
+                    className='border border-green-500 px-6 py-4'
+                  >
                     5 x 30
                   </td>
                 ))}
               </tr>
               {Array.from({ length: 6 - 1 }).map((_, rowIndex) => (
                 <tr key={rowIndex + 1}>
-                  <th className='border px-6 py-4'>Exercise</th>
+                  <th className='border border-green-500 px-6 py-4'>
+                    Exercise
+                  </th>
                   {Array.from({ length: 6 }).map((_, colIndex) => (
-                    <td key={colIndex} className='border px-6 py-4'>
+                    <td
+                      key={colIndex}
+                      className='border border-green-500 px-6 py-4'
+                    >
                       5 x 30
                     </td>
                   ))}
