@@ -27,11 +27,17 @@ module.exports = {
       reasonForVisit: {
         type: Sequelize.STRING
       },
-      insuranceName: {
+      insurance: {
         type: Sequelize.STRING
       },
       injuryId: {
         type: Sequelize.NUMBER
+      },
+      start: {
+        type: Sequelize.DATE
+      },
+      end: {
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
