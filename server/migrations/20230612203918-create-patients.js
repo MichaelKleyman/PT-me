@@ -36,6 +36,9 @@ module.exports = {
       injuryId: {
         type: Sequelize.INTEGER,
       },
+      clinicId: {
+        type: Sequelize.INTEGER,
+      },
       start: {
         type: Sequelize.DATE,
       },

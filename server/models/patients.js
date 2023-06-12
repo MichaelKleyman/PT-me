@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       reasonForVisit: DataTypes.STRING,
       insurance: DataTypes.STRING,
       injuryId: DataTypes.NUMBER,
+      clinicId: DataTypes.NUMBER,
       start: DataTypes.DATE,
       end: DataTypes.DATE,
     },
