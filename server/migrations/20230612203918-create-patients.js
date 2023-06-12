@@ -7,49 +7,52 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       title: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       gender: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       age: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+      },
+      address: {
+        type: Sequelize.STRING,
       },
       phoneNumber: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       reasonForVisit: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       insurance: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       injuryId: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER,
       },
       start: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       end: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Patients');
-  }
+  },
 };

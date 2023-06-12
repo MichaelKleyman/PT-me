@@ -27,6 +27,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 10, 30, 0, 0),
           end: new Date(2023, 5, 9, 12, 30, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           title: 'MikeMajlak',
@@ -40,6 +42,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 2, 0, 0, 0),
           end: new Date(2023, 5, 9, 4, 0, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           title: 'David Goggins',
@@ -53,6 +57,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 4, 0, 0, 0),
           end: new Date(2023, 5, 9, 6, 0, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           title: 'Andrew Shultz',
@@ -66,6 +72,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 6, 0, 0, 0),
           end: new Date(2023, 5, 9, 8, 0, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           title: 'Chris Distefano',
@@ -79,6 +87,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 8, 0, 0, 0),
           end: new Date(2023, 5, 9, 10, 0, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
         {
           title: 'Joe Rogan',
@@ -92,6 +102,8 @@ module.exports = {
           insurance: 'Fidelis',
           start: new Date(2023, 5, 9, 10, 0, 0, 0),
           end: new Date(2023, 5, 9, 12, 0, 0, 0),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
