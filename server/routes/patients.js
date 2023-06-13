@@ -18,4 +18,19 @@ router.get('/:clinicId', async (req, res, next) => {
   }
 });
 
+//GET specific patient
+router.get('/patient/:patientId', async (req, res, next) => {
+  try {
+    const patient = await Patients.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.send(patient);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 module.exports = router;
