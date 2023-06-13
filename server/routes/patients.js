@@ -23,9 +23,10 @@ router.get('/patient/:patientId', async (req, res, next) => {
   try {
     const patient = await Patients.findOne({
       where: {
-        id: req.params.id,
+        id: req.params.patientId,
       },
     });
+    console.log(patient);
     res.send(patient);
   } catch (error) {
     console.log(error);
