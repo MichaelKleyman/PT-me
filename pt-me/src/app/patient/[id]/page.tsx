@@ -17,9 +17,12 @@ import {
 } from 'react-icons/ai';
 import { BsFileMedical, BsPrinter, BsSend } from 'react-icons/bs';
 import Link from 'next/link';
+import { fetchPatient } from '@/Redux/Features/patients/patientSlice';
+import type { AppDispatch, RootState } from '@/Redux/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 type Obj = {
-  id: Number;
+  id: number;
 };
 
 type Params = {
@@ -42,12 +45,19 @@ interface Patient {
 
 export default function Patient({ params }: Params) {
   const [patient, setPatient] = useState<Patient>();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    const selectedPatient = patients.filter(
-      (elem) => elem.id === Number(params.id)
-    );
-    setPatient(selectedPatient[0]);
+    // const selectedPatient = patients.filter(
+    //   (elem) => elem.id === Number(params.id)
+    // );
+    // setPatient(selectedPatient[0]);
+    async function getPatient() {
+      const { payload } = await dispatch(fetchPatient(params.id));
+      console.log(payload);
+      setPatient(payload as Patient);
+    }
+    getPatient();
   }, []);
 
   function stringToColor(string: string) {

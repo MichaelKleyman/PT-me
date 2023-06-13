@@ -27,7 +27,7 @@ interface PatientData {
 export default function AllPatients() {
   const [patients, setPatients] = useState<PatientData[]>();
   const dispatch = useDispatch<AppDispatch>();
-  const allPatients = useSelector((state: RootState) => state.patient.data);
+  // const allPatients = useSelector((state: RootState) => state.patient.data);
 
   useEffect(() => {
     async function getPatients() {
