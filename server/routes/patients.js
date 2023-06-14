@@ -26,7 +26,6 @@ router.get('/patient/:patientId', async (req, res, next) => {
         id: req.params.patientId,
       },
     });
-    console.log(patient);
     res.send(patient);
   } catch (error) {
     console.log(error);
