@@ -20,14 +20,25 @@ interface PatientData {
   end?: Date | undefined;
 }
 
+interface ExerciseData {
+  id: number;
+  map: any;
+  name: String;
+  injuryId: Number;
+  videoLink: string;
+  Patients: PatientData[];
+}
+
 type PatientState = {
   data: PatientData | null;
+  exercises: ExerciseData | null;
   loading: boolean;
   error: string | null;
 };
 
 const initialState: PatientState = {
   data: null,
+  exercises: null,
   loading: false,
   error: null,
 };
@@ -49,6 +60,18 @@ export const fetchPatient = createAsyncThunk<PatientData, number>(
   async (id: number, thunkAPI) => {
     try {
       const res = await CLIENT.get(`${BASE_URL}/api/patients/patient/${id}`);
+      return res.data;
+    } catch (error) {
+      console.log('Redux error: ', error);
+    }
+  }
+);
+
+export const fetchPatientsExercises = createAsyncThunk<ExerciseData, number>(
+  'patients/fetchPatientsExercises',
+  async (id: number) => {
+    try {
+      const res = await CLIENT.get(`${BASE_URL}/api/exercises/patient/${id}`);
       return res.data;
     } catch (error) {
       console.log('Redux error: ', error);
@@ -89,6 +112,18 @@ export const patientSlice = createSlice({
         }
       )
       .addCase(fetchPatient.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchPatientsExercises.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPatientsExercises.fulfilled, (state, action) => {
+        state.loading = false;
+        state.exercises = action.payload;
+      })
+      .addCase(fetchPatientsExercises.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
