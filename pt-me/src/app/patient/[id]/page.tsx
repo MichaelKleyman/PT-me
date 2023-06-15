@@ -17,7 +17,10 @@ import {
 } from 'react-icons/ai';
 import { BsFileMedical, BsPrinter, BsSend } from 'react-icons/bs';
 import Link from 'next/link';
-import { fetchPatient } from '@/Redux/Features/patients/patientSlice';
+import {
+  fetchPatient,
+  fetchPatientsExercises,
+} from '@/Redux/Features/patients/patientSlice';
 import type { AppDispatch, RootState } from '@/Redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -43,21 +46,32 @@ interface Patient {
   end?: Date | undefined;
 }
 
+interface ExerciseData {
+  id: number;
+  map: any;
+  name: String;
+  injuryId: Number;
+  videoLink: string;
+  Patients: Patient[];
+}
+
 export default function Patient({ params }: Params) {
   const [patient, setPatient] = useState<Patient>();
+  const [patientsExercises, setExercises] = useState<ExerciseData>();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    // const selectedPatient = patients.filter(
-    //   (elem) => elem.id === Number(params.id)
-    // );
-    // setPatient(selectedPatient[0]);
     async function getPatient() {
       const { payload } = await dispatch(fetchPatient(params.id));
-      console.log(payload);
       setPatient(payload as Patient);
     }
+    async function getPatientExercises() {
+      const { payload } = await dispatch(fetchPatientsExercises(params.id));
+      console.log(payload);
+      setExercises(payload as ExerciseData);
+    }
     getPatient();
+    getPatientExercises();
   }, []);
 
   function stringToColor(string: string) {
@@ -192,8 +206,15 @@ export default function Patient({ params }: Params) {
         </div>
       </div>
       <div className='flex mt-[1rem] gap-5'>
-        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] text-lg uppercase tracking-widest'>
-          Exercise List
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%]'>
+          <h1 className='text-lg uppercase tracking-widest'>Exercise List</h1>
+          <div className='mt-[1rem]'>
+            {patientsExercises?.map((exercise: ExerciseData) => (
+              <div key={exercise.id}>
+                <h1>{exercise.name}</h1>
+              </div>
+            ))}
+          </div>
         </div>
         <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll'>
           <div className='flex items-center justify-between'>
