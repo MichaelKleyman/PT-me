@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Exercises } = require('../models');
+const { Exercises, Patients } = require('../models');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
@@ -41,6 +41,26 @@ router.get('/:id', async (req, res, next) => {
     // );
     res.send(shoulderExercises);
   } catch (error) {
+    next(error);
+  }
+});
+
+//GET exercises for specific patient: exercises/patient/:patientId
+router.get('/patient/:patientId', async (req, res, next) => {
+  try {
+    const exercises = await Exercises.findAll({
+      include: [
+        {
+          model: Patients,
+          where: {
+            id: req.params.patientId,
+          },
+        },
+      ],
+    });
+    res.send(exercises);
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 });

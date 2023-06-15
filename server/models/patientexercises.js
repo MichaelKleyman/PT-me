@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   PatientExercises.init(
-    {},
+    {
+      patientId: DataTypes.NUMBER,
+      exerciseId: DataTypes.NUMBER,
+    },
     {
       sequelize,
       modelName: 'PatientExercises',
