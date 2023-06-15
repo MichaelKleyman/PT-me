@@ -24,12 +24,12 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-//GET shoulder exercises/:id
-router.get('/:id', async (req, res, next) => {
+//GET  exercises/:injuryId
+router.get('/:injuryId', async (req, res, next) => {
   try {
     const shoulderExercises = await Exercises.findAll({
       where: {
-        injuryId: req.params.id,
+        injuryId: req.params.injuryId,
       },
     });
     res.cookie('youtube_video', 'your_cookie_value', cookieOptions);
