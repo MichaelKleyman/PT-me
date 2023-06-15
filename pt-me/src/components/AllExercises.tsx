@@ -74,22 +74,22 @@ export default function AllExercises() {
       };
       if (exerciseType === 'Shoulders') {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Shoulders']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Shoulders']}`
         );
         setSpecificExercise(data);
       } else if (exerciseType === 'Back') {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Back']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Back']}`
         );
         setSpecificExercise(data);
       } else if (exerciseType === 'Knee') {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Knee']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Knee']}`
         );
         setSpecificExercise(data);
       } else if (exerciseType === 'Hip') {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/${fetchExerciseTypeInjuryId['Hip']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Hip']}`
         );
         setSpecificExercise(data);
       }
