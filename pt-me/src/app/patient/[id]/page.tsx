@@ -14,6 +14,7 @@ import {
   AiOutlineMail,
   AiOutlineFileSearch,
   AiOutlineLink,
+  AiOutlineEye,
 } from 'react-icons/ai';
 import { BsFileMedical, BsPrinter, BsSend } from 'react-icons/bs';
 import Link from 'next/link';
@@ -206,17 +207,29 @@ export default function Patient({ params }: Params) {
         </div>
       </div>
       <div className='flex mt-[1rem] gap-5'>
-        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%]'>
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll'>
           <h1 className='text-lg uppercase tracking-widest'>Exercise List</h1>
           <div className='mt-[1rem]'>
             {patientsExercises?.map((exercise: ExerciseData) => (
-              <div key={exercise.id}>
-                <h1>{exercise.name}</h1>
+              <div
+                key={exercise.id}
+                className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
+              >
+                <h1 className='font-semibold'>{exercise.name}</h1>
+                <div className='relative top-3'>
+                  <Link
+                    href={`/exercises/${exercise.id}`}
+                    className='text-blue-500 hover:underline cursor-pointer flex items-center'
+                  >
+                    <AiOutlineEye className='p-2' size={35} />
+                    View
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
         </div>
-        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll'>
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll overflow-x-scroll'>
           <div className='flex items-center justify-between'>
             <h1>Schedule</h1>
             <div className='flex justify-between items-center gap-2'>
