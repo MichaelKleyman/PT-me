@@ -19,6 +19,17 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      tips: {
+        type: Sequelize.STRING(800),
+      },
+      description: {
+        type: Sequelize.STRING(800),
+        allowNull: false,
+      },
+      musclesWorked: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

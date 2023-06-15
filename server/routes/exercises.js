@@ -24,10 +24,24 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-//GET  exercises/:injuryId
-router.get('/:injuryId', async (req, res, next) => {
+//GET exercises/:id
+router.get('/:id', async (req, res, next) => {
   try {
-    const shoulderExercises = await Exercises.findAll({
+    const specificExcerise = await Exercises.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.send(specificExcerise)
+  } catch (error) {
+    next(error);
+  }
+});
+
+//GET  exercises/injury/:injuryId
+router.get('/injury/:injuryId', async (req, res, next) => {
+  try {
+    const exercises = await Exercises.findAll({
       where: {
         injuryId: req.params.injuryId,
       },
@@ -39,7 +53,7 @@ router.get('/:injuryId', async (req, res, next) => {
     //   'Set-Cookie',
     //   cookie.serialize('cookieName', 'cookieValue', cookieOptions)
     // );
-    res.send(shoulderExercises);
+    res.send(exercises);
   } catch (error) {
     next(error);
   }
