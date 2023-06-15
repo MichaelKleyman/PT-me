@@ -27,6 +27,9 @@ interface ExerciseData {
   injuryId: Number;
   videoLink: string;
   Patients: PatientData[];
+  tips: String;
+  description: String;
+  musclesWorked: String;
 }
 
 type PatientState = {

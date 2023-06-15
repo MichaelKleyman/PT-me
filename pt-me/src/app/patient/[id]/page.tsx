@@ -54,6 +54,9 @@ interface ExerciseData {
   injuryId: Number;
   videoLink: string;
   Patients: Patient[];
+  tips: String;
+  description: String;
+  musclesWorked: String;
 }
 
 export default function Patient({ params }: Params) {
@@ -219,7 +222,7 @@ export default function Patient({ params }: Params) {
                 <div className='relative top-3'>
                   <Link
                     href={`/exercises/${exercise.id}`}
-                    className='text-blue-500 hover:underline cursor-pointer flex items-center'
+                    className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
                   >
                     <AiOutlineEye className='p-2' size={35} />
                     View

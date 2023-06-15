@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AiOutlineFileSearch } from 'react-icons/ai';
 import { CLIENT, BASE_URL } from '@/components/api';
+import Iframe from 'react-iframe';
 
 type Obj = {
   id: Number;
@@ -19,10 +20,22 @@ interface ExerciseData {
   name: String;
   injuryId: Number;
   videoLink: string;
+  tips: String;
+  description: String;
+  musclesWorked: String;
 }
 
 export default function SpecificExercise({ params }: Params) {
-  const [exercise, setExercise] = useState<ExerciseData>();
+  const [exercise, setExercise] = useState<ExerciseData>({
+    name: '',
+    id: 0,
+    injuryId: 0,
+    videoLink: '',
+    map: '',
+    tips: '',
+    description: '',
+    musclesWorked: '',
+  });
 
   useEffect(() => {
     const getExercise = async () => {
@@ -50,7 +63,33 @@ export default function SpecificExercise({ params }: Params) {
         <div>/</div>
         <div className='text-sm'>Exercise</div>
       </div>
-      <div>{exercise?.name}</div>
+      <div className='grid lg:grid-cols-2 gap-4 mt-[2rem] place-items-center'>
+        <div>
+          <h1 className='uppercase tracking-widest text-2xl font-medium'>
+            {exercise?.name}
+          </h1>
+          <div className='mt-4'>
+            <h1 className='underline text-green-500 my-2'>Description</h1>
+            <p>{exercise.description}</p>
+          </div>
+          <div className='mt-3'>
+            <h1 className='underline text-green-500 my-2'>Tips</h1>
+            <p>{exercise.tips}</p>
+          </div>
+          <div className='mt-3'>
+            <h1 className='underline text-green-500 my-2'>Muscles Worked</h1>
+            <p>{exercise.musclesWorked}</p>
+          </div>
+        </div>
+        <div>
+          <Iframe
+            url={exercise.videoLink}
+            width='560'
+            height='315'
+            allowFullScreen
+          />
+        </div>
+      </div>
     </div>
   );
 }
