@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ScheduleExercise extends Model {
     /**
@@ -11,17 +9,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      ScheduleExercise.belongsTo(models.Schedule, {
+        foreignKey: 'scheduleId',
+        as: 'schedule',
+      });
+      ScheduleExercise.belongsTo(models.Exercises, {
+        foreignKey: 'exerciseId',
+        as: 'exercise',
+      });
     }
   }
-  ScheduleExercise.init({
-    scheduleId: DataTypes.INTEGER,
-    exerciseId: DataTypes.INTEGER,
-    date: DataTypes.DATE,
-    sets: DataTypes.INTEGER,
-    reps: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'ScheduleExercise',
-  });
+  ScheduleExercise.init(
+    {
+      scheduleId: DataTypes.INTEGER,
+      exerciseId: DataTypes.INTEGER,
+      date: DataTypes.DATE,
+      sets: DataTypes.INTEGER,
+      reps: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: 'ScheduleExercise',
+    }
+  );
   return ScheduleExercise;
 };
