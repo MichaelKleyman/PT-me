@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MdOutlineTipsAndUpdates } from 'react-icons/md';
 import { FaExpand } from 'react-icons/fa';
 import { CLIENT, BASE_URL } from './api';
@@ -8,7 +8,35 @@ interface Id {
   patientId: string;
 }
 
+interface exercise {
+  id: number;
+  injuryId: number;
+  description: string;
+  name: string;
+  musclesWorked: string;
+  tips: string;
+  videoLink: string;
+}
+
+interface scheduleExercise {
+  id: number;
+  date: Date;
+  exerciseId: number;
+  sets: number;
+  reps: number;
+  scheduleId: number;
+  exercise: exercise;
+}
+
+interface Schedule {
+  id: number;
+  patientId: number;
+  exercises: scheduleExercise[];
+}
+
 export default function PatientFlowSheet({ patientId }: Id) {
+  const [schedule, setSchedule] = useState<Schedule>();
+
   useEffect(() => {
     async function getSchedule() {
       const { data } = await CLIENT.get(
