@@ -2,12 +2,23 @@
 import { useEffect } from 'react';
 import { MdOutlineTipsAndUpdates } from 'react-icons/md';
 import { FaExpand } from 'react-icons/fa';
+import { CLIENT, BASE_URL } from './api';
 
 interface Id {
   patientId: string;
 }
 
 export default function PatientFlowSheet({ patientId }: Id) {
+  useEffect(() => {
+    async function getSchedule() {
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/schedule/patient/${patientId}`
+      );
+      console.log(data.id);
+    }
+    getSchedule();
+  });
+
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll overflow-x-scroll'>
       <div className='flex items-center justify-between'>
