@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Schedule, ScheduleExercise } = require('../models');
+const { Schedule, ScheduleExercise, Exercises } = require('../models');
 
 //GET individual schedule
 router.get('/patient/:patientId', async (req, res, next) => {
@@ -8,7 +8,13 @@ router.get('/patient/:patientId', async (req, res, next) => {
       where: {
         patientId: req.params.patientId,
       },
-      include: [{ model: ScheduleExercise, as: 'exercises' }],
+      include: [
+        {
+          model: ScheduleExercise,
+          as: 'exercises',
+          include: [{ model: Exercises, as: 'exercise' }],
+        },
+      ],
     });
     res.send(schedule);
   } catch (error) {
