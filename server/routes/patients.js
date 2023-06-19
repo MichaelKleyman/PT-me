@@ -1,7 +1,5 @@
 const router = require('express').Router();
-const express = require('express');
 const { Patients } = require('../models');
-const app = express();
 
 //GET all patients with specific clinic ID
 router.get('/:clinicId', async (req, res, next) => {

@@ -14,7 +14,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${patientId}`
       );
-      console.log(data.id);
+      console.log(data);
     }
     getSchedule();
   });
