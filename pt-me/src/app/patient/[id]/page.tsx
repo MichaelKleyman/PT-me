@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { GrCalendar } from 'react-icons/gr';
 import { BsDot } from 'react-icons/bs';
-import { FiPhone } from 'react-icons/fi';
+import { FiPhone, FiDelete } from 'react-icons/fi';
 import { MdOutlineEdit } from 'react-icons/md';
 import {
   AiOutlineMail,
@@ -219,7 +219,7 @@ export default function Patient({ params }: Params) {
                 className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
               >
                 <h1 className='font-semibold'>{exercise.name}</h1>
-                <div className='relative top-3'>
+                <div className='relative top-3 flex justify-evenly'>
                   <Link
                     href={`/exercises/${exercise.id}`}
                     className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
@@ -227,6 +227,10 @@ export default function Patient({ params }: Params) {
                     <AiOutlineEye className='p-2' size={35} />
                     View
                   </Link>
+                  <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
+                    <FiDelete className='p-2' size={30} />
+                    Remove
+                  </button>
                 </div>
               </div>
             ))}

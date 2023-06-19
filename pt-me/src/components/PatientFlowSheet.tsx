@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useEffect, useState } from 'react';
 import { MdOutlineTipsAndUpdates } from 'react-icons/md';
@@ -5,7 +6,7 @@ import { FaExpand } from 'react-icons/fa';
 import { CLIENT, BASE_URL } from './api';
 
 interface Id {
-  patientId: string;
+  patientId: number;
 }
 
 interface exercise {
@@ -42,10 +43,12 @@ export default function PatientFlowSheet({ patientId }: Id) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${patientId}`
       );
-      console.log(data);
+      setSchedule(data);
     }
     getSchedule();
-  });
+  }, []);
+
+  console.log(schedule);
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll overflow-x-scroll'>
@@ -66,15 +69,34 @@ export default function PatientFlowSheet({ patientId }: Id) {
         <thead>
           <tr>
             <th className='border border-green-500 px-6 py-4'></th>
-            {Array.from({ length: 6 }).map((_, colIndex) => (
-              <th key={colIndex} className='border border-green-500 px-6 py-4'>
-                Date {colIndex + 1}
+            {schedule?.exercises.map((exerciseObj) => (
+              <th
+                key={exerciseObj.id}
+                className='border border-green-500 px-6 py-4'
+              >
+                {new Date(exerciseObj.date).toLocaleDateString('en-US')}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {schedule?.exercises.map((exerciseObj) => (
+            <tr key={exerciseObj.id}>
+              <td className='border border-green-500 px-6 py-4'>
+                {exerciseObj.exercise.name}
+              </td>
+              {schedule.exercises.map((exercise) => (
+                <td
+                  key={exercise.id}
+                  className='border border-green-500 px-6 py-4'
+                >
+                  {exercise.id === exerciseObj.id &&
+                    `${exercise.sets} X ${exercise.reps}`}
+                </td>
+              ))}
+            </tr>
+          ))}
+          {/* <tr>
             <th className='border border-green-500 px-6 py-4'>Exercise</th>
             {Array.from({ length: 6 }).map((_, colIndex) => (
               <td key={colIndex} className='border border-green-500 px-6 py-4'>
@@ -94,7 +116,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
                 </td>
               ))}
             </tr>
-          ))}
+          ))} */}
         </tbody>
       </table>
     </div>
