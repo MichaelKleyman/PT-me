@@ -11,6 +11,13 @@ module.exports = {
       },
       patientId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Patients',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
