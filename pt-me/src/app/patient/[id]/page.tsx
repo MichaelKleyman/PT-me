@@ -57,6 +57,7 @@ interface ExerciseData {
   tips: String;
   description: String;
   musclesWorked: String;
+  length: number | null;
 }
 
 export default function Patient({ params }: Params) {
@@ -213,27 +214,33 @@ export default function Patient({ params }: Params) {
         <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll'>
           <h1 className='text-lg uppercase tracking-widest'>Exercise List</h1>
           <div className='mt-[1rem]'>
-            {patientsExercises?.map((exercise: ExerciseData) => (
-              <div
-                key={exercise.id}
-                className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
-              >
-                <h1 className='font-semibold'>{exercise.name}</h1>
-                <div className='relative top-3 flex justify-evenly'>
-                  <Link
-                    href={`/exercises/${exercise.id}`}
-                    className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
-                  >
-                    <AiOutlineEye className='p-2' size={35} />
-                    View
-                  </Link>
-                  <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
-                    <FiDelete className='p-2' size={30} />
-                    Remove
-                  </button>
+            {patientsExercises?.length ? (
+              patientsExercises?.map((exercise: ExerciseData) => (
+                <div
+                  key={exercise.id}
+                  className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
+                >
+                  <h1 className='font-semibold'>{exercise.name}</h1>
+                  <div className='relative top-3 flex justify-evenly'>
+                    <Link
+                      href={`/exercises/${exercise.id}`}
+                      className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                    >
+                      <AiOutlineEye className='p-2' size={35} />
+                      View
+                    </Link>
+                    <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
+                      <FiDelete className='p-2' size={30} />
+                      Remove
+                    </button>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className='m-3 p-7 tracking-widest'>
+                No exercises for this patient.
               </div>
-            ))}
+            )}
           </div>
         </div>
         <PatientFlowSheet patientId={params.id} />

@@ -65,60 +65,67 @@ export default function PatientFlowSheet({ patientId }: Id) {
           </button>
         </div>
       </div>
-      <table className='table-auto mt-4'>
-        <thead>
-          <tr>
-            <th className='border border-green-500 px-6 py-4'></th>
+      {schedule?.id ? (
+        <table className='table-auto mt-4'>
+          <thead>
+            <tr>
+              <th className='border border-green-500 px-6 py-4'></th>
+              {schedule?.exercises.map((exerciseObj) => (
+                <th
+                  key={exerciseObj.id}
+                  className='border border-green-500 px-6 py-4'
+                >
+                  {new Date(exerciseObj.date).toLocaleDateString('en-US')}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
             {schedule?.exercises.map((exerciseObj) => (
-              <th
-                key={exerciseObj.id}
-                className='border border-green-500 px-6 py-4'
-              >
-                {new Date(exerciseObj.date).toLocaleDateString('en-US')}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {schedule?.exercises.map((exerciseObj) => (
-            <tr key={exerciseObj.id}>
-              <td className='border border-green-500 px-6 py-4'>
-                {exerciseObj.exercise.name}
-              </td>
-              {schedule.exercises.map((exercise) => (
-                <td
-                  key={exercise.id}
-                  className='border border-green-500 px-6 py-4'
-                >
-                  {exercise.id === exerciseObj.id &&
-                    `${exercise.sets} X ${exercise.reps}`}
+              <tr key={exerciseObj.id}>
+                <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
+                  {exerciseObj.exercise.name}
                 </td>
-              ))}
-            </tr>
-          ))}
-          {/* <tr>
-            <th className='border border-green-500 px-6 py-4'>Exercise</th>
-            {Array.from({ length: 6 }).map((_, colIndex) => (
-              <td key={colIndex} className='border border-green-500 px-6 py-4'>
-                5 x 30
-              </td>
+                {schedule.exercises.map((exercise) => (
+                  <td
+                    key={exercise.id}
+                    className='border border-green-500 px-6 py-4'
+                  >
+                    {exercise.id === exerciseObj.id &&
+                      `${exercise.sets} X ${exercise.reps}`}
+                  </td>
+                ))}
+              </tr>
             ))}
-          </tr>
-          {Array.from({ length: 6 - 1 }).map((_, rowIndex) => (
-            <tr key={rowIndex + 1}>
-              <th className='border border-green-500 px-6 py-4'>Exercise</th>
-              {Array.from({ length: 6 }).map((_, colIndex) => (
-                <td
-                  key={colIndex}
-                  className='border border-green-500 px-6 py-4'
-                >
-                  5 x 30
-                </td>
-              ))}
-            </tr>
-          ))} */}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      ) : (
+        <div className='mt-4 normal-case'>Make a schedule for patient.</div>
+      )}
     </div>
   );
+}
+
+{
+  /* <tr>
+  <th className='border border-green-500 px-6 py-4'>Exercise</th>
+  {Array.from({ length: 6 }).map((_, colIndex) => (
+    <td key={colIndex} className='border border-green-500 px-6 py-4'>
+      5 x 30
+    </td>
+  ))}
+</tr>
+{Array.from({ length: 6 - 1 }).map((_, rowIndex) => (
+  <tr key={rowIndex + 1}>
+    <th className='border border-green-500 px-6 py-4'>Exercise</th>
+    {Array.from({ length: 6 }).map((_, colIndex) => (
+      <td
+        key={colIndex}
+        className='border border-green-500 px-6 py-4'
+      >
+        5 x 30
+      </td>
+    ))}
+  </tr>
+))} */
 }

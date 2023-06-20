@@ -75,6 +75,10 @@ const Navbar = ({ children }: any) => {
     setOpenSideBar(!open);
   };
 
+  const closeSideBar = () => {
+    setOpenSideBar(false);
+  };
+
   return (
     <header className='w-full shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
@@ -175,6 +179,7 @@ const Navbar = ({ children }: any) => {
               <div className='flex flex-col items-center'>
                 <Link
                   href={`/${user?.id}`}
+                  onClick={closeSideBar}
                   className={`bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center ${
                     open ? 'w-[190px] gap-4 duration-300' : ''
                   }`}
@@ -187,6 +192,7 @@ const Navbar = ({ children }: any) => {
                 <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
                   href='/'
+                  onClick={closeSideBar}
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
@@ -198,6 +204,7 @@ const Navbar = ({ children }: any) => {
                 </Link>
                 <Link
                   href='/exercises'
+                  onClick={closeSideBar}
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
@@ -209,6 +216,7 @@ const Navbar = ({ children }: any) => {
                 </Link>
                 <Link
                   href='/patients'
+                  onClick={closeSideBar}
                   className={`${
                     open ? 'w-[190px] gap-4 duration-300' : ''
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
