@@ -22,4 +22,13 @@ router.get('/patient/:patientId', async (req, res, next) => {
   }
 });
 
+//update a date for the specific Schedule Exercise id
+router.put('/patient/:patientId/:schedule-exerciseId', async (req, res, next) => {
+  try {
+    console.log(req.params);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
