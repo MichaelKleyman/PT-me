@@ -237,8 +237,14 @@ export default function Patient({ params }: Params) {
                 </div>
               ))
             ) : (
-              <div className='m-3 p-7 tracking-widest'>
-                No exercises for this patient.
+              <div className='m-3 p-7 tracking-widest text-center'>
+                <p>No exercises for this patient.</p>
+                <Link
+                  href='/exercises'
+                  className='text-blue-600 hover:underline'
+                >
+                  View Exercises
+                </Link>
               </div>
             )}
           </div>

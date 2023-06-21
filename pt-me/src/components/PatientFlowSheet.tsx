@@ -78,6 +78,12 @@ export default function PatientFlowSheet({ patientId }: Id) {
                   {new Date(exerciseObj.date).toLocaleDateString('en-US')}
                 </th>
               ))}
+              {Array.from({ length: 8 }).map((_, index) => (
+                <th
+                  key={index}
+                  className='border border-green-500 px-6 py-4'
+                ></th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -94,6 +100,31 @@ export default function PatientFlowSheet({ patientId }: Id) {
                     {exercise.id === exerciseObj.id &&
                       `${exercise.sets} X ${exercise.reps}`}
                   </td>
+                ))}
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <td
+                    key={index}
+                    className='border border-green-500 px-6 py-4'
+                  ></td>
+                ))}
+              </tr>
+            ))}
+            {Array.from({ length: 8 }).map((_, index) => (
+              <tr key={index}>
+                <td className='border border-green-500 px-6 py-4'></td>
+                {Array.from({ length: schedule.exercises.length }).map(
+                  (_, index) => (
+                    <td
+                      key={index}
+                      className='border border-green-500 px-6 py-4'
+                    ></td>
+                  )
+                )}
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <td
+                    key={index}
+                    className='border border-green-500 px-6 py-4'
+                  ></td>
                 ))}
               </tr>
             ))}
