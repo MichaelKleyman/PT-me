@@ -48,10 +48,28 @@ export default function PatientFlowSheet({ patientId }: Id) {
     getSchedule();
   }, []);
 
+  const maxExercises = 8; // Maximum number of exercises
+  // const emptySlots = Array.from({
+  //   length: maxExercises - schedule.exercises.length,
+  // });
+
+  const exerciseIds = Array.from(
+    new Set(schedule?.exercises.map((exerciseObj) => exerciseObj.exerciseId))
+  );
+  const emptyExerciseSlots = Array.from({
+    length: maxExercises - exerciseIds.length,
+  });
+  const uniqueDates = Array.from(
+    new Set(schedule?.exercises.map((exerciseObj) => exerciseObj.date))
+  );
+  const emptyDateSlots = Array.from({
+    length: maxExercises - uniqueDates.length,
+  });
+
   console.log(schedule);
 
   return (
-    <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest overflow-y-scroll overflow-x-scroll'>
+    <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
       <div className='flex items-center justify-between'>
         <h1>Schedule</h1>
         <div className='flex justify-between items-center gap-2'>
@@ -65,74 +83,84 @@ export default function PatientFlowSheet({ patientId }: Id) {
           </button>
         </div>
       </div>
-      {schedule?.id ? (
-        <table className='table-auto mt-4'>
-          <thead>
-            <tr>
-              <th className='border border-green-500 px-6 py-4'></th>
-              {schedule?.exercises.map((exerciseObj) => (
-                <th
-                  key={exerciseObj.id}
-                  className='border border-green-500 px-6 py-4'
-                >
-                  {new Date(exerciseObj.date).toLocaleDateString('en-US')}
-                </th>
-              ))}
-              {Array.from({ length: 8 }).map((_, index) => (
-                <th
-                  key={index}
-                  className='border border-green-500 px-6 py-4'
-                ></th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {schedule?.exercises.map((exerciseObj) => (
-              <tr key={exerciseObj.id}>
-                <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
-                  {exerciseObj.exercise.name}
-                </td>
-                {schedule.exercises.map((exercise) => (
-                  <td
-                    key={exercise.id}
-                    className='border border-green-500 px-6 py-4'
-                  >
-                    {exercise.id === exerciseObj.id &&
-                      `${exercise.sets} X ${exercise.reps}`}
-                  </td>
+      <div className='overflow-y-scroll overflow-x-scroll'>
+        {schedule?.id ? (
+          <table className='table-auto mt-4'>
+            <thead>
+              <tr>
+                <th className='border border-green-500 px-6 py-4'></th>
+                {uniqueDates.map((date, i) => (
+                  <th key={i} className='border border-green-500 px-6 py-4'>
+                    {new Date(date).toLocaleDateString('en-US')}
+                  </th>
                 ))}
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <td
+                {emptyDateSlots.map((_, index) => (
+                  <th
                     key={index}
                     className='border border-green-500 px-6 py-4'
-                  ></td>
+                  ></th>
                 ))}
               </tr>
-            ))}
-            {Array.from({ length: 8 }).map((_, index) => (
-              <tr key={index}>
-                <td className='border border-green-500 px-6 py-4'></td>
-                {Array.from({ length: schedule.exercises.length }).map(
-                  (_, index) => (
+            </thead>
+            <tbody>
+              {exerciseIds.map((exerciseId) => {
+                const filteredExercises = schedule?.exercises.filter(
+                  (exerciseObj) => exerciseObj.exerciseId === exerciseId
+                );
+
+                return (
+                  <tr key={exerciseId}>
+                    <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
+                      {filteredExercises[0]?.exercise.name}
+                    </td>
+                    {uniqueDates.map((date, i) => {
+                      const exercise = filteredExercises.find(
+                        (exerciseObj) => exerciseObj.date === date
+                      );
+
+                      return (
+                        <td
+                          key={i}
+                          className='border border-green-500 px-6 py-4'
+                        >
+                          {exercise && `${exercise.sets} X ${exercise.reps}`}
+                        </td>
+                      );
+                    })}
+                    {emptyExerciseSlots.map((_, index) => (
+                      <td
+                        key={index}
+                        className='border border-green-500 px-6 py-4'
+                      ></td>
+                    ))}
+                  </tr>
+                );
+              })}
+              {emptyDateSlots.map((_, index) => (
+                <tr key={index}>
+                  <td className='border border-green-500 px-6 py-4'></td>
+                  {Array.from({ length: uniqueDates.length }).map(
+                    (_, index) => (
+                      <td
+                        key={index}
+                        className='border border-green-500 px-6 py-4'
+                      ></td>
+                    )
+                  )}
+                  {emptyExerciseSlots.map((_, index) => (
                     <td
                       key={index}
                       className='border border-green-500 px-6 py-4'
                     ></td>
-                  )
-                )}
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <td
-                    key={index}
-                    className='border border-green-500 px-6 py-4'
-                  ></td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className='mt-4 normal-case'>Make a schedule for patient.</div>
-      )}
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className='mt-4 normal-case'>Make a schedule for patient.</div>
+        )}
+      </div>
     </div>
   );
 }
@@ -159,4 +187,51 @@ export default function PatientFlowSheet({ patientId }: Id) {
     ))}
   </tr>
 ))} */
+}
+
+{
+  /* <table className='table-auto mt-4'>
+  <thead>
+    <tr>
+      <th className='border border-green-500 px-6 py-4'></th>
+      {schedule?.exercises.map((exerciseObj) => (
+        <th key={exerciseObj.id} className='border border-green-500 px-6 py-4'>
+          {new Date(exerciseObj.date).toLocaleDateString('en-US')}
+        </th>
+      ))}
+      {Array.from({ length: 8 }).map((_, index) => (
+        <th key={index} className='border border-green-500 px-6 py-4'></th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {schedule?.exercises.map((exerciseObj) => (
+      <tr key={exerciseObj.id}>
+        <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
+          {exerciseObj.exercise.name}
+        </td>
+        {schedule.exercises.map((exercise) => (
+          <td key={exercise.id} className='border border-green-500 px-6 py-4'>
+            {exercise.id === exerciseObj.id &&
+              `${exercise.sets} X ${exercise.reps}`}
+          </td>
+        ))}
+        {Array.from({ length: 8 }).map((_, index) => (
+          <td key={index} className='border border-green-500 px-6 py-4'></td>
+        ))}
+      </tr>
+    ))}
+    {Array.from({ length: 8 }).map((_, index) => (
+      <tr key={index}>
+        <td className='border border-green-500 px-6 py-4'></td>
+        {Array.from({ length: schedule.exercises.length }).map((_, index) => (
+          <td key={index} className='border border-green-500 px-6 py-4'></td>
+        ))}
+        {Array.from({ length: 6 }).map((_, index) => (
+          <td key={index} className='border border-green-500 px-6 py-4'></td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>; */
 }
