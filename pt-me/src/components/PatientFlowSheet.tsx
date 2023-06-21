@@ -37,6 +37,7 @@ interface Schedule {
 
 export default function PatientFlowSheet({ patientId }: Id) {
   const [schedule, setSchedule] = useState<Schedule>();
+  const [update, setUpdate] = useState<boolean>(false);
 
   useEffect(() => {
     async function getSchedule() {
@@ -66,7 +67,14 @@ export default function PatientFlowSheet({ patientId }: Id) {
     length: maxExercises - uniqueDates.length,
   });
 
-  console.log(schedule);
+  const handleUpdate = () => {
+    setUpdate(!update);
+  };
+
+  //changes the date for a specific id in the ScheduleExercises table
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e);
+  };
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
@@ -77,10 +85,23 @@ export default function PatientFlowSheet({ patientId }: Id) {
             <FaExpand className='p-2' size={35} />
             Expand
           </button>
-          <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
-            <MdOutlineTipsAndUpdates className='p-2' size={35} />
-            Update
-          </button>
+          {!update ? (
+            <button
+              onClick={handleUpdate}
+              className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+            >
+              <MdOutlineTipsAndUpdates className='p-2' size={35} />
+              Update
+            </button>
+          ) : (
+            <button
+              onClick={handleUpdate}
+              className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+            >
+              <MdOutlineTipsAndUpdates className='p-2' size={35} />
+              Save
+            </button>
+          )}
         </div>
       </div>
       <div className='overflow-y-scroll overflow-x-scroll'>
@@ -91,14 +112,28 @@ export default function PatientFlowSheet({ patientId }: Id) {
                 <th className='border border-green-500 px-6 py-4'></th>
                 {uniqueDates.map((date, i) => (
                   <th key={i} className='border border-green-500 px-6 py-4'>
-                    {new Date(date).toLocaleDateString('en-US')}
+                    {!update ? (
+                      new Date(date).toLocaleDateString('en-US')
+                    ) : (
+                      <input
+                        onChange={(e) => handleDateChange(e)}
+                        type='text'
+                        className='border border-green-500'
+                        value={new Date(date).toLocaleDateString('en-US')}
+                      />
+                    )}
                   </th>
                 ))}
                 {emptyDateSlots.map((_, index) => (
-                  <th
-                    key={index}
-                    className='border border-green-500 px-6 py-4'
-                  ></th>
+                  <th key={index} className='border border-green-500 px-6 py-4'>
+                    {update && (
+                      <input
+                        // onChange={handleChange}
+                        type='text'
+                        className='border border-green-500'
+                      />
+                    )}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -123,7 +158,19 @@ export default function PatientFlowSheet({ patientId }: Id) {
                           key={i}
                           className='border border-green-500 px-6 py-4'
                         >
-                          {exercise && `${exercise.sets} X ${exercise.reps}`}
+                          {!update ? (
+                            exercise && `${exercise.sets} X ${exercise.reps}`
+                          ) : (
+                            <input
+                              // onChange={handleChange}
+                              type='text'
+                              className='border border-green-500'
+                              value={
+                                exercise &&
+                                `${exercise.sets} X ${exercise.reps}`
+                              }
+                            />
+                          )}
                         </td>
                       );
                     })}
@@ -131,7 +178,15 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       <td
                         key={index}
                         className='border border-green-500 px-6 py-4'
-                      ></td>
+                      >
+                        {update && (
+                          <input
+                            // onChange={handleChange}
+                            type='text'
+                            className='border border-green-500'
+                          />
+                        )}
+                      </td>
                     ))}
                   </tr>
                 );
@@ -144,14 +199,30 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       <td
                         key={index}
                         className='border border-green-500 px-6 py-4'
-                      ></td>
+                      >
+                        {update && (
+                          <input
+                            // onChange={handleChange}
+                            type='text'
+                            className='border border-green-500'
+                          />
+                        )}
+                      </td>
                     )
                   )}
                   {emptyExerciseSlots.map((_, index) => (
                     <td
                       key={index}
                       className='border border-green-500 px-6 py-4'
-                    ></td>
+                    >
+                      {update && (
+                        <input
+                          // onChange={handleChange}
+                          type='text'
+                          className='border border-green-500'
+                        />
+                      )}
+                    </td>
                   ))}
                 </tr>
               ))}
