@@ -72,8 +72,20 @@ export default function PatientFlowSheet({ patientId }: Id) {
   };
 
   //changes the date for a specific id in the ScheduleExercises table
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
+  const handleCurrentDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('editing current date');
+  };
+
+  const handleNewDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('creating new date');
+  };
+
+  const handleSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('editing current sets/reps');
+  };
+
+  const handleNewSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Adding new sets/reps');
   };
 
   return (
@@ -116,7 +128,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       new Date(date).toLocaleDateString('en-US')
                     ) : (
                       <input
-                        onChange={(e) => handleDateChange(e)}
+                        onChange={(e) => handleCurrentDateChange(e)}
                         type='text'
                         className='border border-green-500'
                         value={new Date(date).toLocaleDateString('en-US')}
@@ -128,7 +140,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
                   <th key={index} className='border border-green-500 px-6 py-4'>
                     {update && (
                       <input
-                        // onChange={handleChange}
+                        onChange={(e) => handleNewDateChange(e)}
                         type='text'
                         className='border border-green-500'
                       />
@@ -162,7 +174,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
                             exercise && `${exercise.sets} X ${exercise.reps}`
                           ) : (
                             <input
-                              // onChange={handleChange}
+                              onChange={(e) => handleSetsRepsChange(e)}
                               type='text'
                               className='border border-green-500'
                               value={
@@ -181,7 +193,7 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       >
                         {update && (
                           <input
-                            // onChange={handleChange}
+                            onChange={(e) => handleNewSetsRepsChange(e)}
                             type='text'
                             className='border border-green-500'
                           />
@@ -200,13 +212,13 @@ export default function PatientFlowSheet({ patientId }: Id) {
                         key={index}
                         className='border border-green-500 px-6 py-4'
                       >
-                        {update && (
+                        {/* {update && (
                           <input
                             // onChange={handleChange}
                             type='text'
                             className='border border-green-500'
                           />
-                        )}
+                        )} */}
                       </td>
                     )
                   )}
@@ -215,13 +227,12 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       key={index}
                       className='border border-green-500 px-6 py-4'
                     >
-                      {update && (
+                      {/* {update && (
                         <input
-                          // onChange={handleChange}
                           type='text'
                           className='border border-green-500'
                         />
-                      )}
+                      )} */}
                     </td>
                   ))}
                 </tr>
@@ -234,75 +245,4 @@ export default function PatientFlowSheet({ patientId }: Id) {
       </div>
     </div>
   );
-}
-
-{
-  /* <tr>
-  <th className='border border-green-500 px-6 py-4'>Exercise</th>
-  {Array.from({ length: 6 }).map((_, colIndex) => (
-    <td key={colIndex} className='border border-green-500 px-6 py-4'>
-      5 x 30
-    </td>
-  ))}
-</tr>
-{Array.from({ length: 6 - 1 }).map((_, rowIndex) => (
-  <tr key={rowIndex + 1}>
-    <th className='border border-green-500 px-6 py-4'>Exercise</th>
-    {Array.from({ length: 6 }).map((_, colIndex) => (
-      <td
-        key={colIndex}
-        className='border border-green-500 px-6 py-4'
-      >
-        5 x 30
-      </td>
-    ))}
-  </tr>
-))} */
-}
-
-{
-  /* <table className='table-auto mt-4'>
-  <thead>
-    <tr>
-      <th className='border border-green-500 px-6 py-4'></th>
-      {schedule?.exercises.map((exerciseObj) => (
-        <th key={exerciseObj.id} className='border border-green-500 px-6 py-4'>
-          {new Date(exerciseObj.date).toLocaleDateString('en-US')}
-        </th>
-      ))}
-      {Array.from({ length: 8 }).map((_, index) => (
-        <th key={index} className='border border-green-500 px-6 py-4'></th>
-      ))}
-    </tr>
-  </thead>
-  <tbody>
-    {schedule?.exercises.map((exerciseObj) => (
-      <tr key={exerciseObj.id}>
-        <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
-          {exerciseObj.exercise.name}
-        </td>
-        {schedule.exercises.map((exercise) => (
-          <td key={exercise.id} className='border border-green-500 px-6 py-4'>
-            {exercise.id === exerciseObj.id &&
-              `${exercise.sets} X ${exercise.reps}`}
-          </td>
-        ))}
-        {Array.from({ length: 8 }).map((_, index) => (
-          <td key={index} className='border border-green-500 px-6 py-4'></td>
-        ))}
-      </tr>
-    ))}
-    {Array.from({ length: 8 }).map((_, index) => (
-      <tr key={index}>
-        <td className='border border-green-500 px-6 py-4'></td>
-        {Array.from({ length: schedule.exercises.length }).map((_, index) => (
-          <td key={index} className='border border-green-500 px-6 py-4'></td>
-        ))}
-        {Array.from({ length: 6 }).map((_, index) => (
-          <td key={index} className='border border-green-500 px-6 py-4'></td>
-        ))}
-      </tr>
-    ))}
-  </tbody>
-</table>; */
 }
