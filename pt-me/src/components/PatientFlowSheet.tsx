@@ -60,9 +60,19 @@ export default function PatientFlowSheet({ patientId }: Id) {
   const emptyExerciseSlots = Array.from({
     length: maxExercises - exerciseIds.length,
   });
+
   const uniqueDates = Array.from(
     new Set(schedule?.exercises.map((exerciseObj) => exerciseObj.date))
-  );
+  ).map((date) => {
+    const exerciseObj = schedule?.exercises.find(
+      (exercise) => exercise.date === date
+    );
+    return {
+      date: date,
+      id: exerciseObj?.id,
+    };
+  });
+
   const emptyDateSlots = Array.from({
     length: maxExercises - uniqueDates.length,
   });
@@ -72,12 +82,15 @@ export default function PatientFlowSheet({ patientId }: Id) {
   };
 
   //changes the date for a specific id in the ScheduleExercises table
-  const handleCurrentDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('editing current date');
+  const handleCurrentDateChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
+    console.log('editing current date: ', id);
   };
 
   const handleNewDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('creating new date');
+    console.log('creating new date: ');
   };
 
   const handleSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,16 +135,18 @@ export default function PatientFlowSheet({ patientId }: Id) {
             <thead>
               <tr>
                 <th className='border border-green-500 px-6 py-4'></th>
-                {uniqueDates.map((date, i) => (
+                {uniqueDates.map((obj, i) => (
                   <th key={i} className='border border-green-500 px-6 py-4'>
                     {!update ? (
-                      new Date(date).toLocaleDateString('en-US')
+                      new Date(obj.date).toLocaleDateString('en-US')
                     ) : (
                       <input
-                        onChange={(e) => handleCurrentDateChange(e)}
+                        onChange={(e) =>
+                          handleCurrentDateChange(e, obj.id as number)
+                        }
                         type='text'
                         className='border border-green-500'
-                        value={new Date(date).toLocaleDateString('en-US')}
+                        value={new Date(obj.date).toLocaleDateString('en-US')}
                       />
                     )}
                   </th>
@@ -160,9 +175,9 @@ export default function PatientFlowSheet({ patientId }: Id) {
                     <td className='border border-green-500 hover:border-[3px] px-6 py-4 duration-300 hover:scale-110 cursor-pointer'>
                       {filteredExercises[0]?.exercise.name}
                     </td>
-                    {uniqueDates.map((date, i) => {
+                    {uniqueDates.map((obj, i) => {
                       const exercise = filteredExercises.find(
-                        (exerciseObj) => exerciseObj.date === date
+                        (exerciseObj) => exerciseObj.date === obj.date
                       );
 
                       return (
@@ -211,29 +226,14 @@ export default function PatientFlowSheet({ patientId }: Id) {
                       <td
                         key={index}
                         className='border border-green-500 px-6 py-4'
-                      >
-                        {/* {update && (
-                          <input
-                            // onChange={handleChange}
-                            type='text'
-                            className='border border-green-500'
-                          />
-                        )} */}
-                      </td>
+                      ></td>
                     )
                   )}
                   {emptyExerciseSlots.map((_, index) => (
                     <td
                       key={index}
                       className='border border-green-500 px-6 py-4'
-                    >
-                      {/* {update && (
-                        <input
-                          type='text'
-                          className='border border-green-500'
-                        />
-                      )} */}
-                    </td>
+                    ></td>
                   ))}
                 </tr>
               ))}
