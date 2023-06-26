@@ -50,19 +50,16 @@ export default function PatientFlowSheet({ patientId }: Id) {
   }, []);
 
   const maxExercises = 8; // Maximum number of exercises
-  // const emptySlots = Array.from({
-  //   length: maxExercises - schedule.exercises.length,
-  // });
 
   const exerciseIds = Array.from(
-    new Set(schedule?.exercises.map((exerciseObj) => exerciseObj.exerciseId))
+    new Set(schedule?.exercises?.map((exerciseObj) => exerciseObj.exerciseId))
   );
   const emptyExerciseSlots = Array.from({
     length: maxExercises - exerciseIds.length,
   });
 
   const uniqueDates = Array.from(
-    new Set(schedule?.exercises.map((exerciseObj) => exerciseObj.date))
+    new Set(schedule?.exercises?.map((exerciseObj) => exerciseObj.date))
   ).map((date) => {
     const exerciseObj = schedule?.exercises.find(
       (exercise) => exercise.date === date
@@ -86,20 +83,34 @@ export default function PatientFlowSheet({ patientId }: Id) {
     e: React.ChangeEvent<HTMLInputElement>,
     id: number
   ) => {
-    console.log('editing current date: ', id);
+    console.log('editing current date: ', e.target.value);
+    const newExercisesArr = schedule?.exercises.map((exerciseObj) => {
+      if (exerciseObj.id === id) {
+        exerciseObj.date = new Date(e.target.value);
+        return exerciseObj;
+      } else return exerciseObj;
+    });
+    const newState = { ...schedule, exercises: newExercisesArr };
+    // console.log('new state:', newState);
+    setSchedule(newState as Schedule);
   };
 
   const handleNewDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('creating new date: ');
   };
 
-  const handleSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('editing current sets/reps');
+  const handleSetsRepsChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
+    console.log('editing current sets/reps: ', id);
   };
 
   const handleNewSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('Adding new sets/reps');
   };
+
+  console.log(schedule);
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
@@ -189,7 +200,9 @@ export default function PatientFlowSheet({ patientId }: Id) {
                             exercise && `${exercise.sets} X ${exercise.reps}`
                           ) : (
                             <input
-                              onChange={(e) => handleSetsRepsChange(e)}
+                              onChange={(e) =>
+                                handleSetsRepsChange(e, exercise?.id as number)
+                              }
                               type='text'
                               className='border border-green-500'
                               value={

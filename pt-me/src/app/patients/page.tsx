@@ -77,7 +77,7 @@ export default function AllPatients() {
         </h1>
       </div>
       <div className='mt-8'>
-        <div className='grid md:grid-cols-5 gap-6 place-items-center text-gray-400 text-sm'>
+        <div className='grid md:grid-cols-5 gap-6 place-items-center text-sm bg-[#eaece1] p-2'>
           <></>
           <h1>Name</h1>
           <h1>Address</h1>
@@ -87,7 +87,7 @@ export default function AllPatients() {
         {patients?.map((patient, i) => (
           <div
             key={i}
-            className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-8 m-5 shadow-xl shadow-gray-400 rounded-lg'
+            className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-6 shadow-xl shadow-gray-400 border-b-[1px] border-[#eaece1]'
           >
             <div className='flex items-center gap-5'>
               <Stack direction='row' spacing={2}>
