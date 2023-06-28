@@ -1,7 +1,6 @@
 'use client';
 
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Axios from 'axios';
 import { CLIENT, BASE_URL } from '@/components/api';
 import { create } from 'domain';
 import { RootState } from '@/Redux/store';

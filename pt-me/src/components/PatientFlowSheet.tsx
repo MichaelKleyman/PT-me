@@ -99,11 +99,17 @@ export default function PatientFlowSheet({ patientId }: Id) {
     console.log('creating new date: ');
   };
 
-  const handleSetsRepsChange = (
+  const handleSetsRepsChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     id: number
   ) => {
     console.log('editing current sets/reps: ', id);
+    console.log(e.target.value);
+
+    await CLIENT.put(
+      `${BASE_URL}/api/schedule/patient/${patientId}/exercise/${id}`,
+      { body: e.target.value }
+    );
   };
 
   const handleNewSetsRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
