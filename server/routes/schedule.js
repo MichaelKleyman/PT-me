@@ -23,12 +23,31 @@ router.get('/patient/:patientId', async (req, res, next) => {
 });
 
 //update a date for the specific Schedule Exercise id
-router.put('/patient/:patientId/:schedule-exerciseId', async (req, res, next) => {
-  try {
-    console.log(req.params);
-  } catch (error) {
-    next(error);
+router.put(
+  '/patient/:patientId/exercise/:scheduleExerciseId',
+  async (req, res, next) => {
+    try {
+      const exercise = await Schedule.findOne({
+        where: {
+          patientId: req.params.patientId,
+        },
+        include: [
+          {
+            model: ScheduleExercise,
+            as: 'exercises',
+            where: { id: req.params.scheduleExerciseId },
+          },
+        ],
+      });
+      const targetExercise = exercise.exercises[0];
+      targetExercise.sets = req.body.sets;
+      await targetExercise.save();
+      res.send(targetExercise);
+      res.send(exercise);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;
