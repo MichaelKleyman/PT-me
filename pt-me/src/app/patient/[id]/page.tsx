@@ -250,6 +250,7 @@ export default function Patient({ params }: Params) {
             )}
           </div>
         </div>
+        {/* <PatientFlowSheet patientId={params.id} /> */}
         <ExerciseTable patientId={params.id} />
       </div>
     </div>

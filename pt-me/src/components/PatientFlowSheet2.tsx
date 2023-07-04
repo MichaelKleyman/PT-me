@@ -158,18 +158,28 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
                     {exercise.exercise.name}
                   </td>
                   <td className='border border-green-300 px-4 py-2'>
-                    <input
-                      type='number'
-                      value={exercise.sets}
-                      onChange={(e) => handleSetsChange(exercise.id, e)}
-                    />
+                    {!update ? (
+                      exercise && `${exercise.sets}`
+                    ) : (
+                      <input
+                        onChange={(e) => handleSetsChange(exercise.id, e)}
+                        type='text'
+                        className='border border-green-500'
+                        value={exercise && `${exercise.sets}`}
+                      />
+                    )}
                   </td>
                   <td className='border border-green-300 px-4 py-2'>
-                    <input
-                      type='number'
-                      value={exercise.reps}
-                      onChange={(e) => handleRepsChange(exercise.id, e)}
-                    />
+                    {!update ? (
+                      exercise && `${exercise.reps}`
+                    ) : (
+                      <input
+                        onChange={(e) => handleRepsChange(exercise.id, e)}
+                        type='text'
+                        className='border border-green-500'
+                        value={exercise && `${exercise.reps}`}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
