@@ -18,7 +18,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 1,
-          date: new Date('6/19/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -27,7 +26,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 1,
-          date: new Date('6/20/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -36,7 +34,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 1,
-          date: new Date('6/21/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -45,18 +42,15 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 1,
-          date: new Date('6/22/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
 
-        
         {
           scheduleId: 1,
           exerciseId: 2,
-          date: new Date('6/19/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -65,7 +59,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 2,
-          date: new Date('6/20/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -74,7 +67,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 2,
-          date: new Date('6/21/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -83,7 +75,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 2,
-          date: new Date('6/22/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -92,7 +83,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 3,
-          date: new Date('6/19/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -101,7 +91,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 3,
-          date: new Date('6/20/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -110,7 +99,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 3,
-          date: new Date('6/21/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -119,7 +107,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 3,
-          date: new Date('6/22/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -128,7 +115,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 4,
-          date: new Date('6/19/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -137,7 +123,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 4,
-          date: new Date('6/20/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -146,7 +131,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 4,
-          date: new Date('6/21/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),
@@ -155,7 +139,6 @@ module.exports = {
         {
           scheduleId: 1,
           exerciseId: 4,
-          date: new Date('6/22/23'),
           sets: 3,
           reps: 10,
           createdAt: new Date(),

@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       scheduleId: DataTypes.INTEGER,
       exerciseId: DataTypes.INTEGER,
-      date: DataTypes.DATE,
       sets: DataTypes.INTEGER,
       reps: DataTypes.INTEGER,
     },
