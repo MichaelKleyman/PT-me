@@ -11,8 +11,8 @@ import LoginImg from '../images/loginimage2.jpg';
 import Image from 'next/legacy/image';
 
 interface Credentials {
-  email: String;
-  password: String;
+  email: string;
+  password: string;
 }
 
 const Page = () => {
@@ -20,7 +20,7 @@ const Page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const [error, setError] = useState('');
-  const [credentials, setCredentials] = useState({
+  const [credentials, setCredentials] = useState<Credentials>({
     email: '',
     password: '',
   });
