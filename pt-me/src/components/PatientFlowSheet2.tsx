@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { MdOutlineTipsAndUpdates } from 'react-icons/md';
+import {
+  MdOutlineTipsAndUpdates,
+  MdOutlineAddCircleOutline,
+} from 'react-icons/md';
 import { FaExpand } from 'react-icons/fa';
 import { CLIENT, BASE_URL } from './api';
 
@@ -40,6 +43,7 @@ interface Props {
 const ExerciseTable: React.FC<Props> = ({ patientId }) => {
   const [schedule, setSchedule] = useState<Schedule | undefined>(undefined);
   const [update, setUpdate] = useState<boolean>(false);
+  const [add, setAddExercise] = useState<boolean>(false);
 
   useEffect(() => {
     async function getSchedule() {
@@ -53,6 +57,10 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
 
   const handleUpdate = () => {
     setUpdate(!update);
+  };
+
+  const handleAdd = () => {
+    setAddExercise(!add);
   };
 
   const handleSetsChange = async (
@@ -110,7 +118,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
       <div className='flex items-center justify-between'>
-        <h1>Schedule</h1>
+        <h1>Flow Sheet</h1>
         <div className='flex justify-between items-center gap-2'>
           <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
             <FaExpand className='p-2' size={35} />
@@ -133,6 +141,23 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
               Save
             </button>
           )}
+          {!add ? (
+            <button
+              onClick={handleAdd}
+              className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+            >
+              <MdOutlineAddCircleOutline className='p-2' size={35} />
+              Add Exercise
+            </button>
+          ) : (
+            <button
+              onClick={handleAdd}
+              className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+            >
+              <MdOutlineAddCircleOutline className='p-2' size={35} />
+              Save
+            </button>
+          )}
         </div>
       </div>
       <div className='overflow-y-scroll overflow-x-scroll'>
@@ -140,46 +165,56 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
           <table className='border-collapse border border-green-300'>
             <thead>
               <tr>
-                <th className='border border-green-300 px-4 py-2'>Date</th>
-                <th className='border border-green-300 px-4 py-2'>
+                <th className='border border-green-300 px-6 py-5'>
                   Exercise Name
                 </th>
-                <th className='border border-green-300 px-4 py-2'>Sets</th>
-                <th className='border border-green-300 px-4 py-2'>Reps</th>
+                <th className='border border-green-300 px-6 py-5'>
+                  Repetitions
+                </th>
               </tr>
             </thead>
             <tbody>
-              {schedule?.exercises?.slice(0, 8).map((exercise) => (
-                <tr key={exercise.id}>
-                  <td className='border border-green-300 px-4 py-2'>
-                    {new Date(exercise.date).toLocaleDateString('en-US')}
+              {schedule?.exercises?.map((exerciseObj) => (
+                <tr key={exerciseObj.id}>
+                  <td className='border border-green-300 px-6'>
+                    <h1 className='hover:bg-[#f5fbde] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
+                      {exerciseObj.exercise.name}
+                    </h1>
                   </td>
-                  <td className='border border-green-300 px-4 py-2'>
-                    {exercise.exercise.name}
-                  </td>
-                  <td className='border border-green-300 px-4 py-2'>
-                    {!update ? (
-                      exercise && `${exercise.sets}`
-                    ) : (
-                      <input
-                        onChange={(e) => handleSetsChange(exercise.id, e)}
-                        type='text'
-                        className='border border-green-500'
-                        value={exercise && `${exercise.sets}`}
-                      />
-                    )}
-                  </td>
-                  <td className='border border-green-300 px-4 py-2'>
-                    {!update ? (
-                      exercise && `${exercise.reps}`
-                    ) : (
-                      <input
-                        onChange={(e) => handleRepsChange(exercise.id, e)}
-                        type='text'
-                        className='border border-green-500'
-                        value={exercise && `${exercise.reps}`}
-                      />
-                    )}
+                  <td className='border border-green-300 px-6 py-5'>
+                    <>
+                      <div className='flex'>
+                        <label className='px-4'>Sets: </label>
+                        {!update ? (
+                          `${exerciseObj.sets}`
+                        ) : (
+                          <input
+                            onChange={(e) =>
+                              handleSetsChange(exerciseObj.id, e)
+                            }
+                            type='text'
+                            className='border border-green-500 w-6'
+                            value={`${exerciseObj.sets}`}
+                          />
+                        )}
+                      </div>
+                      <br />
+                      <div className='flex'>
+                        <label className='px-4'>Reps: </label>
+                        {!update ? (
+                          `${exerciseObj.reps}`
+                        ) : (
+                          <input
+                            onChange={(e) =>
+                              handleRepsChange(exerciseObj.id, e)
+                            }
+                            type='text'
+                            className='border border-green-500 w-6'
+                            value={`${exerciseObj.reps}`}
+                          />
+                        )}
+                      </div>
+                    </>
                   </td>
                 </tr>
               ))}
