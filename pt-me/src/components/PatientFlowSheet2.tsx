@@ -136,44 +136,48 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
         </div>
       </div>
       <div className='overflow-y-scroll overflow-x-scroll'>
-        <table className='border-collapse border border-green-300'>
-          <thead>
-            <tr>
-              <th className='border border-green-300 px-4 py-2'>Date</th>
-              <th className='border border-green-300 px-4 py-2'>
-                Exercise Name
-              </th>
-              <th className='border border-green-300 px-4 py-2'>Sets</th>
-              <th className='border border-green-300 px-4 py-2'>Reps</th>
-            </tr>
-          </thead>
-          <tbody>
-            {schedule?.exercises?.slice(0, 8).map((exercise) => (
-              <tr key={exercise.id}>
-                <td className='border border-green-300 px-4 py-2'>
-                  {new Date(exercise.date).toLocaleDateString('en-US')}
-                </td>
-                <td className='border border-green-300 px-4 py-2'>
-                  {exercise.exercise.name}
-                </td>
-                <td className='border border-green-300 px-4 py-2'>
-                  <input
-                    type='number'
-                    value={exercise.sets}
-                    onChange={(e) => handleSetsChange(exercise.id, e)}
-                  />
-                </td>
-                <td className='border border-green-300 px-4 py-2'>
-                  <input
-                    type='number'
-                    value={exercise.reps}
-                    onChange={(e) => handleRepsChange(exercise.id, e)}
-                  />
-                </td>
+        {schedule?.id ? (
+          <table className='border-collapse border border-green-300'>
+            <thead>
+              <tr>
+                <th className='border border-green-300 px-4 py-2'>Date</th>
+                <th className='border border-green-300 px-4 py-2'>
+                  Exercise Name
+                </th>
+                <th className='border border-green-300 px-4 py-2'>Sets</th>
+                <th className='border border-green-300 px-4 py-2'>Reps</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {schedule?.exercises?.slice(0, 8).map((exercise) => (
+                <tr key={exercise.id}>
+                  <td className='border border-green-300 px-4 py-2'>
+                    {new Date(exercise.date).toLocaleDateString('en-US')}
+                  </td>
+                  <td className='border border-green-300 px-4 py-2'>
+                    {exercise.exercise.name}
+                  </td>
+                  <td className='border border-green-300 px-4 py-2'>
+                    <input
+                      type='number'
+                      value={exercise.sets}
+                      onChange={(e) => handleSetsChange(exercise.id, e)}
+                    />
+                  </td>
+                  <td className='border border-green-300 px-4 py-2'>
+                    <input
+                      type='number'
+                      value={exercise.reps}
+                      onChange={(e) => handleRepsChange(exercise.id, e)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className='mt-4 normal-case'>Make a schedule for patient.</div>
+        )}
       </div>
     </div>
   );
