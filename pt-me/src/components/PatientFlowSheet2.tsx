@@ -218,6 +218,35 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
                   </td>
                 </tr>
               ))}
+              {add && (
+                <tr>
+                  <td className='border border-green-300 px-6 text-center'>
+                    New Exercise
+                  </td>
+                  <td className='border border-green-300 px-6 py-5'>
+                    <>
+                      <div className='flex'>
+                        <label className='px-4'>Sets: </label>
+
+                        <input
+                          type='text'
+                          className='border border-green-500 w-6'
+                          value='3'
+                        />
+                      </div>
+                      <br />
+                      <div className='flex'>
+                        <label className='px-4'>Reps: </label>
+                        <input
+                          type='text'
+                          className='border border-green-500 w-6'
+                          value='10'
+                        />
+                      </div>
+                    </>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         ) : (
