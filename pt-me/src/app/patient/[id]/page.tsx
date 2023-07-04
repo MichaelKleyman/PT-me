@@ -24,6 +24,7 @@ import {
 import type { AppDispatch } from '@/Redux/store';
 import { useDispatch } from 'react-redux';
 import PatientFlowSheet from '@/components/PatientFlowSheet';
+import ExerciseTable from '@/components/PatientFlowSheet2';
 
 type Obj = {
   id: number;
@@ -249,7 +250,7 @@ export default function Patient({ params }: Params) {
             )}
           </div>
         </div>
-        <PatientFlowSheet patientId={params.id} />
+        <ExerciseTable patientId={params.id} />
       </div>
     </div>
   );

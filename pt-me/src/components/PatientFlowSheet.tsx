@@ -36,7 +36,11 @@ interface Schedule {
 }
 
 export default function PatientFlowSheet({ patientId }: Id) {
-  const [schedule, setSchedule] = useState<Schedule>();
+  const [schedule, setSchedule] = useState<Schedule>({
+    id: 0,
+    patientId,
+    exercises: [],
+  });
   const [update, setUpdate] = useState<boolean>(false);
 
   useEffect(() => {
