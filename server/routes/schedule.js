@@ -22,9 +22,9 @@ router.get('/patient/:patientId', async (req, res, next) => {
   }
 });
 
-//update a date for the specific Schedule Exercise id
+//update sets for the specific Schedule Exercise id
 router.put(
-  '/patient/:patientId/exercise/:scheduleExerciseId',
+  '/patient/:patientId/exercise-sets/:scheduleExerciseId',
   async (req, res, next) => {
     try {
       console.log(req.body);
@@ -42,9 +42,38 @@ router.put(
       // });
       // const targetExercise = exercise.exercises[0];
       // targetExercise.sets = req.body.sets;
+      // targetExercise.reps = req.body.reps;
       // await targetExercise.save();
       // res.send(targetExercise);
-      // res.send(exercise);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//update reps for the specific Schedule Exercise id
+router.put(
+  '/patient/:patientId/exercise-reps/:scheduleExerciseId',
+  async (req, res, next) => {
+    try {
+      console.log(req.body);
+      // const exercise = await Schedule.findOne({
+      //   where: {
+      //     patientId: req.params.patientId,
+      //   },
+      //   include: [
+      //     {
+      //       model: ScheduleExercise,
+      //       as: 'exercises',
+      //       where: { id: req.params.scheduleExerciseId },
+      //     },
+      //   ],
+      // });
+      // const targetExercise = exercise.exercises[0];
+      // targetExercise.sets = req.body.sets;
+      // targetExercise.reps = req.body.reps;
+      // await targetExercise.save();
+      // res.send(targetExercise);
     } catch (error) {
       next(error);
     }
