@@ -40,10 +40,21 @@ interface Props {
   patientId: number;
 }
 
+interface Repetitions {
+  sets: number;
+  reps: number;
+  id: number;
+}
+
 const ExerciseTable: React.FC<Props> = ({ patientId }) => {
   const [schedule, setSchedule] = useState<Schedule | undefined>(undefined);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
+  const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
+    sets: 0,
+    reps: 0,
+    id: 0,
+  });
 
   useEffect(() => {
     async function getSchedule() {
@@ -65,6 +76,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
 
   const handleSetsChange = async (
     exerciseId: number,
+    curSets: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!schedule) {
@@ -82,15 +94,17 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
 
     updatedSchedule.exercises[exerciseIndex].sets = Number(e.target.value);
     setSchedule(updatedSchedule);
-
-    await CLIENT.put(
-      `${BASE_URL}/api/schedule/patient/${patientId}/exercise/${exerciseId}`,
-      { sets: e.target.value }
-    );
+    setNewRepetitions({
+      ...newRepetitions,
+      // sets: Number(e.target.value),
+      sets: curSets,
+      id: exerciseId,
+    });
   };
 
   const handleRepsChange = async (
     exerciseId: number,
+    curReps: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!schedule) {
@@ -105,15 +119,49 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     if (exerciseIndex === -1) {
       return;
     }
-
     updatedSchedule.exercises[exerciseIndex].reps = Number(e.target.value);
     setSchedule(updatedSchedule);
-
-    await CLIENT.put(
-      `${BASE_URL}/api/schedule/patient/${patientId}/exercise/${exerciseId}`,
-      { reps: e.target.value }
-    );
+    setNewRepetitions({
+      ...newRepetitions,
+      // reps: Number(e.target.value),
+      reps: curReps,
+      id: exerciseId,
+    });
   };
+
+  const handleSubmitUpdate = async () => {
+    // if (newRepetitions.sets !== 0 || newRepetitions.reps !== 0) {
+    // await CLIENT.put(
+    //   `${BASE_URL}/api/schedule/patient/${patientId}/exercise/${newRepetitions.id}`,
+    //   { sets: newRepetitions.sets, reps: newRepetitions.reps }
+    // );
+    // }
+    if (newRepetitions.sets > 0 && newRepetitions.reps <= 0) {
+      await CLIENT.put(
+        `${BASE_URL}/api/schedule/patient/${patientId}/exercise-sets/${newRepetitions.id}`,
+        { sets: newRepetitions.sets }
+      );
+    } else if (newRepetitions.sets <= 0 && newRepetitions.reps > 0) {
+      await CLIENT.put(
+        `${BASE_URL}/api/schedule/patient/${patientId}/exercise-reps/${newRepetitions.id}`,
+        { reps: newRepetitions.reps }
+      );
+    } else if (newRepetitions.sets > 0 && newRepetitions.reps > 0) {
+      await CLIENT.put(
+        `${BASE_URL}/api/schedule/patient/${patientId}/exercise-sets/${newRepetitions.id}`,
+        { sets: newRepetitions.sets }
+      );
+      await CLIENT.put(
+        `${BASE_URL}/api/schedule/patient/${patientId}/exercise-reps/${newRepetitions.id}`,
+        { reps: newRepetitions.reps }
+      );
+    }
+    setUpdate(false);
+    console.log('done');
+  };
+
+  console.log(newRepetitions);
+  console.log(update);
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
@@ -134,7 +182,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
             </button>
           ) : (
             <button
-              onClick={handleUpdate}
+              onClick={handleSubmitUpdate}
               className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
             >
               <MdOutlineTipsAndUpdates className='p-2' size={35} />
@@ -177,7 +225,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
               {schedule?.exercises?.map((exerciseObj) => (
                 <tr key={exerciseObj.id}>
                   <td className='border border-green-300 px-6'>
-                    <h1 className='hover:bg-[#f5fbde] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
+                    <h1 className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
                       {exerciseObj.exercise.name}
                     </h1>
                   </td>
@@ -190,7 +238,11 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
                         ) : (
                           <input
                             onChange={(e) =>
-                              handleSetsChange(exerciseObj.id, e)
+                              handleSetsChange(
+                                exerciseObj.id,
+                                exerciseObj.sets,
+                                e
+                              )
                             }
                             type='text'
                             className='border border-green-500 w-6'
@@ -206,7 +258,11 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
                         ) : (
                           <input
                             onChange={(e) =>
-                              handleRepsChange(exerciseObj.id, e)
+                              handleRepsChange(
+                                exerciseObj.id,
+                                exerciseObj.reps,
+                                e
+                              )
                             }
                             type='text'
                             className='border border-green-500 w-6'
