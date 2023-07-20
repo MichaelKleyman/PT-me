@@ -136,6 +136,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     //   { sets: newRepetitions.sets, reps: newRepetitions.reps }
     // );
     // }
+
     if (newRepetitions.sets > 0 && newRepetitions.reps <= 0) {
       await CLIENT.put(
         `${BASE_URL}/api/schedule/patient/${patientId}/exercise-sets/${newRepetitions.id}`,
@@ -156,7 +157,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
         { reps: newRepetitions.reps }
       );
     }
-    setUpdate(false);
+    setUpdate(!update);
     console.log('done');
   };
 
