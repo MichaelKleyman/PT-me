@@ -98,7 +98,6 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     setSchedule(updatedSchedule);
     setNewRepetitions({
       ...newRepetitions,
-      // sets: Number(e.target.value),
       sets: Number(e.target.value),
       id: exerciseId,
     });
@@ -125,7 +124,6 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     setSchedule(updatedSchedule);
     setNewRepetitions({
       ...newRepetitions,
-      // reps: Number(e.target.value),
       reps: Number(e.target.value),
       id: exerciseId,
     });
@@ -156,8 +154,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     console.log("done");
   };
 
-  // console.log(newRepetitions);
-  // console.log(update);
+  console.log(schedule);
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
