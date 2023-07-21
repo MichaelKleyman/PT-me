@@ -29,6 +29,7 @@ import {
 } from "react-icons/md";
 import { FaExpand } from "react-icons/fa";
 import { CLIENT, BASE_URL } from "../../../components/api";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
 
@@ -95,7 +96,7 @@ interface Repetitions {
 
 export default function Patient({ params }: Params) {
   const [patient, setPatient] = useState<Patient>();
-  const [patientsExercises, setExercises] = useState<ExerciseData>();
+  const [patientsExercises, setExercises] = useState<ExerciseData[]>();
   const dispatch = useDispatch<AppDispatch>();
   const [schedule, setSchedule] = useState<Schedule | undefined>(undefined);
   const [update, setUpdate] = useState<boolean>(false);
@@ -114,7 +115,7 @@ export default function Patient({ params }: Params) {
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
       console.log(payload);
-      setExercises(payload as ExerciseData);
+      setExercises(payload as ExerciseData[]);
     }
     getPatient();
     getPatientExercises();
@@ -352,191 +353,203 @@ export default function Patient({ params }: Params) {
           </div>
         </div>
       </div>
-      <div className='flex mt-[1rem] gap-5'>
-        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll'>
-          <h1 className='text-lg uppercase tracking-widest'>Exercise List</h1>
-          <div className='mt-[1rem]'>
-            {patientsExercises?.length ? (
-              patientsExercises?.map((exercise: ExerciseData) => (
-                <div
-                  key={exercise.id}
-                  className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <h1 className='font-semibold'>{exercise.name}</h1>
-                  <div className='relative top-3 flex justify-evenly'>
-                    <Link
-                      href={`/exercises/${exercise.id}`}
-                      className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
-                    >
-                      <AiOutlineEye className='p-2' size={35} />
-                      View
-                    </Link>
-                    <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
-                      <FiDelete className='p-2' size={30} />
-                      Remove
-                    </button>
-                  </div>
+      <DragDropContext onDragEnd={() => {}}>
+        <div className='flex mt-[1rem] gap-5'>
+          <Droppable droppableId='exercise-list'>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll'
+              >
+                <h1 className='text-lg uppercase tracking-widest'>
+                  Exercise List
+                </h1>
+                <div className='mt-[1rem]'>
+                  {patientsExercises?.length ? (
+                    patientsExercises?.map((exercise: ExerciseData) => (
+                      <div
+                        key={exercise.id}
+                        className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
+                      >
+                        <h1 className='font-semibold'>{exercise.name}</h1>
+                        <div className='relative top-3 flex justify-evenly'>
+                          <Link
+                            href={`/exercises/${exercise.id}`}
+                            className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                          >
+                            <AiOutlineEye className='p-2' size={35} />
+                            View
+                          </Link>
+                          <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
+                            <FiDelete className='p-2' size={30} />
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className='m-3 p-7 tracking-widest text-center'>
+                      <p>No exercises for this patient.</p>
+                      <Link
+                        href='/exercises'
+                        className='text-blue-600 hover:underline'
+                      >
+                        View Exercises
+                      </Link>
+                    </div>
+                  )}
                 </div>
-              ))
-            ) : (
-              <div className='m-3 p-7 tracking-widest text-center'>
-                <p>No exercises for this patient.</p>
-                <Link
-                  href='/exercises'
-                  className='text-blue-600 hover:underline'
-                >
-                  View Exercises
-                </Link>
               </div>
             )}
-          </div>
-        </div>
-        {/* <ExerciseTable params.id={params.id} /> */}
-        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
-          <div className='flex items-center justify-between'>
-            <h1>Flow Sheet</h1>
-            <div className='flex justify-between items-center gap-2'>
-              <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
-                <FaExpand className='p-2' size={35} />
-                Expand
-              </button>
-              {!update ? (
-                <button
-                  onClick={handleUpdate}
-                  className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                  Update
+          </Droppable>
+          {/* <ExerciseTable params.id={params.id} /> */}
+          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
+            <div className='flex items-center justify-between'>
+              <h1>Flow Sheet</h1>
+              <div className='flex justify-between items-center gap-2'>
+                <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
+                  <FaExpand className='p-2' size={35} />
+                  Expand
                 </button>
-              ) : (
-                <button
-                  onClick={handleSubmitUpdate}
-                  className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                  Save
-                </button>
-              )}
-              {!add ? (
-                <button
-                  onClick={handleAdd}
-                  className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <MdOutlineAddCircleOutline className='p-2' size={35} />
-                  Add Exercise
-                </button>
-              ) : (
-                <button
-                  onClick={handleAdd}
-                  className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <MdOutlineAddCircleOutline className='p-2' size={35} />
-                  Save
-                </button>
-              )}
+                {!update ? (
+                  <button
+                    onClick={handleUpdate}
+                    className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                  >
+                    <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                    Update
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmitUpdate}
+                    className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                  >
+                    <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                    Save
+                  </button>
+                )}
+                {!add ? (
+                  <button
+                    onClick={handleAdd}
+                    className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                  >
+                    <MdOutlineAddCircleOutline className='p-2' size={35} />
+                    Add Exercise
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAdd}
+                    className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                  >
+                    <MdOutlineAddCircleOutline className='p-2' size={35} />
+                    Save
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <div className='overflow-y-scroll overflow-x-scroll'>
-            {schedule?.id ? (
-              <table className='border-collapse border border-green-300'>
-                <thead>
-                  <tr>
-                    <th className='border border-green-300 px-6 py-5'>
-                      Exercise Name
-                    </th>
-                    <th className='border border-green-300 px-6 py-5'>
-                      Repetitions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {schedule?.exercises
-                    ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
-                    .map((exerciseObj) => (
-                      <tr key={exerciseObj.id}>
-                        <td className='border border-green-300 px-6'>
-                          <h1 className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
-                            {exerciseObj.exercise.name}
-                          </h1>
-                        </td>
+            <div className='overflow-y-scroll overflow-x-scroll'>
+              {schedule?.id ? (
+                <table className='border-collapse border border-green-300'>
+                  <thead>
+                    <tr>
+                      <th className='border border-green-300 px-6 py-5'>
+                        Exercise Name
+                      </th>
+                      <th className='border border-green-300 px-6 py-5'>
+                        Repetitions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {schedule?.exercises
+                      ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
+                      .map((exerciseObj) => (
+                        <tr key={exerciseObj.id}>
+                          <td className='border border-green-300 px-6'>
+                            <h1 className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
+                              {exerciseObj.exercise.name}
+                            </h1>
+                          </td>
+                          <td className='border border-green-300 px-6 py-5'>
+                            <>
+                              <div className='flex'>
+                                <label className='px-4'>Sets: </label>
+                                {!update ? (
+                                  `${exerciseObj.sets}`
+                                ) : (
+                                  <input
+                                    onChange={(e) =>
+                                      handleSetsChange(exerciseObj.id, e)
+                                    }
+                                    type='text'
+                                    className='border border-green-500 w-6'
+                                    value={`${exerciseObj.sets}`}
+                                  />
+                                )}
+                              </div>
+                              <br />
+                              <div className='flex'>
+                                <label className='px-4'>Reps: </label>
+                                {!update ? (
+                                  `${exerciseObj.reps}`
+                                ) : (
+                                  <input
+                                    onChange={(e) =>
+                                      handleRepsChange(
+                                        exerciseObj.id,
+                                        exerciseObj.reps,
+                                        e
+                                      )
+                                    }
+                                    type='text'
+                                    className='border border-green-500 w-6'
+                                    value={`${exerciseObj.reps}`}
+                                  />
+                                )}
+                              </div>
+                            </>
+                          </td>
+                        </tr>
+                      ))}
+                    {add && (
+                      <tr>
+                        <td className='border border-green-300 px-6 text-center'></td>
                         <td className='border border-green-300 px-6 py-5'>
                           <>
                             <div className='flex'>
                               <label className='px-4'>Sets: </label>
-                              {!update ? (
-                                `${exerciseObj.sets}`
-                              ) : (
-                                <input
-                                  onChange={(e) =>
-                                    handleSetsChange(exerciseObj.id, e)
-                                  }
-                                  type='text'
-                                  className='border border-green-500 w-6'
-                                  value={`${exerciseObj.sets}`}
-                                />
-                              )}
+
+                              <input
+                                type='text'
+                                className='border border-green-500 w-6'
+                                value='3'
+                              />
                             </div>
                             <br />
                             <div className='flex'>
                               <label className='px-4'>Reps: </label>
-                              {!update ? (
-                                `${exerciseObj.reps}`
-                              ) : (
-                                <input
-                                  onChange={(e) =>
-                                    handleRepsChange(
-                                      exerciseObj.id,
-                                      exerciseObj.reps,
-                                      e
-                                    )
-                                  }
-                                  type='text'
-                                  className='border border-green-500 w-6'
-                                  value={`${exerciseObj.reps}`}
-                                />
-                              )}
+                              <input
+                                type='text'
+                                className='border border-green-500 w-6'
+                                value='10'
+                              />
                             </div>
                           </>
                         </td>
                       </tr>
-                    ))}
-                  {add && (
-                    <tr>
-                      <td className='border border-green-300 px-6 text-center'></td>
-                      <td className='border border-green-300 px-6 py-5'>
-                        <>
-                          <div className='flex'>
-                            <label className='px-4'>Sets: </label>
-
-                            <input
-                              type='text'
-                              className='border border-green-500 w-6'
-                              value='3'
-                            />
-                          </div>
-                          <br />
-                          <div className='flex'>
-                            <label className='px-4'>Reps: </label>
-                            <input
-                              type='text'
-                              className='border border-green-500 w-6'
-                              value='10'
-                            />
-                          </div>
-                        </>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <div className='mt-4 normal-case'>
-                Make a schedule for patient.
-              </div>
-            )}
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <div className='mt-4 normal-case'>
+                  Make a schedule for patient.
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </DragDropContext>
     </div>
   );
 }
