@@ -29,7 +29,12 @@ import {
 } from "react-icons/md";
 import { FaExpand } from "react-icons/fa";
 import { CLIENT, BASE_URL } from "../../../components/api";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
 
@@ -254,6 +259,30 @@ export default function Patient({ params }: Params) {
   console.log("Exercise List: ", patientsExercises);
   console.log("Flow sheet Exercises: ", schedule?.exercises);
 
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination } = result;
+    console.log(result);
+
+    if (!destination) return;
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    let add;
+    let exerciseList = patientsExercises;
+    let patientFlowSheet = schedule?.exercises;
+
+    console.log(exerciseList);
+
+    // if (source.droppableId === "exercise-list") {
+    //   add = exerciseList?.[source.index];
+    //   exerciseList?.splice(source.index, 1);
+    // }
+  };
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -353,7 +382,7 @@ export default function Patient({ params }: Params) {
           </div>
         </div>
       </div>
-      <DragDropContext onDragEnd={() => {}}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <div className='flex mt-[1rem] gap-5'>
           <Droppable droppableId='exercise-list'>
             {(provided) => (
@@ -367,26 +396,37 @@ export default function Patient({ params }: Params) {
                 </h1>
                 <div className='mt-[1rem]'>
                   {patientsExercises?.length ? (
-                    patientsExercises?.map((exercise: ExerciseData) => (
-                      <div
+                    patientsExercises?.map((exercise: ExerciseData, index) => (
+                      <Draggable
                         key={exercise.id}
-                        className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
+                        draggableId={exercise.id.toString()}
+                        index={index}
                       >
-                        <h1 className='font-semibold'>{exercise.name}</h1>
-                        <div className='relative top-3 flex justify-evenly'>
-                          <Link
-                            href={`/exercises/${exercise.id}`}
-                            className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                        {(provided) => (
+                          <div
+                            // key={exercise.id}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                            className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
                           >
-                            <AiOutlineEye className='p-2' size={35} />
-                            View
-                          </Link>
-                          <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
-                            <FiDelete className='p-2' size={30} />
-                            Remove
-                          </button>
-                        </div>
-                      </div>
+                            <h1 className='font-semibold'>{exercise.name}</h1>
+                            <div className='relative top-3 flex justify-evenly'>
+                              <Link
+                                href={`/exercises/${exercise.id}`}
+                                className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                              >
+                                <AiOutlineEye className='p-2' size={35} />
+                                View
+                              </Link>
+                              <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
+                                <FiDelete className='p-2' size={30} />
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
                     ))
                   ) : (
                     <div className='m-3 p-7 tracking-widest text-center'>
@@ -399,12 +439,19 @@ export default function Patient({ params }: Params) {
                       </Link>
                     </div>
                   )}
+                  {provided.placeholder}
                 </div>
               </div>
             )}
           </Droppable>
           {/* <ExerciseTable params.id={params.id} /> */}
-          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
+          {/* <Droppable droppableId='patient-flowsheet'>
+            {(provided) => ( */}
+          <div
+            // ref={provided.innerRef}
+            // {...provided.droppableProps}
+            className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'
+          >
             <div className='flex items-center justify-between'>
               <h1>Flow Sheet</h1>
               <div className='flex justify-between items-center gap-2'>
@@ -514,7 +561,18 @@ export default function Patient({ params }: Params) {
                       ))}
                     {add && (
                       <tr>
-                        <td className='border border-green-300 px-6 text-center'></td>
+                        <Droppable droppableId='patient-flowsheet'>
+                          {(provided) => (
+                            <div>
+                              <td
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className='border border-green-300 px-6 text-center'
+                              ></td>
+                              {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
                         <td className='border border-green-300 px-6 py-5'>
                           <>
                             <div className='flex'>
@@ -548,6 +606,8 @@ export default function Patient({ params }: Params) {
               )}
             </div>
           </div>
+          {/* )}
+          </Droppable> */}
         </div>
       </DragDropContext>
     </div>
