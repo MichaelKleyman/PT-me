@@ -250,6 +250,9 @@ export default function Patient({ params }: Params) {
     console.log("done");
   };
 
+  console.log("Exercise List: ", patientsExercises);
+  console.log("Flow sheet Exercises: ", schedule?.exercises);
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -499,9 +502,7 @@ export default function Patient({ params }: Params) {
                     ))}
                   {add && (
                     <tr>
-                      <td className='border border-green-300 px-6 text-center'>
-                        New Exercise
-                      </td>
+                      <td className='border border-green-300 px-6 text-center'></td>
                       <td className='border border-green-300 px-6 py-5'>
                         <>
                           <div className='flex'>
