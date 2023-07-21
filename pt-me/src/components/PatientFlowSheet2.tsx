@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   MdOutlineTipsAndUpdates,
   MdOutlineAddCircleOutline,
-} from 'react-icons/md';
-import { FaExpand } from 'react-icons/fa';
-import { CLIENT, BASE_URL } from './api';
+} from "react-icons/md";
+import { FaExpand } from "react-icons/fa";
+import { CLIENT, BASE_URL } from "./api";
 
 interface Exercise {
   id: number;
@@ -76,7 +76,6 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
 
   const handleSetsChange = async (
     exerciseId: number,
-    curSets: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!schedule) {
@@ -93,11 +92,14 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     }
 
     updatedSchedule.exercises[exerciseIndex].sets = Number(e.target.value);
+
+    console.log("New sets", Number(e.target.value));
+
     setSchedule(updatedSchedule);
     setNewRepetitions({
       ...newRepetitions,
       // sets: Number(e.target.value),
-      sets: curSets,
+      sets: Number(e.target.value),
       id: exerciseId,
     });
   };
@@ -136,7 +138,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     //   { sets: newRepetitions.sets, reps: newRepetitions.reps }
     // );
     // }
-
+    setUpdate(!update);
     if (newRepetitions.sets > 0 && newRepetitions.reps <= 0) {
       await CLIENT.put(
         `${BASE_URL}/api/schedule/patient/${patientId}/exercise-sets/${newRepetitions.id}`,
@@ -157,12 +159,11 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
         { reps: newRepetitions.reps }
       );
     }
-    setUpdate(!update);
-    console.log('done');
+    console.log("done");
   };
 
-  console.log(newRepetitions);
-  console.log(update);
+  // console.log(newRepetitions);
+  // console.log(update);
 
   return (
     <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
@@ -239,11 +240,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
                         ) : (
                           <input
                             onChange={(e) =>
-                              handleSetsChange(
-                                exerciseObj.id,
-                                exerciseObj.sets,
-                                e
-                              )
+                              handleSetsChange(exerciseObj.id, e)
                             }
                             type='text'
                             className='border border-green-500 w-6'
