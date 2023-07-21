@@ -126,18 +126,12 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
     setNewRepetitions({
       ...newRepetitions,
       // reps: Number(e.target.value),
-      reps: curReps,
+      reps: Number(e.target.value),
       id: exerciseId,
     });
   };
 
   const handleSubmitUpdate = async () => {
-    // if (newRepetitions.sets !== 0 || newRepetitions.reps !== 0) {
-    // await CLIENT.put(
-    //   `${BASE_URL}/api/schedule/patient/${patientId}/exercise/${newRepetitions.id}`,
-    //   { sets: newRepetitions.sets, reps: newRepetitions.reps }
-    // );
-    // }
     setUpdate(!update);
     if (newRepetitions.sets > 0 && newRepetitions.reps <= 0) {
       await CLIENT.put(
