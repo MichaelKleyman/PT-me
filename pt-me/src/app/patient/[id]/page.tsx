@@ -77,7 +77,7 @@ interface Exercise {
   id: number;
   scheduleId: number;
   exerciseId: number;
-  date: string;
+  // date: string;
   sets: number;
   reps: number;
   createdAt: string;
@@ -85,13 +85,13 @@ interface Exercise {
   exercise: ExerciseData;
 }
 
-interface Schedule {
-  id: number;
-  patientId: number;
-  createdAt: string;
-  updatedAt: string;
-  exercises: Exercise[];
-}
+// interface Schedule {
+//   id: number;
+//   patientId: number;
+//   createdAt: string;
+//   updatedAt: string;
+//   exercises: Exercise[];
+// }
 
 interface Repetitions {
   sets: number;
@@ -103,7 +103,7 @@ export default function Patient({ params }: Params) {
   const [patient, setPatient] = useState<Patient>();
   const [patientsExercises, setExercises] = useState<ExerciseData[]>();
   const dispatch = useDispatch<AppDispatch>();
-  const [schedule, setSchedule] = useState<Schedule | undefined>(undefined);
+  const [schedule, setSchedule] = useState<Exercise[] | undefined>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
@@ -160,10 +160,13 @@ export default function Patient({ params }: Params) {
 
   useEffect(() => {
     async function getSchedule() {
-      const { data } = await CLIENT.get<Schedule>(
+      const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${params.id}`
       );
-      setSchedule(data);
+      // console.log(data);
+      // console.log(data.exercises);
+      let exercises = data.exercises;
+      setSchedule(exercises);
     }
     getSchedule();
   }, [params.id]);
@@ -184,8 +187,9 @@ export default function Patient({ params }: Params) {
       return;
     }
 
-    const updatedSchedule = { ...schedule };
-    const exerciseIndex = updatedSchedule.exercises.findIndex(
+    const updatedSchedule = schedule;
+
+    const exerciseIndex = updatedSchedule.findIndex(
       (ex) => ex.id === exerciseId
     );
 
@@ -193,7 +197,7 @@ export default function Patient({ params }: Params) {
       return;
     }
 
-    updatedSchedule.exercises[exerciseIndex].sets = Number(e.target.value);
+    updatedSchedule[exerciseIndex].sets = Number(e.target.value);
 
     console.log("New sets", Number(e.target.value));
 
@@ -214,15 +218,15 @@ export default function Patient({ params }: Params) {
       return;
     }
 
-    const updatedSchedule = { ...schedule };
-    const exerciseIndex = updatedSchedule.exercises.findIndex(
+    const updatedSchedule = schedule;
+    const exerciseIndex = updatedSchedule.findIndex(
       (ex) => ex.id === exerciseId
     );
 
     if (exerciseIndex === -1) {
       return;
     }
-    updatedSchedule.exercises[exerciseIndex].reps = Number(e.target.value);
+    updatedSchedule[exerciseIndex].reps = Number(e.target.value);
     setSchedule(updatedSchedule);
     setNewRepetitions({
       ...newRepetitions,
@@ -257,7 +261,7 @@ export default function Patient({ params }: Params) {
   };
 
   console.log("Exercise List: ", patientsExercises);
-  console.log("Flow sheet Exercises: ", schedule?.exercises);
+  console.log("Flow sheet Exercises: ", schedule);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -272,15 +276,42 @@ export default function Patient({ params }: Params) {
       return;
 
     let add;
-    let exerciseList = patientsExercises;
-    let patientFlowSheet = schedule?.exercises;
+    let exerciseList = patientsExercises ?? [];
+    let patientFlowSheet = schedule ?? [];
 
     console.log(exerciseList);
 
-    // if (source.droppableId === "exercise-list") {
-    //   add = exerciseList?.[source.index];
-    //   exerciseList?.splice(source.index, 1);
-    // }
+    if (source.droppableId === "exercise-list") {
+      add = exerciseList?.[source.index];
+      // exerciseList?.splice(source.index, 1);
+      const updatedExerciseList = exerciseList
+        ? [
+            ...exerciseList.slice(0, source.index),
+            ...exerciseList.slice(source.index + 1),
+          ]
+        : [];
+      setExercises(updatedExerciseList);
+    } else {
+      add = patientFlowSheet?.[source.index];
+      // patientFlowSheet?.splice(source.index, 1);
+      const updatedPatientFlowSheet = patientFlowSheet
+        ? [
+            ...patientFlowSheet.slice(0, source.index),
+            ...patientFlowSheet.slice(source.index + 1),
+          ]
+        : [];
+      setSchedule(updatedPatientFlowSheet);
+    }
+
+    if (destination.droppableId === "exercise-list") {
+      exerciseList?.splice(destination.index, 1, add);
+    } else {
+      console.log(add);
+      patientFlowSheet?.splice(destination.index, 1, add);
+    }
+
+    setExercises(exerciseList);
+    setSchedule(patientFlowSheet);
   };
 
   return (
@@ -496,7 +527,7 @@ export default function Patient({ params }: Params) {
               </div>
             </div>
             <div className='overflow-y-scroll overflow-x-scroll'>
-              {schedule?.id ? (
+              {schedule?.length ? (
                 <table className='border-collapse border border-green-300'>
                   <thead>
                     <tr>
@@ -509,13 +540,13 @@ export default function Patient({ params }: Params) {
                     </tr>
                   </thead>
                   <tbody>
-                    {schedule?.exercises
+                    {schedule
                       ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
                       .map((exerciseObj) => (
                         <tr key={exerciseObj.id}>
                           <td className='border border-green-300 px-6'>
                             <h1 className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
-                              {exerciseObj.exercise.name}
+                              {exerciseObj.exercise?.name}
                             </h1>
                           </td>
                           <td className='border border-green-300 px-6 py-5'>
