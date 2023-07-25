@@ -75,13 +75,13 @@ interface ExerciseData {
 
 interface Exercise {
   id: number;
-  scheduleId: number;
+  scheduleId: number | undefined;
   exerciseId: number;
   // date: string;
   sets: number;
   reps: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   exercise: ExerciseData;
 }
 
@@ -265,7 +265,7 @@ export default function Patient({ params }: Params) {
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-    console.log(result);
+    console.log("Result: ", result);
 
     if (!destination) return;
 
@@ -275,15 +275,13 @@ export default function Patient({ params }: Params) {
     )
       return;
 
-    let add;
+    let add: ExerciseData;
     let exerciseList = patientsExercises ?? [];
     let patientFlowSheet = schedule ?? [];
 
-    console.log(exerciseList);
-
     if (source.droppableId === "exercise-list") {
       add = exerciseList?.[source.index];
-      // exerciseList?.splice(source.index, 1);
+      exerciseList?.splice(source.index, 1);
       const updatedExerciseList = exerciseList
         ? [
             ...exerciseList.slice(0, source.index),
@@ -292,22 +290,35 @@ export default function Patient({ params }: Params) {
         : [];
       setExercises(updatedExerciseList);
     } else {
-      add = patientFlowSheet?.[source.index];
+      add = patientFlowSheet?.[source.index] as any;
       // patientFlowSheet?.splice(source.index, 1);
-      const updatedPatientFlowSheet = patientFlowSheet
-        ? [
-            ...patientFlowSheet.slice(0, source.index),
-            ...patientFlowSheet.slice(source.index + 1),
-          ]
-        : [];
-      setSchedule(updatedPatientFlowSheet);
+      // const updatedPatientFlowSheet = patientFlowSheet
+      //   ? [
+      //       ...patientFlowSheet.slice(0, source.index),
+      //       ...patientFlowSheet.slice(source.index + 1),
+      //     ]
+      //   : [];
+      // setSchedule(updatedPatientFlowSheet);
     }
 
     if (destination.droppableId === "exercise-list") {
-      exerciseList?.splice(destination.index, 1, add);
+      exerciseList = [...exerciseList];
+      exerciseList.splice(destination.index, 1, add);
     } else {
-      console.log(add);
-      patientFlowSheet?.splice(destination.index, 1, add);
+      const newExercise = {
+        id: patientFlowSheet.length + 1,
+        exerciseId: add.id,
+        scheduleId: schedule?.[0].scheduleId,
+        sets: 3,
+        reps: 10,
+        exercise: add,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      exerciseList = [...exerciseList];
+      patientFlowSheet = [...patientFlowSheet];
+      exerciseList.splice(source.index, 1);
+      patientFlowSheet.splice(destination.index, 0, newExercise);
     }
 
     setExercises(exerciseList);
