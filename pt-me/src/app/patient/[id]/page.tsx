@@ -281,6 +281,7 @@ export default function Patient({ params }: Params) {
 
     if (source.droppableId === "exercise-list") {
       add = exerciseList?.[source.index];
+      exerciseList = [...exerciseList];
       exerciseList?.splice(source.index, 1);
       const updatedExerciseList = exerciseList
         ? [
@@ -323,6 +324,7 @@ export default function Patient({ params }: Params) {
 
     setExercises(exerciseList);
     setSchedule(patientFlowSheet);
+    setAddExercise(false);
   };
 
   return (
