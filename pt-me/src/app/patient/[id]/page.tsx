@@ -263,68 +263,112 @@ export default function Patient({ params }: Params) {
   console.log("Exercise List: ", patientsExercises);
   console.log("Flow sheet Exercises: ", schedule);
 
+  // const onDragEnd = (result: DropResult) => {
+  //   const { source, destination } = result;
+  //   console.log("Result: ", result);
+
+  //   if (!destination) return;
+
+  //   if (
+  //     destination.droppableId === source.droppableId &&
+  //     destination.index === source.index
+  //   )
+  //     return;
+
+  //   let add: ExerciseData;
+  //   let exerciseList = patientsExercises ?? [];
+  //   let patientFlowSheet = schedule ?? [];
+
+  //   if (source.droppableId === "exercise-list") {
+  //     add = exerciseList?.[source.index];
+  //     exerciseList = [...exerciseList];
+  //     exerciseList?.splice(source.index, 1);
+  //     const updatedExerciseList = exerciseList
+  //       ? [
+  //           ...exerciseList.slice(0, source.index),
+  //           ...exerciseList.slice(source.index + 1),
+  //         ]
+  //       : [];
+  //     setExercises(updatedExerciseList);
+  //   } else {
+  //     add = patientFlowSheet?.[source.index] as any;
+  //   }
+
+  //   if (destination.droppableId === "exercise-list") {
+  //     exerciseList = [...exerciseList];
+  //     exerciseList.splice(destination.index, 1, add);
+  //   } else {
+  // const newExercise = {
+  //   id: destination.index,
+  //   exerciseId: add.id,
+  //   scheduleId: schedule?.[0].scheduleId,
+  //   sets: 3,
+  //   reps: 10,
+  //   exercise: add,
+  //   createdAt: new Date(),
+  //   updatedAt: new Date(),
+  // };
+  //     exerciseList = [...exerciseList];
+  //     patientFlowSheet = [...patientFlowSheet];
+  //     exerciseList.splice(source.index, 1);
+  //     patientFlowSheet.splice(destination.index, 0, newExercise);
+  //   }
+
+  //   setExercises(exerciseList);
+  //   setSchedule(patientFlowSheet);
+  //   setAddExercise(false);
+  // };
   const onDragEnd = (result: DropResult) => {
+    console.log(result);
     const { source, destination } = result;
-    console.log("Result: ", result);
 
     if (!destination) return;
-
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     )
       return;
 
-    let add: ExerciseData;
+    let add;
     let exerciseList = patientsExercises ?? [];
     let patientFlowSheet = schedule ?? [];
 
     if (source.droppableId === "exercise-list") {
-      add = exerciseList?.[source.index];
+      add = exerciseList[source.index];
       exerciseList = [...exerciseList];
       exerciseList?.splice(source.index, 1);
-      const updatedExerciseList = exerciseList
-        ? [
-            ...exerciseList.slice(0, source.index),
-            ...exerciseList.slice(source.index + 1),
-          ]
-        : [];
-      setExercises(updatedExerciseList);
     } else {
-      add = patientFlowSheet?.[source.index] as any;
-      // patientFlowSheet?.splice(source.index, 1);
-      // const updatedPatientFlowSheet = patientFlowSheet
-      //   ? [
-      //       ...patientFlowSheet.slice(0, source.index),
-      //       ...patientFlowSheet.slice(source.index + 1),
-      //     ]
-      //   : [];
-      // setSchedule(updatedPatientFlowSheet);
+      add = patientFlowSheet[source.index] as any;
+      patientFlowSheet.splice(source.index, 1);
     }
 
     if (destination.droppableId === "exercise-list") {
-      exerciseList = [...exerciseList];
-      exerciseList.splice(destination.index, 1, add);
-    } else {
-      const newExercise = {
-        id: patientFlowSheet.length + 1,
-        exerciseId: add.id,
-        scheduleId: schedule?.[0].scheduleId,
-        sets: 3,
-        reps: 10,
-        exercise: add,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      exerciseList = [...exerciseList];
-      patientFlowSheet = [...patientFlowSheet];
-      exerciseList.splice(source.index, 1);
-      patientFlowSheet.splice(destination.index, 0, newExercise);
-    }
+      console.log("ADD: ", add);
 
+      if (source.droppableId === "patient-flowsheet") {
+        exerciseList?.splice(destination.index, 0, add.exercise);
+      } else {
+        exerciseList.splice(destination.index, 0, add);
+      }
+    } else {
+      if (source.droppableId === "patient-flowsheet") {
+        patientFlowSheet.splice(destination.index, 0, add);
+      } else {
+        const newExercise = {
+          id: destination.index,
+          exerciseId: add.id,
+          scheduleId: schedule?.[0].scheduleId,
+          sets: 3,
+          reps: 10,
+          exercise: add,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        patientFlowSheet.splice(destination.index, 0, newExercise);
+      }
+    }
     setExercises(exerciseList);
     setSchedule(patientFlowSheet);
-    setAddExercise(false);
   };
 
   return (
@@ -520,7 +564,7 @@ export default function Patient({ params }: Params) {
                     Save
                   </button>
                 )}
-                {!add ? (
+                {/* {!add ? (
                   <button
                     onClick={handleAdd}
                     className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
@@ -536,7 +580,7 @@ export default function Patient({ params }: Params) {
                     <MdOutlineAddCircleOutline className='p-2' size={35} />
                     Save
                   </button>
-                )}
+                )} */}
               </div>
             </div>
             <div className='overflow-y-scroll overflow-x-scroll'>
@@ -552,58 +596,81 @@ export default function Patient({ params }: Params) {
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {schedule
-                      ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
-                      .map((exerciseObj) => (
-                        <tr key={exerciseObj.id}>
-                          <td className='border border-green-300 px-6'>
-                            <h1 className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-8 duration-300 hover:scale-110 cursor-pointer'>
-                              {exerciseObj.exercise?.name}
-                            </h1>
-                          </td>
-                          <td className='border border-green-300 px-6 py-5'>
-                            <>
-                              <div className='flex'>
-                                <label className='px-4'>Sets: </label>
-                                {!update ? (
-                                  `${exerciseObj.sets}`
-                                ) : (
-                                  <input
-                                    onChange={(e) =>
-                                      handleSetsChange(exerciseObj.id, e)
-                                    }
-                                    type='text'
-                                    className='border border-green-500 w-6'
-                                    value={`${exerciseObj.sets}`}
-                                  />
-                                )}
-                              </div>
-                              <br />
-                              <div className='flex'>
-                                <label className='px-4'>Reps: </label>
-                                {!update ? (
-                                  `${exerciseObj.reps}`
-                                ) : (
-                                  <input
-                                    onChange={(e) =>
-                                      handleRepsChange(
-                                        exerciseObj.id,
-                                        exerciseObj.reps,
-                                        e
-                                      )
-                                    }
-                                    type='text'
-                                    className='border border-green-500 w-6'
-                                    value={`${exerciseObj.reps}`}
-                                  />
-                                )}
-                              </div>
-                            </>
-                          </td>
-                        </tr>
-                      ))}
-                    {add && (
+                  <Droppable droppableId='patient-flowsheet'>
+                    {(provided) => (
+                      <tbody
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        {schedule
+                          // ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
+                          .map((exerciseObj, index) => (
+                            <Draggable
+                              key={exerciseObj.id}
+                              draggableId={exerciseObj.id.toString()}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <tr
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                  className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg
+                                  duration-300 hover:scale-110 cursor-pointer'
+                                >
+                                  <td className='border border-green-300 px-6'>
+                                    <h1 className='p-8'>
+                                      {exerciseObj.exercise?.name}
+                                    </h1>
+                                  </td>
+                                  <td className='border border-green-300 px-6 py-5'>
+                                    <>
+                                      <div className='flex'>
+                                        <label className='px-4'>Sets: </label>
+                                        {!update ? (
+                                          `${exerciseObj.sets}`
+                                        ) : (
+                                          <input
+                                            onChange={(e) =>
+                                              handleSetsChange(
+                                                exerciseObj.id,
+                                                e
+                                              )
+                                            }
+                                            type='text'
+                                            className='border border-green-500 w-6'
+                                            value={`${exerciseObj.sets}`}
+                                          />
+                                        )}
+                                      </div>
+                                      <br />
+                                      <div className='flex'>
+                                        <label className='px-4'>Reps: </label>
+                                        {!update ? (
+                                          `${exerciseObj.reps}`
+                                        ) : (
+                                          <input
+                                            onChange={(e) =>
+                                              handleRepsChange(
+                                                exerciseObj.id,
+                                                exerciseObj.reps,
+                                                e
+                                              )
+                                            }
+                                            type='text'
+                                            className='border border-green-500 w-6'
+                                            value={`${exerciseObj.reps}`}
+                                          />
+                                        )}
+                                      </div>
+                                    </>
+                                  </td>
+                                </tr>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                        {/* {add && (
                       <tr>
                         <Droppable droppableId='patient-flowsheet'>
                           {(provided) => (
@@ -640,8 +707,10 @@ export default function Patient({ params }: Params) {
                           </>
                         </td>
                       </tr>
+                    )} */}
+                      </tbody>
                     )}
-                  </tbody>
+                  </Droppable>
                 </table>
               ) : (
                 <div className='mt-4 normal-case'>
