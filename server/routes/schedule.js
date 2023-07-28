@@ -80,4 +80,9 @@ router.put(
   }
 );
 
+//add patients exercise to the patients flowsheet
+router.post('/patient/:patientId/new-exercise', async (req, res, next) => {
+  
+})
+
 module.exports = router;
