@@ -163,8 +163,7 @@ export default function Patient({ params }: Params) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${params.id}`
       );
-      // console.log(data);
-      // console.log(data.exercises);
+     
       let exercises = data.exercises;
       setSchedule(exercises);
     }
@@ -257,67 +256,11 @@ export default function Patient({ params }: Params) {
         { reps: newRepetitions.reps }
       );
     }
-    console.log("done");
   };
 
   console.log("Exercise List: ", patientsExercises);
   console.log("Flow sheet Exercises: ", schedule);
 
-  // const onDragEnd = (result: DropResult) => {
-  //   const { source, destination } = result;
-  //   console.log("Result: ", result);
-
-  //   if (!destination) return;
-
-  //   if (
-  //     destination.droppableId === source.droppableId &&
-  //     destination.index === source.index
-  //   )
-  //     return;
-
-  //   let add: ExerciseData;
-  //   let exerciseList = patientsExercises ?? [];
-  //   let patientFlowSheet = schedule ?? [];
-
-  //   if (source.droppableId === "exercise-list") {
-  //     add = exerciseList?.[source.index];
-  //     exerciseList = [...exerciseList];
-  //     exerciseList?.splice(source.index, 1);
-  //     const updatedExerciseList = exerciseList
-  //       ? [
-  //           ...exerciseList.slice(0, source.index),
-  //           ...exerciseList.slice(source.index + 1),
-  //         ]
-  //       : [];
-  //     setExercises(updatedExerciseList);
-  //   } else {
-  //     add = patientFlowSheet?.[source.index] as any;
-  //   }
-
-  //   if (destination.droppableId === "exercise-list") {
-  //     exerciseList = [...exerciseList];
-  //     exerciseList.splice(destination.index, 1, add);
-  //   } else {
-  // const newExercise = {
-  //   id: destination.index,
-  //   exerciseId: add.id,
-  //   scheduleId: schedule?.[0].scheduleId,
-  //   sets: 3,
-  //   reps: 10,
-  //   exercise: add,
-  //   createdAt: new Date(),
-  //   updatedAt: new Date(),
-  // };
-  //     exerciseList = [...exerciseList];
-  //     patientFlowSheet = [...patientFlowSheet];
-  //     exerciseList.splice(source.index, 1);
-  //     patientFlowSheet.splice(destination.index, 0, newExercise);
-  //   }
-
-  //   setExercises(exerciseList);
-  //   setSchedule(patientFlowSheet);
-  //   setAddExercise(false);
-  // };
   const onDragEnd = (result: DropResult) => {
     console.log(result);
     const { source, destination } = result;
@@ -585,15 +528,11 @@ export default function Patient({ params }: Params) {
             </div>
             <div className='overflow-y-scroll overflow-x-scroll'>
               {schedule?.length ? (
-                <table className='border-collapse border border-green-300'>
+                <table className='border-collapse '>
                   <thead>
                     <tr>
-                      <th className='border border-green-300 px-6 py-5'>
-                        Exercise Name
-                      </th>
-                      <th className='border border-green-300 px-6 py-5'>
-                        Repetitions
-                      </th>
+                      <th className=' px-6 py-5'>Exercise Name</th>
+                      <th className=' px-6 py-5'>Repetitions</th>
                     </tr>
                   </thead>
                   <Droppable droppableId='patient-flowsheet'>
@@ -615,15 +554,15 @@ export default function Patient({ params }: Params) {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   ref={provided.innerRef}
-                                  className='hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg
+                                  className='hover:bg-[#fdfff5] shadow-lg shadow-gray-300  hover:shadow-gray-500 rounded-lg
                                   duration-300 hover:scale-110 cursor-pointer'
                                 >
-                                  <td className='border border-green-300 px-6'>
+                                  <td className=' px-6'>
                                     <h1 className='p-8'>
                                       {exerciseObj.exercise?.name}
                                     </h1>
                                   </td>
-                                  <td className='border border-green-300 px-6 py-5'>
+                                  <td className=' px-6 py-5'>
                                     <>
                                       <div className='flex'>
                                         <label className='px-4'>Sets: </label>
@@ -658,7 +597,7 @@ export default function Patient({ params }: Params) {
                                               )
                                             }
                                             type='text'
-                                            className='border border-green-500 w-6'
+                                            className=' w-6'
                                             value={`${exerciseObj.reps}`}
                                           />
                                         )}
@@ -678,7 +617,7 @@ export default function Patient({ params }: Params) {
                               <td
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
-                                className='border border-green-300 px-6 text-center'
+                                className=' px-6 text-center'
                               ></td>
                               {provided.placeholder}
                             </div>
