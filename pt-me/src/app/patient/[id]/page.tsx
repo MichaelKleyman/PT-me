@@ -101,11 +101,12 @@ interface Repetitions {
 
 export default function Patient({ params }: Params) {
   const [patient, setPatient] = useState<Patient>();
-  const [patientsExercises, setExercises] = useState<ExerciseData[]>();
+  const [patientsExercises, setExercises] = useState<ExerciseData[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const [schedule, setSchedule] = useState<Exercise[] | undefined>([]);
+  const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
+  const [scheduleChanged, setScheduleChanged] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
     reps: 0,
@@ -163,12 +164,12 @@ export default function Patient({ params }: Params) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${params.id}`
       );
-     
+
       let exercises = data.exercises;
       setSchedule(exercises);
     }
     getSchedule();
-  }, [params.id]);
+  }, [params.id, scheduleChanged]);
 
   const handleUpdate = () => {
     setUpdate(!update);
@@ -273,16 +274,16 @@ export default function Patient({ params }: Params) {
       return;
 
     let add;
-    let exerciseList = patientsExercises ?? [];
-    let patientFlowSheet = schedule ?? [];
+    let exerciseList = [...patientsExercises];
+    let patientFlowSheet = [...schedule];
 
     if (source.droppableId === "exercise-list") {
-      add = exerciseList[source.index];
-      exerciseList = [...exerciseList];
+      add = exerciseList?.[source.index];
+      // exerciseList = [...exerciseList];
       exerciseList?.splice(source.index, 1);
     } else {
-      add = patientFlowSheet[source.index] as any;
-      patientFlowSheet.splice(source.index, 1);
+      add = patientFlowSheet?.[source.index] as any;
+      patientFlowSheet?.splice(source.index, 1);
     }
 
     if (destination.droppableId === "exercise-list") {
@@ -291,11 +292,11 @@ export default function Patient({ params }: Params) {
       if (source.droppableId === "patient-flowsheet") {
         exerciseList?.splice(destination.index, 0, add.exercise);
       } else {
-        exerciseList.splice(destination.index, 0, add);
+        exerciseList?.splice(destination.index, 0, add);
       }
     } else {
       if (source.droppableId === "patient-flowsheet") {
-        patientFlowSheet.splice(destination.index, 0, add);
+        patientFlowSheet?.splice(destination.index, 0, add);
       } else {
         const newExercise = {
           id: destination.index,
@@ -307,7 +308,7 @@ export default function Patient({ params }: Params) {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        patientFlowSheet.splice(destination.index, 0, newExercise);
+        patientFlowSheet?.splice(destination.index, 0, newExercise);
       }
     }
     setExercises(exerciseList);
@@ -430,7 +431,7 @@ export default function Patient({ params }: Params) {
                     patientsExercises?.map((exercise: ExerciseData, index) => (
                       <Draggable
                         key={exercise.id}
-                        draggableId={exercise.id.toString()}
+                        draggableId={exercise.name}
                         index={index}
                       >
                         {(provided) => (
@@ -475,14 +476,8 @@ export default function Patient({ params }: Params) {
               </div>
             )}
           </Droppable>
-          {/* <ExerciseTable params.id={params.id} /> */}
-          {/* <Droppable droppableId='patient-flowsheet'>
-            {(provided) => ( */}
-          <div
-            // ref={provided.innerRef}
-            // {...provided.droppableProps}
-            className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'
-          >
+
+          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
             <div className='flex items-center justify-between'>
               <h1>Flow Sheet</h1>
               <div className='flex justify-between items-center gap-2'>
@@ -507,28 +502,11 @@ export default function Patient({ params }: Params) {
                     Save
                   </button>
                 )}
-                {/* {!add ? (
-                  <button
-                    onClick={handleAdd}
-                    className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                  >
-                    <MdOutlineAddCircleOutline className='p-2' size={35} />
-                    Add Exercise
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleAdd}
-                    className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                  >
-                    <MdOutlineAddCircleOutline className='p-2' size={35} />
-                    Save
-                  </button>
-                )} */}
               </div>
             </div>
             <div className='overflow-y-scroll overflow-x-scroll'>
               {schedule?.length ? (
-                <table className='border-collapse '>
+                <table className='border-collapse m-4'>
                   <thead>
                     <tr>
                       <th className=' px-6 py-5'>Exercise Name</th>
@@ -546,7 +524,7 @@ export default function Patient({ params }: Params) {
                           .map((exerciseObj, index) => (
                             <Draggable
                               key={exerciseObj.id}
-                              draggableId={exerciseObj.id.toString()}
+                              draggableId={exerciseObj.exercise?.name}
                               index={index}
                             >
                               {(provided) => (
@@ -554,8 +532,7 @@ export default function Patient({ params }: Params) {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   ref={provided.innerRef}
-                                  className='hover:bg-[#fdfff5] shadow-lg shadow-gray-300  hover:shadow-gray-500 rounded-lg
-                                  duration-300 hover:scale-110 cursor-pointer'
+                                  className='hover:bg-[#fdfff5] my-4 shadow-lg shadow-gray-300  hover:shadow-gray-500 rounded-lg cursor-pointer duration-300 hover:scale-105'
                                 >
                                   <td className=' px-6'>
                                     <h1 className='p-8'>
@@ -609,44 +586,6 @@ export default function Patient({ params }: Params) {
                             </Draggable>
                           ))}
                         {provided.placeholder}
-                        {/* {add && (
-                      <tr>
-                        <Droppable droppableId='patient-flowsheet'>
-                          {(provided) => (
-                            <div>
-                              <td
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                className=' px-6 text-center'
-                              ></td>
-                              {provided.placeholder}
-                            </div>
-                          )}
-                        </Droppable>
-                        <td className='border border-green-300 px-6 py-5'>
-                          <>
-                            <div className='flex'>
-                              <label className='px-4'>Sets: </label>
-
-                              <input
-                                type='text'
-                                className='border border-green-500 w-6'
-                                value='3'
-                              />
-                            </div>
-                            <br />
-                            <div className='flex'>
-                              <label className='px-4'>Reps: </label>
-                              <input
-                                type='text'
-                                className='border border-green-500 w-6'
-                                value='10'
-                              />
-                            </div>
-                          </>
-                        </td>
-                      </tr>
-                    )} */}
                       </tbody>
                     )}
                   </Droppable>
@@ -658,8 +597,6 @@ export default function Patient({ params }: Params) {
               )}
             </div>
           </div>
-          {/* )}
-          </Droppable> */}
         </div>
       </DragDropContext>
     </div>
