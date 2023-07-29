@@ -81,8 +81,29 @@ router.put(
 );
 
 //add patients exercise to the patients flowsheet
-router.post('/patient/:patientId/new-exercise', async (req, res, next) => {
-  
-})
+router.post(
+  "/patient/:patientId/new-exercise/:scheduleExerciseId",
+  async (req, res, next) => {
+    try {
+      // console.log(req.body);
+      const exercise = await Schedule.findOne({
+        where: {
+          patientId: req.params.patientId,
+        },
+        include: [
+          {
+            model: ScheduleExercise,
+            as: "exercises",
+            where: { id: req.params.scheduleExerciseId },
+          },
+        ],
+      });
+      console.log(exercise);
+    } catch (error) {
+      console.log("ERROR: >>>>>", error);
+      next(error);
+    }
+  }
+);
 
 module.exports = router;
