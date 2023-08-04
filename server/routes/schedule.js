@@ -123,7 +123,7 @@ router.post(
           exerciseId: req.params.exerciseId,
         },
       });
-      deleteFromFlowSheet.destroy();
+      await deleteFromFlowSheet.destroy();
       const exerciseAssignedToPatient = await PatientExercises.create({
         patientId: req.params.patientId,
         exerciseId: req.params.exerciseId,
