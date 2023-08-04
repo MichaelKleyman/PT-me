@@ -427,11 +427,13 @@ export default function Patient({ params }: Params) {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className='flex mt-[1rem] gap-5'>
           <Droppable droppableId='exercise-list'>
-            {(provided) => (
+            {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll'
+                className={`bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll ${
+                  snapshot.isDraggingOver ? "bg-[#f3f4ec]" : ""
+                }`}
               >
                 <h1 className='text-lg uppercase tracking-widest'>
                   Exercise List
@@ -444,13 +446,15 @@ export default function Patient({ params }: Params) {
                         draggableId={exercise.name.toString()}
                         index={index}
                       >
-                        {(provided) => (
+                        {(provided, snapshot) => (
                           <div
                             // key={exercise.id}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             ref={provided.innerRef}
-                            className='bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer'
+                            className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
+                              snapshot.isDragging ? "shadow-gray-500" : ""
+                            }`}
                           >
                             <h1 className='font-semibold'>{exercise.name}</h1>
                             <div className='relative top-3 flex justify-evenly'>
@@ -524,7 +528,7 @@ export default function Patient({ params }: Params) {
                     </tr>
                   </thead>
                   <Droppable droppableId='patient-flowsheet'>
-                    {(provided) => (
+                    {(provided, snapshot) => (
                       <tbody
                         ref={provided.innerRef}
                         {...provided.droppableProps}
@@ -537,12 +541,14 @@ export default function Patient({ params }: Params) {
                               draggableId={exerciseObj.exercise?.name.toString()}
                               index={index}
                             >
-                              {(provided) => (
+                              {(provided, snapshot) => (
                                 <tr
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   ref={provided.innerRef}
-                                  className='hover:bg-[#fdfff5] my-4 shadow-lg shadow-gray-300  hover:shadow-gray-500 rounded-lg cursor-pointer duration-300 hover:scale-105'
+                                  className={`hover:bg-[#fdfff5] my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer duration-300 hover:scale-105 ${
+                                    snapshot.isDragging ? "shadow-gray-600" : ""
+                                  }`}
                                 >
                                   <td className=' px-6'>
                                     <h1 className='p-8'>
