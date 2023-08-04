@@ -91,14 +91,6 @@ interface Exercise {
   exercise: ExerciseData;
 }
 
-// interface Schedule {
-//   id: number;
-//   patientId: number;
-//   createdAt: string;
-//   updatedAt: string;
-//   exercises: Exercise[];
-// }
-
 interface Repetitions {
   sets: number;
   reps: number;
@@ -112,7 +104,7 @@ export default function Patient({ params }: Params) {
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
-  const [scheduleChanged, setScheduleChanged] = useState<boolean>(false);
+  // const [scheduleChanged, setScheduleChanged] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
     reps: 0,
@@ -176,7 +168,7 @@ export default function Patient({ params }: Params) {
       setSchedule(exercises);
     }
     getSchedule();
-  }, [params.id, scheduleChanged]);
+  }, [params.id, setSchedule]);
 
   const handleUpdate = () => {
     setUpdate(!update);
@@ -266,7 +258,6 @@ export default function Patient({ params }: Params) {
     }
   };
 
-  // console.log("Exercise List: ", patientsExercises);
   console.log("Flow sheet Exercises: ", schedule);
 
   const onDragEnd = async (result: DropResult) => {
@@ -309,22 +300,40 @@ export default function Patient({ params }: Params) {
       if (source.droppableId === "patient-flowsheet") {
         patientFlowSheet?.splice(destination.index, 0, add);
       } else {
-        const newExercise = {
-          id: destination.index,
-          exerciseId: add.id,
-          scheduleId: schedule?.[0].scheduleId,
-          sets: 3,
-          reps: 10,
-          exercise: add,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        patientFlowSheet?.splice(destination.index, 0, newExercise);
+        if (patientFlowSheet.length) {
+          const newExercise = {
+            id: destination.index,
+            exerciseId: add.id,
+            scheduleId: schedule?.[0].scheduleId,
+            sets: 3,
+            reps: 10,
+            exercise: add,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          patientFlowSheet?.splice(destination.index, 0, newExercise);
 
-        await CLIENT.post(
-          `${BASE_URL}/api/schedule/patient/${patient?.id}/new-exercise/${schedule[0].scheduleId}/${add.id}`,
-          newExercise
-        );
+          await CLIENT.post(
+            `${BASE_URL}/api/schedule/patient/${patient?.id}/new-exercise/${schedule[0].scheduleId}/${add.id}`,
+            newExercise
+          );
+        } else {
+          const { data } = await CLIENT.post(
+            `${BASE_URL}/api/schedule/patient/${patient?.id}/new-flowsheet/${add.id}`
+          );
+          console.log(data);
+          const newExercise = {
+            id: data.id,
+            exerciseId: data.exerciseId,
+            scheduleId: data.scheduleId,
+            sets: data.sets,
+            reps: data.reps,
+            exercise: add,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          patientFlowSheet?.splice(0, 0, newExercise);
+        }
       }
     }
     setExercises(exerciseList);
@@ -514,59 +523,62 @@ export default function Patient({ params }: Params) {
             )}
           </Droppable>
 
-          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 mt-5 md:mt-0 rounded-md md:w-[70%] text-lg tracking-widest'>
-            <div className='flex items-center justify-between'>
-              <h1
-                className={`${dm_sans.className} text-lg font-bold text-[15px] normal-case tracking-normal`}
+          <Droppable droppableId='patient-flowsheet'>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 mt-5 md:mt-0 rounded-md md:w-[70%] text-lg tracking-widest'
               >
-                Flow Sheet
-              </h1>
-              <div className='flex justify-between items-center gap-2'>
-                <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
-                  <FaExpand className='p-2' size={35} />
-                  Expand
-                </button>
-                {!update ? (
-                  <button
-                    onClick={handleUpdate}
-                    className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                <div className='flex items-center justify-between'>
+                  <h1
+                    className={`${dm_sans.className} text-lg font-bold text-[15px] normal-case tracking-normal`}
                   >
-                    <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                    Update
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubmitUpdate}
-                    className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                  >
-                    <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                    Save
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className='overflow-y-scroll overflow-x-scroll'>
-              {schedule?.length ? (
-                <table className='border-collapse m-4 w-full'>
-                  <thead>
-                    <tr>
-                      <th className='text-start px-6 py-5 font-normal text-green-600'>
-                        Exercise Name
-                      </th>
-                      <th className='text-start px-6 py-5 font-normal text-green-600'>
-                        Repetitions
-                      </th>
-                      <th className='text-start px-6 py-5 font-normal text-green-600'>
-                        Assigned On
-                      </th>
-                    </tr>
-                  </thead>
-                  <Droppable droppableId='patient-flowsheet'>
-                    {(provided, snapshot) => (
-                      <tbody
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
+                    Flow Sheet
+                  </h1>
+                  <div className='flex justify-between items-center gap-2'>
+                    <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
+                      <FaExpand className='p-2' size={35} />
+                      Expand
+                    </button>
+                    {!update ? (
+                      <button
+                        onClick={handleUpdate}
+                        className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
                       >
+                        <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                        Update
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleSubmitUpdate}
+                        className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                      >
+                        <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                        Save
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className='overflow-y-scroll overflow-x-scroll'>
+                  {schedule?.length ? (
+                    <table className='border-collapse m-4 w-full'>
+                      <thead>
+                        <tr>
+                          <th className='text-start px-6 py-5 font-normal text-green-600'>
+                            Exercise Name
+                          </th>
+                          <th className='text-start px-6 py-5 font-normal text-green-600'>
+                            Repetitions
+                          </th>
+                          <th className='text-start px-6 py-5 font-normal text-green-600'>
+                            Assigned On
+                          </th>
+                        </tr>
+                      </thead>
+                      {/* <Droppable droppableId='patient-flowsheet'> */}
+                      {/* {(provided, snapshot) => ( */}
+                      <tbody>
                         {schedule
                           // ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
                           .map((exerciseObj, index) => (
@@ -643,18 +655,19 @@ export default function Patient({ params }: Params) {
                               )}
                             </Draggable>
                           ))}
-                        {provided.placeholder}
                       </tbody>
-                    )}
-                  </Droppable>
-                </table>
-              ) : (
-                <div className='mt-4 normal-case'>
-                  Make a schedule for patient.
+                      {/* </Droppable> */}
+                    </table>
+                  ) : (
+                    <div className='mt-4 normal-case'>
+                      Make a schedule for patient.
+                    </div>
+                  )}
+                  {provided.placeholder}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
+          </Droppable>
         </div>
       </DragDropContext>
     </div>
