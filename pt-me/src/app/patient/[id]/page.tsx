@@ -35,8 +35,14 @@ import {
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
+import { DM_Sans } from "next/font/google";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
+
+const dm_sans = DM_Sans({
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+});
 
 type Obj = {
   id: number;
@@ -425,17 +431,21 @@ export default function Patient({ params }: Params) {
         </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className='flex mt-[1rem] gap-5'>
+        <div className='md:flex mt-[1rem] gap-5'>
           <Droppable droppableId='exercise-list'>
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[30%] overflow-y-scroll ${
-                  snapshot.isDraggingOver ? "bg-[#f3f4ec]" : ""
+                className={`bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] overflow-y-scroll ${
+                  snapshot.isDraggingOver
+                    ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
+                    : ""
                 }`}
               >
-                <h1 className='text-lg uppercase tracking-widest'>
+                <h1
+                  className={`${dm_sans.className} text-lg font-bold text-[15px]`}
+                >
                   Exercise List
                 </h1>
                 <div className='mt-[1rem]'>
@@ -491,9 +501,13 @@ export default function Patient({ params }: Params) {
             )}
           </Droppable>
 
-          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md w-[70%] text-lg uppercase tracking-widest'>
+          <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 mt-5 md:mt-0 rounded-md md:w-[70%] text-lg tracking-widest'>
             <div className='flex items-center justify-between'>
-              <h1>Flow Sheet</h1>
+              <h1
+                className={`${dm_sans.className} text-lg font-bold text-[15px] normal-case tracking-normal`}
+              >
+                Flow Sheet
+              </h1>
               <div className='flex justify-between items-center gap-2'>
                 <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
                   <FaExpand className='p-2' size={35} />
@@ -523,8 +537,8 @@ export default function Patient({ params }: Params) {
                 <table className='border-collapse m-4'>
                   <thead>
                     <tr>
-                      <th className=' px-6 py-5'>Exercise Name</th>
-                      <th className=' px-6 py-5'>Repetitions</th>
+                      <th className='px-6 py-5'>Exercise Name</th>
+                      <th className='px-6 py-5'>Repetitions</th>
                     </tr>
                   </thead>
                   <Droppable droppableId='patient-flowsheet'>
