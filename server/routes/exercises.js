@@ -1,22 +1,22 @@
-const router = require('express').Router();
-const { Exercises, Patients } = require('../models');
-const express = require('express');
+const router = require("express").Router();
+const { Exercises, Patients, PatientExercises } = require("../models");
+const express = require("express");
 const app = express();
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 // const exercises = require('../exercises');
 
 app.use(cookieParser());
 
 const cookieOptions = {
-  sameSite: 'None',
+  sameSite: "None",
   secure: true,
 };
 
 //GET exercises
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const exercises = await Exercises.findAll();
-    res.cookie('youtube_video', 'iframe_cookie', cookieOptions);
+    res.cookie("youtube_video", "iframe_cookie", cookieOptions);
 
     res.send(exercises);
   } catch (error) {
@@ -25,28 +25,28 @@ router.get('/', async (req, res, next) => {
 });
 
 //GET exercises/:id
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const specificExcerise = await Exercises.findOne({
       where: {
         id: req.params.id,
       },
     });
-    res.send(specificExcerise)
+    res.send(specificExcerise);
   } catch (error) {
     next(error);
   }
 });
 
 //GET  exercises/injury/:injuryId
-router.get('/injury/:injuryId', async (req, res, next) => {
+router.get("/injury/:injuryId", async (req, res, next) => {
   try {
     const exercises = await Exercises.findAll({
       where: {
         injuryId: req.params.injuryId,
       },
     });
-    res.cookie('youtube_video', 'your_cookie_value', cookieOptions);
+    res.cookie("youtube_video", "your_cookie_value", cookieOptions);
 
     // res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     // res.setHeader(
@@ -60,7 +60,7 @@ router.get('/injury/:injuryId', async (req, res, next) => {
 });
 
 //GET exercises for specific patient: exercises/patient/:patientId
-router.get('/patient/:patientId', async (req, res, next) => {
+router.get("/patient/:patientId", async (req, res, next) => {
   try {
     const exercises = await Exercises.findAll({
       include: [
@@ -79,5 +79,27 @@ router.get('/patient/:patientId', async (req, res, next) => {
   }
 });
 
+//DELETE specific exercise for this specific patient
+router.delete("/patient/:patientId/:exerciseId", async (req, res, next) => {
+  try {
+    const { exerciseId, patientId } = req.params;
+    const deleteExercise = await PatientExercises.findOne({
+      where: {
+        patientId: patientId,
+        exerciseId: exerciseId,
+      },
+    });
+    if (deleteExercise) {
+      await deleteExercise.destroy();
+      res.status(200).json({ message: "Exercise deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Exercise not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting exercise:", error);
+    res.status(500).json({ message: "Internal server error" });
+    next(error);
+  }
+});
 
 module.exports = router;
