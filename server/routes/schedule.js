@@ -112,4 +112,28 @@ router.post(
   }
 );
 
+//put exercise from patient flowsheet back to patient exercise list
+router.post(
+  "/patient/:patientId/remove-from-flowsheet/:scheduleExerciseId/:exerciseId",
+  async (req, res, next) => {
+    try {
+      const deleteFromFlowSheet = await ScheduleExercise.findOne({
+        where: {
+          scheduleId: req.params.scheduleExerciseId,
+          exerciseId: req.params.exerciseId,
+        },
+      });
+      deleteFromFlowSheet.destroy();
+      const exerciseAssignedToPatient = await PatientExercises.create({
+        patientId: req.params.patientId,
+        exerciseId: req.params.exerciseId,
+      });
+      res.send(exerciseAssignedToPatient);
+    } catch (error) {
+      console.log("ERROR: >>>>>", error);
+      next(error);
+    }
+  }
+);
+
 module.exports = router;
