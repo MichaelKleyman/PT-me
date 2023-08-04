@@ -131,7 +131,7 @@ export default function Patient({ params }: Params) {
     }
     getPatient();
     getPatientExercises();
-  }, []);
+  }, [setExercises]);
 
   function stringToColor(string: string) {
     if (!string) return "";
@@ -331,6 +331,16 @@ export default function Patient({ params }: Params) {
     setSchedule(patientFlowSheet);
   };
 
+  const removeExercise = async (id: number) => {
+    await CLIENT.delete(
+      `${BASE_URL}/api/exercises/patient/${patient?.id}/${id}`
+    );
+    const newExerciseList = patientsExercises.filter(
+      (exercise) => exercise.id !== id
+    );
+    setExercises(newExerciseList);
+  };
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -475,7 +485,10 @@ export default function Patient({ params }: Params) {
                                 <AiOutlineEye className='p-2' size={35} />
                                 View
                               </Link>
-                              <button className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'>
+                              <button
+                                onClick={() => removeExercise(exercise.id)}
+                                className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                              >
                                 <FiDelete className='p-2' size={30} />
                                 Remove
                               </button>
