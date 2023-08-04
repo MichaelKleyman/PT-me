@@ -27,7 +27,7 @@ import {
   MdOutlineTipsAndUpdates,
   MdOutlineAddCircleOutline,
 } from "react-icons/md";
-import { FaExpand } from "react-icons/fa";
+import { FaExpand, FaRegCalendarCheck } from "react-icons/fa";
 import { CLIENT, BASE_URL } from "../../../components/api";
 import {
   DragDropContext,
@@ -534,11 +534,18 @@ export default function Patient({ params }: Params) {
             </div>
             <div className='overflow-y-scroll overflow-x-scroll'>
               {schedule?.length ? (
-                <table className='border-collapse m-4'>
+                <table className='border-collapse m-4 w-full'>
                   <thead>
                     <tr>
-                      <th className='px-6 py-5'>Exercise Name</th>
-                      <th className='px-6 py-5'>Repetitions</th>
+                      <th className='text-start px-6 py-5 font-normal text-green-600'>
+                        Exercise Name
+                      </th>
+                      <th className='text-start px-6 py-5 font-normal text-green-600'>
+                        Repetitions
+                      </th>
+                      <th className='text-start px-6 py-5 font-normal text-green-600'>
+                        Assigned On
+                      </th>
                     </tr>
                   </thead>
                   <Droppable droppableId='patient-flowsheet'>
@@ -560,7 +567,7 @@ export default function Patient({ params }: Params) {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   ref={provided.innerRef}
-                                  className={`hover:bg-[#fdfff5] my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer duration-300 hover:scale-105 ${
+                                  className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
                                     snapshot.isDragging ? "shadow-gray-600" : ""
                                   }`}
                                 >
@@ -570,9 +577,8 @@ export default function Patient({ params }: Params) {
                                     </h1>
                                   </td>
                                   <td className=' px-6 py-5'>
-                                    <>
-                                      <div className='flex'>
-                                        <label className='px-4'>Sets: </label>
+                                    <div className='flex gap-3'>
+                                      <div>
                                         {!update ? (
                                           `${exerciseObj.sets}`
                                         ) : (
@@ -584,14 +590,13 @@ export default function Patient({ params }: Params) {
                                               )
                                             }
                                             type='text'
-                                            className='border border-green-500 w-6'
+                                            className='border border-green-500 w-6 rounded-sm text-center'
                                             value={`${exerciseObj.sets}`}
                                           />
                                         )}
                                       </div>
-                                      <br />
-                                      <div className='flex'>
-                                        <label className='px-4'>Reps: </label>
+                                      <p>x</p>
+                                      <div>
                                         {!update ? (
                                           `${exerciseObj.reps}`
                                         ) : (
@@ -604,12 +609,22 @@ export default function Patient({ params }: Params) {
                                               )
                                             }
                                             type='text'
-                                            className=' w-6'
+                                            className='border border-green-500 w-6 rounded-sm text-center'
                                             value={`${exerciseObj.reps}`}
                                           />
                                         )}
                                       </div>
-                                    </>
+                                    </div>
+                                  </td>
+                                  <td className='text-[15px] text-blue-600'>
+                                    <div className='flex items-center justify-center gap-5'>
+                                      <FaRegCalendarCheck />
+                                      <p>
+                                        {new Date(
+                                          exerciseObj.createdAt
+                                        ).toDateString()}
+                                      </p>
+                                    </div>
                                   </td>
                                 </tr>
                               )}
