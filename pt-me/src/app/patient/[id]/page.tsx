@@ -293,7 +293,7 @@ export default function Patient({ params }: Params) {
       if (source.droppableId === "patient-flowsheet") {
         exerciseList?.splice(destination.index, 0, add.exercise);
         await CLIENT.post(
-          `${BASE_URL}/api/schedule/patient/${patient?.id}/remove-from-flowsheet/${schedule[0].scheduleId}/${add.id}`,
+          `${BASE_URL}/api/schedule/patient/${patient?.id}/remove-from-flowsheet/${schedule[0].scheduleId}/${add.exerciseId}`,
           add.exercise
         );
       } else {
@@ -313,12 +313,12 @@ export default function Patient({ params }: Params) {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
+        patientFlowSheet?.splice(destination.index, 0, newExercise);
 
         await CLIENT.post(
           `${BASE_URL}/api/schedule/patient/${patient?.id}/new-exercise/${schedule[0].scheduleId}/${add.id}`,
           newExercise
         );
-        // patientFlowSheet?.splice(destination.index, 0, newExercise);
       }
     }
     setExercises(exerciseList);
