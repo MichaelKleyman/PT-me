@@ -166,6 +166,7 @@ export default function Patient({ params }: Params) {
       );
 
       let exercises = data.exercises;
+
       setSchedule(exercises);
     }
     getSchedule();
@@ -259,10 +260,10 @@ export default function Patient({ params }: Params) {
     }
   };
 
-  console.log("Exercise List: ", patientsExercises);
+  // console.log("Exercise List: ", patientsExercises);
   console.log("Flow sheet Exercises: ", schedule);
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = async (result: DropResult) => {
     console.log(result);
     const { source, destination } = result;
 
@@ -291,6 +292,10 @@ export default function Patient({ params }: Params) {
 
       if (source.droppableId === "patient-flowsheet") {
         exerciseList?.splice(destination.index, 0, add.exercise);
+        await CLIENT.post(
+          `${BASE_URL}/api/schedule/patient/${patient?.id}/remove-from-flowsheet/${schedule[0].scheduleId}/${add.id}`,
+          add.exercise
+        );
       } else {
         exerciseList?.splice(destination.index, 0, add);
       }
@@ -308,7 +313,12 @@ export default function Patient({ params }: Params) {
           createdAt: new Date(),
           updatedAt: new Date(),
         };
-        patientFlowSheet?.splice(destination.index, 0, newExercise);
+
+        await CLIENT.post(
+          `${BASE_URL}/api/schedule/patient/${patient?.id}/new-exercise/${schedule[0].scheduleId}/${add.id}`,
+          newExercise
+        );
+        // patientFlowSheet?.splice(destination.index, 0, newExercise);
       }
     }
     setExercises(exerciseList);
@@ -431,7 +441,7 @@ export default function Patient({ params }: Params) {
                     patientsExercises?.map((exercise: ExerciseData, index) => (
                       <Draggable
                         key={exercise.id}
-                        draggableId={exercise.name}
+                        draggableId={exercise.name.toString()}
                         index={index}
                       >
                         {(provided) => (
@@ -524,7 +534,7 @@ export default function Patient({ params }: Params) {
                           .map((exerciseObj, index) => (
                             <Draggable
                               key={exerciseObj.id}
-                              draggableId={exerciseObj.exercise?.name}
+                              draggableId={exerciseObj.exercise?.name.toString()}
                               index={index}
                             >
                               {(provided) => (
