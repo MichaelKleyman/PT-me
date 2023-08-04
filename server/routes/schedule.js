@@ -112,6 +112,44 @@ router.post(
   }
 );
 
+//POST exercise from exercise list into an empty flowsheet
+router.post(
+  "/patient/:patientId/new-flowsheet/:exerciseId",
+  async (req, res, next) => {
+    try {
+      const { patientId, exerciseId } = req.params;
+      const schedule = await Schedule.findOne({
+        where: {
+          patientId: patientId,
+        },
+      });
+
+      if (!schedule) {
+        res.status(404).json({ message: "Schedule not found" });
+      }
+      const newScheduleExercise = await ScheduleExercise.create({
+        scheduleId: schedule.id,
+        exerciseId: exerciseId,
+        sets: 3,
+        reps: 10,
+      });
+      const patientExercise = await PatientExercises.findOne({
+        where: {
+          patientId: patientId,
+          exerciseId: exerciseId,
+        },
+      });
+      await patientExercise.destroy();
+
+      res.send(newScheduleExercise).status(200);
+    } catch (error) {
+      console.error("Error deleting exercise:", error);
+      res.status(500).json({ message: "Internal server error" });
+      next(error);
+    }
+  }
+);
+
 //put exercise from patient flowsheet back to patient exercise list
 router.post(
   "/patient/:patientId/remove-from-flowsheet/:scheduleExerciseId/:exerciseId",
