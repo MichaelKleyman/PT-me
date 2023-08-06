@@ -374,7 +374,9 @@ export default function Patient({ params }: Params) {
     setSearchInput(e.target.value);
     const input = e.target.value;
     if (input.length >= 2) {
-      const { data } = await CLIENT.get(`${BASE_URL}/api/exercises/${input}`);
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/exercises/search-exercise/${input}`
+      );
       console.log(data);
       setResults(data);
     }

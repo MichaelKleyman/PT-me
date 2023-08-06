@@ -184,11 +184,6 @@ export default function AllExercises() {
       );
     });
 
-  console.log(
-    "Search input length: ",
-    exercises.filter((ex) => ex.name.toLowerCase().includes(searchInput)).length
-  );
-
   const searchAllExercisesResults = exercises.filter((ex: Exercise) =>
     ex.name.toLowerCase().includes(searchInput)
   );
@@ -229,6 +224,8 @@ export default function AllExercises() {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
+
+  console.log(exercises);
 
   return (
     <div>

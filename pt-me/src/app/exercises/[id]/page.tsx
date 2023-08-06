@@ -1,10 +1,10 @@
-'use client';
+"use client";
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { AiOutlineFileSearch } from 'react-icons/ai';
-import { CLIENT, BASE_URL } from '@/components/api';
-import Iframe from 'react-iframe';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { AiOutlineFileSearch } from "react-icons/ai";
+import { CLIENT, BASE_URL } from "@/components/api";
+import Iframe from "react-iframe";
 
 type Obj = {
   id: Number;
@@ -27,14 +27,14 @@ interface ExerciseData {
 
 export default function SpecificExercise({ params }: Params) {
   const [exercise, setExercise] = useState<ExerciseData>({
-    name: '',
+    name: "",
     id: 0,
     injuryId: 0,
-    videoLink: '',
-    map: '',
-    tips: '',
-    description: '',
-    musclesWorked: '',
+    videoLink: "",
+    map: "",
+    tips: "",
+    description: "",
+    musclesWorked: "",
   });
 
   useEffect(() => {
@@ -70,20 +70,20 @@ export default function SpecificExercise({ params }: Params) {
           </h1>
           <div className='mt-4'>
             <h1 className='underline text-green-500 my-2'>Description</h1>
-            <p>{exercise.description}</p>
+            <p>{exercise?.description}</p>
           </div>
           <div className='mt-3'>
             <h1 className='underline text-green-500 my-2'>Tips</h1>
-            <p>{exercise.tips}</p>
+            <p>{exercise?.tips}</p>
           </div>
           <div className='mt-3'>
             <h1 className='underline text-green-500 my-2'>Muscles Worked</h1>
-            <p>{exercise.musclesWorked}</p>
+            <p>{exercise?.musclesWorked}</p>
           </div>
         </div>
         <div>
           <Iframe
-            url={exercise.videoLink}
+            url={exercise?.videoLink}
             width='560'
             height='315'
             allowFullScreen
