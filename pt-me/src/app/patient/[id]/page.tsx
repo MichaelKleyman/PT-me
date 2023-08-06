@@ -36,6 +36,9 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { DM_Sans } from "next/font/google";
+import TextField from "@mui/material/TextField";
+import { BsSearch } from "react-icons/bs";
+import InputAdornment from "@mui/material/InputAdornment";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
 
@@ -43,6 +46,16 @@ const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
 });
+
+const style = {
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#3BE13B",
+    },
+  },
+  width: "100%",
+  height: "30%",
+};
 
 type Obj = {
   id: number;
@@ -467,6 +480,29 @@ export default function Patient({ params }: Params) {
                 >
                   Exercise List
                 </h1>
+                <div>
+                  <h1 className='text-sm my-4 text-blue-500'>
+                    Add To {patient?.title.split(" ")[0]}'s Exercise List
+                  </h1>
+                  <div className='flex items-center justify-center'>
+                    <TextField
+                      id='outlined-search'
+                      // value={searchInput}
+                      // onChange={handleSearch}
+                      type='search'
+                      focused
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <BsSearch color='#3BE13B' />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={style}
+                      placeholder='Search Exercises'
+                    />
+                  </div>
+                </div>
                 <div className='mt-[1rem]'>
                   {patientsExercises?.length ? (
                     patientsExercises?.map((exercise: ExerciseData, index) => (
@@ -496,7 +532,7 @@ export default function Patient({ params }: Params) {
                               </Link>
                               <button
                                 onClick={() => removeExercise(exercise.id)}
-                                className='text-blue-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                                className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
                               >
                                 <FiDelete className='p-2' size={30} />
                                 Remove

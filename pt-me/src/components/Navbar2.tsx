@@ -1,31 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client'; //will be a client component because we're using useState
+"use client"; //will be a client component because we're using useState
 
-import React, { useState, useEffect } from 'react';
-import { Link as ScrollLink } from 'react-scroll/modules';
-import Link from 'next/link';
-import { useTheme } from 'next-themes';
-import Logo1 from '../app/logos/logo-no-background.png';
+import React, { useState, useEffect } from "react";
+import { Link as ScrollLink } from "react-scroll/modules";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import Logo1 from "../app/logos/logo-no-background.png";
 // import Logo2 from '../logos/logo-white.png';
-import Image from 'next/image';
-import { BsSun, BsFillMoonFill } from 'react-icons/bs';
-import { IoMdMenu, IoMdClose } from 'react-icons/io';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '@/Redux/store';
-import { me, logout } from '@/Redux/Features/auth/authSlice';
-import { useRouter } from 'next/navigation';
-import { BiClinic, BiCaretDown } from 'react-icons/bi';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { RxDashboard } from 'react-icons/rx';
-import { GiMuscleUp } from 'react-icons/gi';
-import { IoMdPeople } from 'react-icons/io';
-import { FiSettings } from 'react-icons/fi';
+import Image from "next/image";
+import { BsSun, BsFillMoonFill } from "react-icons/bs";
+import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/Redux/store";
+import { me, logout } from "@/Redux/Features/auth/authSlice";
+import { useRouter } from "next/navigation";
+import { BiClinic, BiCaretDown } from "react-icons/bi";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { RxDashboard } from "react-icons/rx";
+import { GiMuscleUp } from "react-icons/gi";
+import { IoMdPeople } from "react-icons/io";
+import { FiSettings } from "react-icons/fi";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
-} from 'react-icons/md';
+} from "react-icons/md";
 
 interface NavItem {
   label: string;
@@ -34,19 +34,19 @@ interface NavItem {
 
 const navItems: Array<NavItem> = [
   {
-    label: 'About Us',
-    page: 'about-us',
+    label: "About Us",
+    page: "about-us",
   },
   {
-    label: 'Services',
-    page: 'services',
+    label: "Services",
+    page: "services",
   },
 ];
 
 const Navbar = ({ children }: any) => {
   const router = useRouter();
   const { systemTheme, theme, setTheme } = useTheme();
-  const currentTheme = theme === 'system' ? systemTheme : theme;
+  const currentTheme = theme === "system" ? systemTheme : theme;
   const [open, setOpenSideBar] = useState<boolean>(false);
   const [navbar, setNavbar] = useState<boolean>(false); //controlling if the navbar is in mobile view or desktop view.
 
@@ -68,7 +68,7 @@ const Navbar = ({ children }: any) => {
 
   const handleLogout = () => {
     dispatch(logout);
-    router.push('/');
+    router.push("/");
   };
 
   const openSidebar = () => {
@@ -129,16 +129,16 @@ const Navbar = ({ children }: any) => {
                   Sign In
                 </Link>
                 <>
-                  {currentTheme === 'light' ? (
+                  {currentTheme === "light" ? (
                     <button
-                      onClick={() => setTheme('dark')}
+                      onClick={() => setTheme("dark")}
                       className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
                     >
                       <BsFillMoonFill size={20} />
                     </button>
                   ) : (
                     <button
-                      onClick={() => setTheme('light')}
+                      onClick={() => setTheme("light")}
                       className='p-2 rounded-xl duration-300 hover:scale-110'
                     >
                       <BsSun size={20} />
@@ -158,7 +158,7 @@ const Navbar = ({ children }: any) => {
           <div className='flex'>
             <div
               className={`fixed ${
-                open ? 'w-[250px] duration-300' : 'w-20'
+                open ? "w-[250px] duration-300" : "w-20"
               } h-screen p-9 bg-[#eaece1] flex flex-col justify-between`}
             >
               {open ? (
@@ -181,23 +181,23 @@ const Navbar = ({ children }: any) => {
                   href={`/${user?.id}`}
                   onClick={closeSideBar}
                   className={`bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center ${
-                    open ? 'w-[190px] gap-4 duration-300' : ''
+                    open ? "w-[190px] gap-4 duration-300" : ""
                   }`}
                 >
                   <div>
                     <FiSettings size={20} />
                   </div>
                   {open && <p className='duration-300'>Account</p>}
-                </Link>{' '}
+                </Link>{" "}
                 <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
                   href='/'
                   onClick={closeSideBar}
                   className={`${
-                    open ? 'w-[190px] gap-4 duration-300' : ''
+                    open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
-                  <div>
+                  <div className='text-[#3BE13B]'>
                     <RxDashboard size={20} />
                   </div>
                   {open && <p className='duration-300'>Dashboard</p>}
@@ -206,10 +206,10 @@ const Navbar = ({ children }: any) => {
                   href='/exercises'
                   onClick={closeSideBar}
                   className={`${
-                    open ? 'w-[190px] gap-4 duration-300' : ''
+                    open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
-                  <div>
+                  <div className='text-[#3BE13B]'>
                     <GiMuscleUp size={20} />
                   </div>
                   {open && <p className='duration-300'>Exercises</p>}
@@ -218,10 +218,10 @@ const Navbar = ({ children }: any) => {
                   href='/patients'
                   onClick={closeSideBar}
                   className={`${
-                    open ? 'w-[190px] gap-4 duration-300' : ''
+                    open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
-                  <div>
+                  <div className='text-[#3BE13B]'>
                     <IoMdPeople size={20} />
                   </div>
                   {open && <p className='duration-300'>Patients</p>}
@@ -237,15 +237,15 @@ const Navbar = ({ children }: any) => {
         <div
           className={
             showNav
-              ? 'md:hidden fixed left-0 top-0 w-full h-screen bg-black/70'
-              : ''
+              ? "md:hidden fixed left-0 top-0 w-full h-screen bg-black/70"
+              : ""
           }
         >
           <div
             className={
               showNav
-                ? 'md:hidden fixed left-0 top-0 w-[75%] sm:w-[65%] md:w-[45%] h-screen bg-[#FAF9F6] dark:bg-black p-10 ease-in duration-500'
-                : 'fixed left-[-100%] top-0 p-10 ease-in duration-500'
+                ? "md:hidden fixed left-0 top-0 w-[75%] sm:w-[65%] md:w-[45%] h-screen bg-[#FAF9F6] dark:bg-black p-10 ease-in duration-500"
+                : "fixed left-[-100%] top-0 p-10 ease-in duration-500"
             }
           >
             <div className='flex items-center justify-between'>
@@ -303,16 +303,16 @@ const Navbar = ({ children }: any) => {
                 >
                   Sign In
                 </Link>
-                {currentTheme === 'light' ? (
+                {currentTheme === "light" ? (
                   <button
-                    onClick={() => setTheme('dark')}
+                    onClick={() => setTheme("dark")}
                     className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
                   >
                     <BsFillMoonFill size={20} />
                   </button>
                 ) : (
                   <button
-                    onClick={() => setTheme('light')}
+                    onClick={() => setTheme("light")}
                     className='p-2 rounded-xl duration-300 hover:scale-110'
                   >
                     <BsSun size={20} />
