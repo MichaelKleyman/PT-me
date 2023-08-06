@@ -116,7 +116,9 @@ interface Repetitions {
 }
 
 export default function Patient({ params }: Params) {
+  const [results, setResults] = useState<ExerciseData[]>([]);
   const [patient, setPatient] = useState<Patient>();
+  const [searchInput, setSearchInput] = useState<string>("");
   const [patientsExercises, setExercises] = useState<ExerciseData[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const [schedule, setSchedule] = useState<Exercise[]>([]);
@@ -368,6 +370,16 @@ export default function Patient({ params }: Params) {
     setExercises(newExerciseList);
   };
 
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+    const input = e.target.value;
+    if (input.length >= 2) {
+      const { data } = await CLIENT.get(`${BASE_URL}/api/exercises/${input}`);
+      console.log(data);
+      setResults(data);
+    }
+  };
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -474,7 +486,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] overflow-y-scroll ${
+                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] overflow-y-scroll ${
                   snapshot.isDraggingOver
                     ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
                     : ""
@@ -493,8 +505,8 @@ export default function Patient({ params }: Params) {
                   <div className='flex items-center justify-center'>
                     <TextField
                       id='outlined-search'
-                      // value={searchInput}
-                      // onChange={handleSearch}
+                      value={searchInput}
+                      onChange={handleSearch}
                       type='search'
                       focused
                       InputProps={{
@@ -507,6 +519,24 @@ export default function Patient({ params }: Params) {
                       sx={style}
                       placeholder='Search Exercises'
                     />
+                  </div>
+
+                  <div
+                    className='w-[90%] bg-white flex flex-col shadow-[#ddd] shadow-lg rounded-lg mt-[1rem] max-h-[200px] overflow-y-scroll'
+                    style={{
+                      zIndex: 2,
+                      position: "absolute",
+                    }}
+                  >
+                    {searchInput.length > 0 &&
+                      results.map((result) => (
+                        <div
+                          key={result.id}
+                          className='py-3 px-4 hover:bg-[#efefef] cursor-pointer'
+                        >
+                          {result.name}
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <div className='mt-[1rem]'>
