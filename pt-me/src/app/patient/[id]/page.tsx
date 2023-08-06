@@ -38,6 +38,7 @@ import {
 import { DM_Sans } from "next/font/google";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
+import { MdAddBox } from "react-icons/md";
 import InputAdornment from "@mui/material/InputAdornment";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
@@ -50,11 +51,15 @@ const dm_sans = DM_Sans({
 const style = {
   "& .MuiOutlinedInput-root": {
     "&.Mui-focused fieldset": {
-      borderColor: "#3BE13B",
+      borderColor: "#fdfff5",
+      borderRadius: "15px",
     },
   },
   width: "100%",
   height: "30%",
+  backgroundColor: "white",
+  borderRadius: "20px",
+  boxShadow: "0px 0px 8px #ddd",
 };
 
 type Obj = {
@@ -481,7 +486,8 @@ export default function Patient({ params }: Params) {
                   Exercise List
                 </h1>
                 <div>
-                  <h1 className='text-sm my-4 text-blue-500'>
+                  <h1 className='text-sm mt-3 mb-2 text-blue-500 flex items-center gap-3'>
+                    <MdAddBox />
                     Add To {patient?.title.split(" ")[0]}'s Exercise List
                   </h1>
                   <div className='flex items-center justify-center'>
@@ -564,7 +570,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 mt-5 md:mt-0 rounded-md md:w-[70%] text-lg tracking-widest'
+                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
               >
                 <div className='flex items-center justify-between'>
                   <h1
