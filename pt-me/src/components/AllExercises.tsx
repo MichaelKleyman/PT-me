@@ -1,16 +1,16 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { CLIENT, BASE_URL } from '@/components/api';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container } from 'react-bootstrap';
-import '../styles/exercises.css';
-import CircularProgress from '@mui/material/CircularProgress';
-import ReactPaginate from 'react-paginate';
-import TextField from '@mui/material/TextField';
-import { BsSearch } from 'react-icons/bs';
-import InputAdornment from '@mui/material/InputAdornment';
-import Iframe from 'react-iframe';
-import Link from 'next/link';
+"use client";
+import React, { useEffect, useState } from "react";
+import { CLIENT, BASE_URL } from "@/components/api";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Container } from "react-bootstrap";
+import "../styles/exercises.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import ReactPaginate from "react-paginate";
+import TextField from "@mui/material/TextField";
+import { BsSearch } from "react-icons/bs";
+import InputAdornment from "@mui/material/InputAdornment";
+import Iframe from "react-iframe";
+import Link from "next/link";
 
 interface Exercise {
   id: number;
@@ -21,16 +21,16 @@ interface Exercise {
 }
 
 const style = {
-  '& .MuiOutlinedInput-root': {
-    '&.Mui-focused fieldset': {
-      borderColor: '#3BE13B',
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#3BE13B",
     },
   },
-  width: '50%',
+  width: "50%",
 };
 
 export default function AllExercises() {
-  const [searchInput, setSearchInput] = useState<string>('');
+  const [searchInput, setSearchInput] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageNumber2, setPageNumber2] = useState<number>(0);
   // const [loading, setLoading] = useState<Boolean>(true);
@@ -39,13 +39,13 @@ export default function AllExercises() {
   //specific exercises state is an array of objects where each key is a string and each value is a a string.
   const [specificExercise, setSpecificExercise] = useState<Exercise[]>([]);
   const [exerciseOptions, setOptions] = useState<String[]>([
-    'All',
-    'Shoulders',
-    'Back',
-    'Knee',
-    'Hip',
+    "All",
+    "Shoulders",
+    "Back",
+    "Knee",
+    "Hip",
   ]);
-  const [selected, setSelected] = useState<String>('All');
+  const [selected, setSelected] = useState<String>("All");
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
@@ -61,7 +61,7 @@ export default function AllExercises() {
     setSelected(exerciseType);
     setPageNumber(0);
     setPageNumber2(0);
-    if (exerciseType === 'All') {
+    if (exerciseType === "All") {
       getAllExercises();
       setSpecificExercise([]);
     } else {
@@ -72,24 +72,24 @@ export default function AllExercises() {
         Knee: 3,
         Hip: 4,
       };
-      if (exerciseType === 'Shoulders') {
+      if (exerciseType === "Shoulders") {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Shoulders']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Shoulders"]}`
         );
         setSpecificExercise(data);
-      } else if (exerciseType === 'Back') {
+      } else if (exerciseType === "Back") {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Back']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Back"]}`
         );
         setSpecificExercise(data);
-      } else if (exerciseType === 'Knee') {
+      } else if (exerciseType === "Knee") {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Knee']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Knee"]}`
         );
         setSpecificExercise(data);
-      } else if (exerciseType === 'Hip') {
+      } else if (exerciseType === "Hip") {
         const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId['Hip']}`
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Hip"]}`
         );
         setSpecificExercise(data);
       }
@@ -100,7 +100,10 @@ export default function AllExercises() {
   const pagesVisited = pageNumber * exercisesPerPage;
   const pagesVisited2 = pageNumber2 * exercisesPerPage;
 
+  console.log("All exercises: ", exercises);
+
   const displaySpecificExercise = specificExercise
+    .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
     .map((exercise, i) => {
       return (
@@ -109,7 +112,7 @@ export default function AllExercises() {
             <div className='p-3 text-xl flex items-center justify-between'>
               <p
                 className={`tracking-wide ${
-                  exercise.name.length > 21 ? 'text-[14px]' : 'text-[18px]'
+                  exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
                 }`}
               >
                 {exercise.name}
@@ -149,6 +152,7 @@ export default function AllExercises() {
     });
 
   const displayAllExercises = exercises
+    .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited, pagesVisited + exercisesPerPage)
     .map((exercise, i) => {
       return (
@@ -157,7 +161,7 @@ export default function AllExercises() {
             <div className='p-3 text-xl flex justify-between items-center'>
               <p
                 className={`tracking-wide ${
-                  exercise.name.length > 21 ? 'text-[14px]' : 'text-[18px]'
+                  exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
                 }`}
               >
                 {exercise.name}
@@ -212,7 +216,7 @@ export default function AllExercises() {
             onClick={() => filterExercises(option)}
             key={i}
             className={`${
-              selected === option ? 'bg-green-500 text-white' : ''
+              selected === option ? "bg-green-500 text-white" : ""
             } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
           >
             {option}
@@ -238,12 +242,12 @@ export default function AllExercises() {
         />
       </div>
       <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {selected === 'All' && displayAllExercises}
+        {selected === "All" && displayAllExercises}
       </div>
       <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {selected !== 'All' && displaySpecificExercise}
+        {selected !== "All" && displaySpecificExercise}
       </div>
-      {selected === 'All' ? (
+      {selected === "All" ? (
         <div className='flex items-center justify-center mb-4'>
           <ReactPaginate
             previousLabel='Previous'
