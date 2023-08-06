@@ -24,14 +24,13 @@ router.get("/", async (req, res, next) => {
 });
 
 //GET exercises based on search input exercises/search-exercise
-router.get("/:input", async (req, res, next) => {
+router.get("/search-exercise/:input", async (req, res, next) => {
   try {
     const { input } = req.params;
     const exercises = await Exercises.findAll();
     const filteredExercises = exercises.filter((ex) =>
       ex.name.toLowerCase().includes(input)
     );
-    console.log(filteredExercises.length);
     if (filteredExercises.length) {
       return res.send(filteredExercises);
     }
