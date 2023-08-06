@@ -100,8 +100,6 @@ export default function AllExercises() {
   const pagesVisited = pageNumber * exercisesPerPage;
   const pagesVisited2 = pageNumber2 * exercisesPerPage;
 
-  console.log("All exercises: ", exercises);
-
   const displaySpecificExercise = specificExercise
     .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
@@ -186,10 +184,37 @@ export default function AllExercises() {
       );
     });
 
-  const allExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
-  const specificExercisesPageCount = Math.ceil(
-    specificExercise.length / exercisesPerPage
+  console.log(
+    "Search input length: ",
+    exercises.filter((ex) => ex.name.toLowerCase().includes(searchInput)).length
   );
+
+  const searchAllExercisesResults = exercises.filter((ex: Exercise) =>
+    ex.name.toLowerCase().includes(searchInput)
+  );
+
+  const searchSpecificExercisesResults = specificExercise.filter(
+    (ex: Exercise) => ex.name.toLowerCase().includes(searchInput)
+  );
+
+  let allExercisesPageCount;
+  let specificExercisesPageCount;
+
+  if (searchAllExercisesResults.length) {
+    allExercisesPageCount = Math.ceil(
+      searchAllExercisesResults.length / exercisesPerPage
+    );
+  } else {
+    allExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+  }
+
+  if (searchSpecificExercisesResults.length) {
+    specificExercisesPageCount = Math.ceil(
+      searchSpecificExercisesResults.length / exercisesPerPage
+    );
+  } else {
+    specificExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+  }
 
   const changePageForAllExercises = ({ selected }: any) => {
     setPageNumber(selected);
