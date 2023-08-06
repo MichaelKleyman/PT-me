@@ -17,9 +17,27 @@ router.get("/", async (req, res, next) => {
   try {
     const exercises = await Exercises.findAll();
     res.cookie("youtube_video", "iframe_cookie", cookieOptions);
-
     res.send(exercises);
   } catch (error) {
+    next(error);
+  }
+});
+
+//GET exercises based on search input exercises/search-exercise
+router.get("/:input", async (req, res, next) => {
+  try {
+    const { input } = req.params;
+    const exercises = await Exercises.findAll();
+    const filteredExercises = exercises.filter((ex) =>
+      ex.name.toLowerCase().includes(input)
+    );
+    console.log(filteredExercises.length);
+    if (filteredExercises.length) {
+      return res.send(filteredExercises);
+    }
+  } catch (error) {
+    console.error("Error fetching exercises:", error);
+    res.status(500).json({ message: "Internal server error" });
     next(error);
   }
 });
@@ -27,12 +45,12 @@ router.get("/", async (req, res, next) => {
 //GET exercises/:id
 router.get("/:id", async (req, res, next) => {
   try {
-    const specificExcerise = await Exercises.findOne({
+    const specificExercise = await Exercises.findOne({
       where: {
         id: req.params.id,
       },
     });
-    res.send(specificExcerise);
+    res.send(specificExercise);
   } catch (error) {
     next(error);
   }
