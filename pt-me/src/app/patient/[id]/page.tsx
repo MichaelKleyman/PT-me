@@ -532,9 +532,21 @@ export default function Patient({ params }: Params) {
                       results.map((result) => (
                         <div
                           key={result.id}
-                          className='py-3 px-4 hover:bg-[#efefef] cursor-pointer'
+                          className='p-4 hover:bg-[#efefef] cursor-pointer border-b-1'
                         >
-                          {result.name}
+                          <h1>{result.name}</h1>
+                          <div className='flex items-center gap-3 text-[12px] text-blue-500 mt-2'>
+                            {/* <button>View</button> */}
+                            <Link
+                              href={`/exercises/${result.id}`}
+                              className='hover:underline cursor-pointer '
+                            >
+                              View
+                            </Link>
+                            <button className='hover:underline cursor-pointer'>
+                              Assign
+                            </button>
+                          </div>
                         </div>
                       ))}
                   </div>
