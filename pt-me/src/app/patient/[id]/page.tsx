@@ -194,10 +194,6 @@ export default function Patient({ params }: Params) {
     setUpdate(!update);
   };
 
-  const handleAdd = () => {
-    setAddExercise(!add);
-  };
-
   const handleSetsChange = async (
     exerciseId: number,
     e: React.ChangeEvent<HTMLInputElement>
@@ -382,6 +378,15 @@ export default function Patient({ params }: Params) {
     }
   };
 
+  const assignExercise = async (exerciseId: number) => {
+    await CLIENT.post(
+      `${BASE_URL}/api/exercises//patient/add-exercise/${patient?.id}/${exerciseId}`
+    );
+    const { payload } = await dispatch(fetchPatientsExercises(params.id));
+    setExercises(payload as ExerciseData[]);
+    setSearchInput("");
+  };
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -488,7 +493,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] overflow-y-scroll ${
+                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] max-h-[700px] overflow-y-scroll ${
                   snapshot.isDraggingOver
                     ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
                     : ""
@@ -541,11 +546,14 @@ export default function Patient({ params }: Params) {
                             {/* <button>View</button> */}
                             <Link
                               href={`/exercises/${result.id}`}
-                              className='hover:underline cursor-pointer '
+                              className='hover:bg-green-300 cursor-pointer bg-green-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
                             >
                               View
                             </Link>
-                            <button className='hover:underline cursor-pointer'>
+                            <button
+                              onClick={() => assignExercise(result.id)}
+                              className='hover:bg-blue-300 cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
+                            >
                               Assign
                             </button>
                           </div>
@@ -614,7 +622,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
+                className='bg-[#fdfff5] max-h-[700px] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
               >
                 <div className='flex items-center justify-between'>
                   <h1
