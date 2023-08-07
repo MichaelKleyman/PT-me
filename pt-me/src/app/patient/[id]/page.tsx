@@ -373,15 +373,18 @@ export default function Patient({ params }: Params) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/search-exercise/${input}`
       );
-      console.log(data);
+
       setResults(data);
     }
   };
 
   const assignExercise = async (exerciseId: number) => {
-    await CLIENT.post(
+    const res = await CLIENT.post(
       `${BASE_URL}/api/exercises//patient/add-exercise/${patient?.id}/${exerciseId}`
     );
+
+    console.log(res);
+
     const { payload } = await dispatch(fetchPatientsExercises(params.id));
     setExercises(payload as ExerciseData[]);
     setSearchInput("");
