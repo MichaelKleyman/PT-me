@@ -496,7 +496,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] max-h-[700px] overflow-y-scroll ${
+                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] max-h-[900px] overflow-y-scroll ${
                   snapshot.isDraggingOver
                     ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
                     : ""
@@ -625,7 +625,7 @@ export default function Patient({ params }: Params) {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className='bg-[#fdfff5] max-h-[700px] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
+                className='bg-[#fdfff5] max-h-[900px] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
               >
                 <div className='flex items-center justify-between'>
                   <h1
