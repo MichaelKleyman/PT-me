@@ -5,6 +5,25 @@ import Link from "next/link";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import { CLIENT, BASE_URL } from "@/components/api";
 import Iframe from "react-iframe";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Paper, { PaperProps } from "@mui/material/Paper";
+import Draggable from "react-draggable";
+
+function PaperComponent(props: PaperProps) {
+  return (
+    <Draggable
+      handle='#draggable-dialog-title'
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
 
 type Obj = {
   id: Number;
@@ -26,6 +45,7 @@ interface ExerciseData {
 }
 
 export default function SpecificExercise({ params }: Params) {
+  const [assign, setAssign] = useState<boolean>(false);
   const [exercise, setExercise] = useState<ExerciseData>({
     name: "",
     id: 0,
@@ -36,6 +56,10 @@ export default function SpecificExercise({ params }: Params) {
     description: "",
     musclesWorked: "",
   });
+
+  const handleClose = () => {
+    setAssign(false);
+  };
 
   useEffect(() => {
     const getExercise = async () => {
@@ -51,8 +75,8 @@ export default function SpecificExercise({ params }: Params) {
   }, []);
 
   const assignExercise = async () => {
-    
-  }
+    setAssign(true);
+  };
 
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
@@ -97,6 +121,28 @@ export default function SpecificExercise({ params }: Params) {
       <div className='mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
         <button onClick={assignExercise}>Assign</button>
       </div>
+      <Dialog
+        open={assign}
+        onClose={handleClose}
+        PaperComponent={PaperComponent}
+        aria-labelledby='draggable-dialog-title'
+      >
+        <DialogTitle style={{ cursor: "move" }} id='draggable-dialog-title'>
+          Subscribe
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here.
+            We will send updates occasionally.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleClose}>Subscribe</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
