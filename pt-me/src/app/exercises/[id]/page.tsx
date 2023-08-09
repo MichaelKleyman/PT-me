@@ -50,6 +50,10 @@ export default function SpecificExercise({ params }: Params) {
     getExercise();
   }, []);
 
+  const assignExercise = async () => {
+    
+  }
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='mb-2 flex text-center gap-2'>
@@ -91,7 +95,7 @@ export default function SpecificExercise({ params }: Params) {
         </div>
       </div>
       <div className='mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
-        <button>Assign</button>
+        <button onClick={assignExercise}>Assign</button>
       </div>
     </div>
   );
