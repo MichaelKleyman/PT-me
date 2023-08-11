@@ -16,6 +16,11 @@ import Draggable from "react-draggable";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
 import InputAdornment from "@mui/material/InputAdornment";
+import type { AppDispatch } from "../../../Redux/store";
+import { useDispatch } from "react-redux";
+import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -61,8 +66,25 @@ interface ExerciseData {
   musclesWorked: String;
 }
 
+interface PatientData {
+  id: number;
+  title: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  reasonForVisit: string;
+  age: string;
+  injuryId: number;
+  insurance: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
+}
+
 export default function SpecificExercise({ params }: Params) {
   const [assign, setAssign] = useState<boolean>(false);
+  const [patients, setPatients] = useState<PatientData[]>();
+  const [ids, setIds] = useState<number[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [exercise, setExercise] = useState<ExerciseData>({
     name: "",
@@ -74,6 +96,7 @@ export default function SpecificExercise({ params }: Params) {
     description: "",
     musclesWorked: "",
   });
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleClose = () => {
     setAssign(false);
@@ -82,6 +105,18 @@ export default function SpecificExercise({ params }: Params) {
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
+
+  const clickedPatient = async (id: number) => {
+    setIds((prevIds) => {
+      if (prevIds.includes(id)) {
+        return prevIds.filter((prevId) => prevId !== id);
+      } else {
+        return [...prevIds, id];
+      }
+    });
+  };
+
+  console.log(ids);
 
   useEffect(() => {
     const getExercise = async () => {
@@ -98,6 +133,16 @@ export default function SpecificExercise({ params }: Params) {
 
   const assignExercise = async () => {
     setAssign(true);
+    setLoading(true);
+
+    try {
+      const { payload } = await dispatch(fetchAllPatients(1));
+      setPatients(payload as PatientData[]);
+    } catch (error) {
+      console.error("Error fetching patients:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -140,7 +185,7 @@ export default function SpecificExercise({ params }: Params) {
           />
         </div>
       </div>
-      <div className='mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
+      <div className='hover:bg-blue-100 hover:text-white mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
         <button onClick={assignExercise}>Assign</button>
       </div>
       <Dialog
@@ -172,8 +217,26 @@ export default function SpecificExercise({ params }: Params) {
                 ),
               }}
               sx={style}
-              placeholder='Search Exercises'
+              placeholder='Search Patients'
             />
+          </div>
+          <div className='h-[200px] overflow-y-scroll'>
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              <div>
+                {patients?.map((patient) => (
+                  <div key={patient.id} className='p-2'>
+                    <FormControlLabel
+                      control={
+                        <Checkbox onChange={() => clickedPatient(patient.id)} />
+                      }
+                      label={patient.title}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </DialogContent>
         <DialogActions>
