@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { CLIENT, BASE_URL } from "@/components/api";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Container } from "react-bootstrap";
 import "../styles/exercises.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import ReactPaginate from "react-paginate";
@@ -106,7 +104,7 @@ export default function AllExercises() {
     .map((exercise, i) => {
       return (
         <div key={i} className='p-2'>
-          <Container className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+          <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex items-center justify-between'>
               <p
                 className={`tracking-wide ${
@@ -139,12 +137,12 @@ export default function AllExercises() {
     )} */}
               <Iframe
                 url={exercise.videoLink}
-                width='560'
+                width='360'
                 height='315'
                 allowFullScreen
               />
             </div>
-          </Container>
+          </div>
         </div>
       );
     });
@@ -155,7 +153,7 @@ export default function AllExercises() {
     .map((exercise, i) => {
       return (
         <div key={i} className='p-2'>
-          <Container className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+          <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex justify-between items-center'>
               <p
                 className={`tracking-wide ${
@@ -171,15 +169,15 @@ export default function AllExercises() {
                 View Exercise
               </Link>
             </div>
-            <div className='ratio ratio-1x1'>
+            <div className='ratio ratio-1x1 flex items-center justify-center'>
               <Iframe
                 url={exercise.videoLink}
-                width='560'
-                height='815'
+                width='360'
+                height='315'
                 allowFullScreen
               />
             </div>
-          </Container>
+          </div>
         </div>
       );
     });
@@ -263,10 +261,10 @@ export default function AllExercises() {
           placeholder='Search Exercises'
         />
       </div>
-      <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      <div className='mt-3 w-[100%] p-3 grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
         {selected === "All" && displayAllExercises}
       </div>
-      <div className='mt-3 w-[100%] p-3 grid sm:grid-cols-2 md:grid-cols-3 gap-8'>
+      <div className='mt-3 w-[100%] p-3 grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
         {selected !== "All" && displaySpecificExercise}
       </div>
       {selected === "All" ? (

@@ -1,5 +1,4 @@
-import Exercises from '@/components/Exercises';
-import AllExercises from '@/components/AllExercises';
+import AllExercises from "@/components/AllExercises";
 
 export default function page() {
   return (

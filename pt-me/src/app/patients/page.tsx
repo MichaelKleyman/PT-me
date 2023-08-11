@@ -72,9 +72,9 @@ export default function AllPatients() {
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>
       <div className='mt-8'>
-        <h1>
+        <h4>
           Total Number of Patients: <span>{patients?.length}</span>
-        </h1>
+        </h4>
       </div>
       <div className='mt-8'>
         <div className='grid md:grid-cols-5 gap-6 place-items-center text-sm bg-[#eaece1] p-2'>
