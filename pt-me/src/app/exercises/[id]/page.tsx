@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Alert from "@mui/material/Alert";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -81,7 +82,8 @@ interface PatientData {
 }
 
 export default function SpecificExercise({ params }: Params) {
-  const [assign, setAssign] = useState<boolean>(false);
+  const [clicked, setClicked] = useState<boolean>(false);
+  const [assigned, setAssigned] = useState<boolean>(false);
   const [patients, setPatients] = useState<PatientData[]>();
   const [ids, setIds] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,7 +101,7 @@ export default function SpecificExercise({ params }: Params) {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClose = () => {
-    setAssign(false);
+    setClicked(false);
   };
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +116,19 @@ export default function SpecificExercise({ params }: Params) {
         return [...prevIds, id];
       }
     });
+  };
+
+  const submitAssignExercise = async () => {
+    for (let i = 0; i < ids.length; i++) {
+      const res = await CLIENT.post(
+        `${BASE_URL}/api/exercises//patient/add-exercise/${ids[i]}/${exercise.id}`
+      );
+    }
+    setAssigned(true);
+    setTimeout(() => {
+      setAssigned(false);
+      handleClose();
+    }, 2500);
   };
 
   console.log(ids);
@@ -131,8 +146,8 @@ export default function SpecificExercise({ params }: Params) {
     getExercise();
   }, []);
 
-  const assignExercise = async () => {
-    setAssign(true);
+  const clickAssign = async () => {
+    setClicked(true);
     setLoading(true);
 
     try {
@@ -186,10 +201,10 @@ export default function SpecificExercise({ params }: Params) {
         </div>
       </div>
       <div className='hover:bg-blue-100 hover:text-white mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
-        <button onClick={assignExercise}>Assign</button>
+        <button onClick={clickAssign}>Assign</button>
       </div>
       <Dialog
-        open={assign}
+        open={clicked}
         onClose={handleClose}
         PaperComponent={PaperComponent}
         aria-labelledby='draggable-dialog-title'
@@ -243,7 +258,11 @@ export default function SpecificExercise({ params }: Params) {
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleClose}>Assign</Button>
+          {assigned ? (
+            <Alert severity='success'>Successfully Assigned</Alert>
+          ) : (
+            <Button onClick={submitAssignExercise}>Assign</Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

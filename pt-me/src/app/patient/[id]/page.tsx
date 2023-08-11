@@ -289,7 +289,7 @@ export default function Patient({ params }: Params) {
 
     let add;
     let exerciseList = [...patientsExercises];
-    let patientFlowSheet = [...schedule];
+    let patientFlowSheet = schedule ? [...schedule] : [];
 
     if (source.droppableId === "exercise-list") {
       add = exerciseList?.[source.index];

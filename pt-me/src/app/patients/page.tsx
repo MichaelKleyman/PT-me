@@ -1,14 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import { useEffect, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+"use client";
+import { useEffect, useState } from "react";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 // import patients from '@/components/Patients';
-import { IoIosArrowForward } from 'react-icons/io';
-import Link from 'next/link';
-import type { AppDispatch, RootState } from '@/Redux/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllPatients } from '@/Redux/Features/patients/patientSlice';
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
+import type { AppDispatch, RootState } from "@/Redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
+import { IoMdAddCircle } from "react-icons/io";
 
 interface PatientData {
   id: number;
@@ -47,7 +48,7 @@ export default function AllPatients() {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    let color = '#';
+    let color = "#";
 
     for (i = 0; i < 3; i += 1) {
       const value = (hash >> (i * 8)) & 0xff;
@@ -63,7 +64,7 @@ export default function AllPatients() {
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1]?.[0]}`,
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
     };
   }
   return (
@@ -71,10 +72,17 @@ export default function AllPatients() {
       <h1 className='text-xl tracking-widest font-bold uppercase'>
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>
-      <div className='mt-8'>
-        <h4>
+      <div className='mt-8 flex items-center justify-between'>
+        <h1>
           Total Number of Patients: <span>{patients?.length}</span>
-        </h4>
+        </h1>
+        <Link
+          href='/'
+          className='p-2 bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white flex items-center gap-3'
+        >
+          <IoMdAddCircle size={22} />
+          Create New Patient
+        </Link>
       </div>
       <div className='mt-8'>
         <div className='grid md:grid-cols-5 gap-6 place-items-center text-sm bg-[#eaece1] p-2'>
