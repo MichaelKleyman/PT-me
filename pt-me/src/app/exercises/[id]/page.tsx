@@ -13,6 +13,23 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import Draggable from "react-draggable";
+import TextField from "@mui/material/TextField";
+import { BsSearch } from "react-icons/bs";
+import InputAdornment from "@mui/material/InputAdornment";
+
+const style = {
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#fdfff5",
+      borderRadius: "15px",
+    },
+  },
+  width: "100%",
+  height: "30%",
+  backgroundColor: "white",
+  borderRadius: "20px",
+  boxShadow: "0px 0px 8px #ddd",
+};
 
 function PaperComponent(props: PaperProps) {
   return (
@@ -46,6 +63,7 @@ interface ExerciseData {
 
 export default function SpecificExercise({ params }: Params) {
   const [assign, setAssign] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>("");
   const [exercise, setExercise] = useState<ExerciseData>({
     name: "",
     id: 0,
@@ -59,6 +77,10 @@ export default function SpecificExercise({ params }: Params) {
 
   const handleClose = () => {
     setAssign(false);
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
   };
 
   useEffect(() => {
@@ -126,21 +148,39 @@ export default function SpecificExercise({ params }: Params) {
         onClose={handleClose}
         PaperComponent={PaperComponent}
         aria-labelledby='draggable-dialog-title'
+        fullWidth={true}
       >
         <DialogTitle style={{ cursor: "move" }} id='draggable-dialog-title'>
-          Subscribe
+          Exercise Assignment
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
+            Assign this exercise to patients in your practice.
           </DialogContentText>
+          <div className='flex items-center justify-center py-[1rem]'>
+            <TextField
+              id='outlined-search'
+              value={searchInput}
+              onChange={handleSearch}
+              type='search'
+              focused
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <BsSearch color='#3BE13B' />
+                  </InputAdornment>
+                ),
+              }}
+              sx={style}
+              placeholder='Search Exercises'
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>Assign</Button>
         </DialogActions>
       </Dialog>
     </div>
