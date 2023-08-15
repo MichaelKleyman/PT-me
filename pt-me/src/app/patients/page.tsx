@@ -77,7 +77,7 @@ export default function AllPatients() {
           Total Number of Patients: <span>{patients?.length}</span>
         </h1>
         <Link
-          href='/'
+          href='/patients/create-patient'
           className='p-2 bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white flex items-center gap-3'
         >
           <IoMdAddCircle size={22} />

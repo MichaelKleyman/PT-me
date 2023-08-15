@@ -119,4 +119,41 @@ router.delete("/patient/:patientId/:exerciseId", async (req, res, next) => {
   }
 });
 
+//POST exercise to patients exercise list
+router.post(
+  "/patient/add-exercise/:patientId/:exerciseId",
+  async (req, res, next) => {
+    try {
+      const { patientId, exerciseId } = req.params;
+
+      // const exerciseAlreadyExists = await PatientExercises.findOne({
+      //   where: {
+      //     patientId: patientId,
+      //     exerciseId: exerciseId,
+      //   },
+      // });
+
+      // if (exerciseAlreadyExists) {
+      //   return res.send({
+      //     message: "Exercise is already in the exercise list.",
+      //   });
+      // }
+
+      const addedExercise = await PatientExercises.create({
+        patientId: patientId,
+        exerciseId: exerciseId,
+      });
+
+      if (!addedExercise) {
+        return res.status(400).send({ message: "Error making the exercise" });
+      }
+
+      return res.send(addedExercise);
+    } catch (error) {
+      console.log("Error adding to exercise list: ", error);
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

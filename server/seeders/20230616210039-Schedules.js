@@ -20,6 +20,31 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          patientId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          patientId: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          patientId: 4,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          patientId: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          patientId: 6,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );
