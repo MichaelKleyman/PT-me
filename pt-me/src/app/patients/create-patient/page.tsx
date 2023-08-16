@@ -1,6 +1,7 @@
-import React from "react";
+"use client";
 import Link from "next/link";
 import { AiOutlineFileSearch } from "react-icons/ai";
+import TextField from "@mui/material/TextField";
 
 export default function page() {
   return (
@@ -19,6 +20,35 @@ export default function page() {
       <h1 className='font-medium text-[1.5rem] tracking wide'>
         Create new patient
       </h1>
+      <div className='grid md:grid-cols-3 gap-6 py-5'>
+        <TextField
+          required
+          // name='email'
+          // onChange={handleChange}
+          // value={credentials.email}
+          // id='email-login'
+          label='Last Name'
+          sx={{ width: "100%", borderRadius: "10px" }}
+        />
+        <TextField
+          required
+          // name='email'
+          // onChange={handleChange}
+          // value={credentials.email}
+          // id='email-login'
+          label='First Name'
+          sx={{ width: "100%", borderRadius: "10px" }}
+        />
+        <TextField
+          required
+          // name='email'
+          // onChange={handleChange}
+          // value={credentials.email}
+          // id='email-login'
+          label='Age'
+          sx={{ width: "100%", borderRadius: "10px" }}
+        />
+      </div>
     </div>
   );
 }
