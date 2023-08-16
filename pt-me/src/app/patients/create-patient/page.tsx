@@ -3,6 +3,8 @@ import Link from "next/link";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import TextField from "@mui/material/TextField";
 
+const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
+
 export default function page() {
   return (
     <div className='mt-[2rem] ml-[6rem] p-9'>
@@ -21,33 +23,12 @@ export default function page() {
         Create new patient
       </h1>
       <div className='grid md:grid-cols-3 gap-6 py-5'>
-        <TextField
-          required
-          // name='email'
-          // onChange={handleChange}
-          // value={credentials.email}
-          // id='email-login'
-          label='Last Name'
-          sx={{ width: "100%", borderRadius: "10px" }}
-        />
-        <TextField
-          required
-          // name='email'
-          // onChange={handleChange}
-          // value={credentials.email}
-          // id='email-login'
-          label='First Name'
-          sx={{ width: "100%", borderRadius: "10px" }}
-        />
-        <TextField
-          required
-          // name='email'
-          // onChange={handleChange}
-          // value={credentials.email}
-          // id='email-login'
-          label='Age'
-          sx={{ width: "100%", borderRadius: "10px" }}
-        />
+        <TextField type='text' required label='Last Name' sx={styling} />
+        <TextField type='text' required label='First Name' sx={styling} />
+        <TextField type='number' required label='Age' sx={styling} />
+        <TextField type='email' required label='Email' sx={styling} />
+        <TextField type='text' required label='Phone Number' sx={styling} />
+        <TextField type='text' required label='Insurance' sx={styling} />
       </div>
     </div>
   );
