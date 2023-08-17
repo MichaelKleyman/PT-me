@@ -29,6 +29,16 @@ export default function page() {
         <TextField type='email' required label='Email' sx={styling} />
         <TextField type='text' required label='Phone Number' sx={styling} />
         <TextField type='text' required label='Insurance' sx={styling} />
+        <TextField type='text' required label='Address' sx={styling} />
+        <TextField type='text' required label='State' sx={styling} />
+        <TextField type='text' required label='City' sx={styling} />
+        <TextField type='text' required label='Zipcode' sx={styling} />
+        <div>
+          <label className='ml-3 font-medium text-green-500'>
+            Arrival Date
+          </label>
+          <TextField type='date' required sx={styling} />
+        </div>
       </div>
     </div>
   );
