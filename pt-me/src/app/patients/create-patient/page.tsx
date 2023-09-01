@@ -5,6 +5,20 @@ import TextField from "@mui/material/TextField";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
 
+const inputs = [
+  "Last Name",
+  "First Name",
+  "Age",
+  "Gender",
+  "Email",
+  "Phone Number",
+  "Insurance",
+  "Address",
+  "State",
+  "City",
+  "Zipcode",
+];
+
 export default function page() {
   return (
     <div className='mt-[2rem] ml-[6rem] p-9'>
@@ -26,6 +40,7 @@ export default function page() {
         <TextField type='text' required label='Last Name' sx={styling} />
         <TextField type='text' required label='First Name' sx={styling} />
         <TextField type='number' required label='Age' sx={styling} />
+        <TextField type='number' required label='Gender' sx={styling} />
         <TextField type='email' required label='Email' sx={styling} />
         <TextField type='text' required label='Phone Number' sx={styling} />
         <TextField type='text' required label='Insurance' sx={styling} />
