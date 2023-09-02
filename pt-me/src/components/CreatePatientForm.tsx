@@ -41,7 +41,7 @@ export default function CreatePatientForm() {
 
   return (
     <div className='grid md:grid-cols-3 gap-6 py-5'>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className='col-span-1'>
         {inputs
           .slice(
             page === totalPages - 1 ? page * 4 - 1 : page * 4,
@@ -49,7 +49,15 @@ export default function CreatePatientForm() {
           )
           .map((question, index) => (
             <div key={index}>
-              <TextField type='text' required label={question} sx={styling} />
+              <TextField
+                type='text'
+                required
+                label={question}
+                sx={styling}
+                {...register(`${question}`, {
+                  required: true,
+                })}
+              />
             </div>
           ))}
         <div className='flex justify-between'>
@@ -81,6 +89,7 @@ export default function CreatePatientForm() {
           )}
         </div>
       </form>
+      <div className='col-span-2'></div>
     </div>
   );
 }
