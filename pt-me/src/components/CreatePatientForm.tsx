@@ -2,6 +2,7 @@
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Controller, useController, useForm } from "react-hook-form";
+import PDFPreview from "./PDFPreview";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
 
@@ -89,7 +90,9 @@ export default function CreatePatientForm() {
           )}
         </div>
       </form>
-      <div className='col-span-2'></div>
+      <div className='col-span-2 p-4'>
+        <PDFPreview />
+      </div>
     </div>
   );
 }
