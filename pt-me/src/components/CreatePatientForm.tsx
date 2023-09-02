@@ -27,31 +27,59 @@ export default function CreatePatientForm() {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const totalPages = 3;
+
   const onSubmit = () => {};
+
+  const handleNext = () => {
+    setPage(page + 1);
+  };
+
+  const handleBack = () => {
+    setPage(page - 1);
+  };
 
   return (
     <div className='grid md:grid-cols-3 gap-6 py-5'>
-      {/* <TextField type='text' required label='Last Name' sx={styling} />
-      <TextField type='text' required label='First Name' sx={styling} />
-      <TextField type='number' required label='Age' sx={styling} />
-      <TextField type='number' required label='Gender' sx={styling} />
-      <TextField type='email' required label='Email' sx={styling} />
-      <TextField type='text' required label='Phone Number' sx={styling} />
-      <TextField type='text' required label='Insurance' sx={styling} />
-      <TextField type='text' required label='Address' sx={styling} />
-      <TextField type='text' required label='State' sx={styling} />
-      <TextField type='text' required label='City' sx={styling} />
-      <TextField type='text' required label='Zipcode' sx={styling} />
-      <div>
-        <label className='ml-3 font-medium text-green-500'>Arrival Date</label>
-        <TextField type='date' required sx={styling} />
-      </div> */}
-      <form onSubmit={handleSubmit(onSubmit)} className='w-[55%]'>
-        {inputs.map((question, index) => (
-          <div key={index}>
-            <TextField type='text' required label={question} sx={styling} />
-          </div>
-        ))}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {inputs
+          .slice(
+            page === totalPages - 1 ? page * 4 - 1 : page * 4,
+            page === totalPages - 2 ? (page + 1) * 4 - 1 : (page + 1) * 4
+          )
+          .map((question, index) => (
+            <div key={index}>
+              <TextField type='text' required label={question} sx={styling} />
+            </div>
+          ))}
+        <div className='flex justify-between'>
+          {page > 0 && (
+            <button
+              type='button'
+              onClick={handleBack}
+              className='bg-white rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-[#3BE13B] px-4 py-2'
+            >
+              Back
+            </button>
+          )}
+          {page < totalPages - 1 && (
+            <button
+              type='button'
+              onClick={handleNext}
+              className='bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
+            >
+              Next
+            </button>
+          )}
+          {page === totalPages - 1 && (
+            <button
+              type='submit'
+              className='bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
+            >
+              Submit
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
