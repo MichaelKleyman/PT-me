@@ -20,8 +20,35 @@ const inputs = [
   "Zipcode",
 ];
 
+export interface PatientFormData {
+  "Last Name": string;
+  "First Name": string;
+  Age: number;
+  Gender: string;
+  Email: string;
+  "Phone Number": number;
+  Insurance: string;
+  Address: string;
+  State: string;
+  City: string;
+  Zipcode: number;
+}
+
 export default function CreatePatientForm() {
   const [page, setPage] = useState<number>(0);
+  const [patientFormData, setData] = useState<PatientFormData>({
+    "Last Name": "",
+    "First Name": "",
+    Age: 0,
+    Gender: "",
+    Email: "",
+    "Phone Number": 0,
+    Insurance: "",
+    Address: "",
+    State: "",
+    City: "",
+    Zipcode: 0,
+  });
   const {
     register,
     handleSubmit,
@@ -38,6 +65,13 @@ export default function CreatePatientForm() {
 
   const handleBack = () => {
     setPage(page - 1);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
@@ -57,6 +91,7 @@ export default function CreatePatientForm() {
                 sx={styling}
                 {...register(`${question}`, {
                   required: true,
+                  onChange: (e) => handleChange(e),
                 })}
               />
             </div>
@@ -91,7 +126,7 @@ export default function CreatePatientForm() {
         </div>
       </form>
       <div className='col-span-2 p-4'>
-        <PDFPreview />
+        <PDFPreview patientFormData={patientFormData}/>
       </div>
     </div>
   );
