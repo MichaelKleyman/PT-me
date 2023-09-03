@@ -21,6 +21,11 @@ const inputs = [
   "Zipcode",
 ];
 
+const genderOptions = [
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+];
+
 export interface PatientFormData {
   "Last Name": string;
   "First Name": string;
@@ -53,8 +58,14 @@ export default function CreatePatientForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm({ mode: "all" });
+
+  const genderController = useController({
+    name: "Gender",
+    control,
+  });
 
   const totalPages = 3;
 
@@ -85,16 +96,42 @@ export default function CreatePatientForm() {
           )
           .map((question, index) => (
             <div key={index}>
-              <TextField
-                type='text'
-                required
-                label={question}
-                sx={styling}
-                {...register(`${question}`, {
-                  required: true,
-                  onChange: (e) => handleChange(e),
-                })}
-              />
+              {index === 3 ? (
+                <Controller
+                  control={control}
+                  name='Gender'
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        instanceId={inputs[index]}
+                        value={genderOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        placeholder='Gender'
+                        options={genderOptions}
+                        // onChange={handlePoundsPerWeekSelectChange}
+                        className='w-full rounded-lg m-[10px]'
+                      />
+                      {/* {selectErrorMessage && (
+                        <span className='text-red-500'>
+                          {selectErrorMessage}
+                        </span>
+                      )} */}
+                    </>
+                  )}
+                />
+              ) : (
+                <TextField
+                  type='text'
+                  required
+                  label={question}
+                  sx={styling}
+                  {...register(`${question}`, {
+                    required: true,
+                    onChange: (e) => handleChange(e),
+                  })}
+                />
+              )}
             </div>
           ))}
         <div className='flex justify-between'>
