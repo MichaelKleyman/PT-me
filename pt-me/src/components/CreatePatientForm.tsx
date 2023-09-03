@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Controller, useController, useForm } from "react-hook-form";
 import PDFPreview from "./PDFPreview";
+import Select from "react-select";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
 
@@ -125,8 +126,11 @@ export default function CreatePatientForm() {
           )}
         </div>
       </form>
-      <div className='col-span-2 p-4'>
-        <PDFPreview patientFormData={patientFormData}/>
+      <div className='col-span-2'>
+        <h1 className='text-center p-3'>(PDF Preview)</h1>
+        <div className=''>
+          <PDFPreview patientFormData={patientFormData} />
+        </div>
       </div>
     </div>
   );
