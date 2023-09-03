@@ -50,6 +50,17 @@ export default function PDFPreview({ patientFormData }: Props) {
         <div className='border-b-[1px] border-black'></div>
       </div>
       <div>
+        <label>Age</label>
+        <div className=' p-2'>
+          {patientFormData?.Age ? (
+            patientFormData.Age
+          ) : (
+            <>&nbsp;</> // non breaking space entity
+          )}
+        </div>
+        <div className='border-b-[1px] border-black'></div>
+      </div>
+      <div>
         <label>Email</label>
         <div className=' p-2'>
           {patientFormData.Email.length > 0 ? (
@@ -63,7 +74,7 @@ export default function PDFPreview({ patientFormData }: Props) {
       <div>
         <label>Phone Number</label>
         <div className=' p-2'>
-          {patientFormData["Phone Number"] > 0 ? (
+          {patientFormData["Phone Number"] ? (
             patientFormData["Phone Number"]
           ) : (
             <>&nbsp;</> // non breaking space entity

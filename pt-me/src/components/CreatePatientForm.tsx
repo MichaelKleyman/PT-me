@@ -29,35 +29,37 @@ const genderOptions = [
 export interface PatientFormData {
   "Last Name": string;
   "First Name": string;
-  Age: number;
+  Age: number | undefined;
   Gender: string;
   Email: string;
-  "Phone Number": number;
+  "Phone Number": number | undefined;
   Insurance: string;
   Address: string;
   State: string;
   City: string;
-  Zipcode: number;
+  Zipcode: number | undefined;
 }
 
 export default function CreatePatientForm() {
   const [page, setPage] = useState<number>(0);
+  const [selectErrorMessage, setSelectErrorMessage] = useState<string>("");
   const [patientFormData, setData] = useState<PatientFormData>({
     "Last Name": "",
     "First Name": "",
-    Age: 0,
+    Age: undefined,
     Gender: "",
     Email: "",
-    "Phone Number": 0,
+    "Phone Number": undefined,
     Insurance: "",
     Address: "",
     State: "",
     City: "",
-    Zipcode: 0,
+    Zipcode: undefined,
   });
   const {
     register,
     handleSubmit,
+    trigger,
     control,
     formState: { errors },
   } = useForm({ mode: "all" });
@@ -69,10 +71,24 @@ export default function CreatePatientForm() {
 
   const totalPages = 3;
 
-  const onSubmit = () => {};
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
 
-  const handleNext = () => {
-    setPage(page + 1);
+  const handleNext = async () => {
+    const result = await trigger(
+      inputs.slice(
+        page === totalPages - 1 ? page * 4 - 1 : page * 4,
+        page === totalPages - 2 ? (page + 1) * 4 - 1 : (page + 1) * 4
+      )
+    );
+
+    if (result && page === 0 && genderController.fieldState.isDirty) {
+      setPage(page + 1);
+      setSelectErrorMessage("");
+    } else {
+      setSelectErrorMessage("Please select an option.");
+    }
   };
 
   const handleBack = () => {
@@ -84,6 +100,11 @@ export default function CreatePatientForm() {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleGenderSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    genderController.field.onChange(option.value);
   };
 
   return (
@@ -109,28 +130,66 @@ export default function CreatePatientForm() {
                         )}
                         placeholder='Gender'
                         options={genderOptions}
-                        // onChange={handlePoundsPerWeekSelectChange}
+                        onChange={handleGenderSelectChange}
                         className='w-full rounded-lg m-[10px]'
                       />
-                      {/* {selectErrorMessage && (
+                      {selectErrorMessage && (
                         <span className='text-red-500'>
                           {selectErrorMessage}
                         </span>
-                      )} */}
+                      )}
                     </>
                   )}
                 />
               ) : (
-                <TextField
-                  type='text'
-                  required
-                  label={question}
-                  sx={styling}
-                  {...register(`${question}`, {
-                    required: true,
-                    onChange: (e) => handleChange(e),
-                  })}
-                />
+                <>
+                  {inputs[page * 4 + index] === "Email" ? (
+                    <TextField
+                      id={inputs[index]}
+                      type='email'
+                      required
+                      label={question}
+                      value={patientFormData[question as keyof PatientFormData]}
+                      sx={styling}
+                      {...register(`${question}`, {
+                        required: true,
+                        onChange: (e) => handleChange(e),
+                      })}
+                    />
+                  ) : inputs[page * 4 + index] === "Phone Number" ||
+                    inputs[page * 4 + index] === "Age" ? (
+                    <TextField
+                      id={inputs[page * 4 + index]}
+                      type='number'
+                      required
+                      label={question}
+                      value={patientFormData[question as keyof PatientFormData]}
+                      sx={styling}
+                      {...register(`${question}`, {
+                        required: true,
+                        onChange: (e) => handleChange(e),
+                      })}
+                    />
+                  ) : (
+                    <TextField
+                      id={inputs[page * 4 + index]}
+                      type='text'
+                      required
+                      value={patientFormData[question as keyof PatientFormData]}
+                      label={question}
+                      sx={styling}
+                      {...register(`${question}`, {
+                        required: true,
+                        onChange: (e) => handleChange(e),
+                      })}
+                    />
+                  )}
+                  {errors[inputs[page * 4 + index]] && (
+                    <span className='text-red-500'>
+                      This field is required*
+                    </span>
+                  )}
+                </>
               )}
             </div>
           ))}
