@@ -13,7 +13,7 @@ interface Props {
 export default function PDFPreview({ patientFormData }: Props) {
   return (
     <div
-      className={`${courier_prime.className} p-9 bg-[#f3f8f7] shadow-lg shadow-slate-400 grid grid-cols-3 gap-4`}
+      className={`${courier_prime.className} p-[4rem] bg-[#f3f8f7] shadow-lg shadow-slate-400 grid grid-cols-3 gap-8`}
     >
       <div>
         <label>First Name</label>
@@ -131,6 +131,28 @@ export default function PDFPreview({ patientFormData }: Props) {
         <div className=' p-2'>
           {patientFormData.Zipcode ? (
             patientFormData.Zipcode
+          ) : (
+            <>&nbsp;</> // non breaking space entity
+          )}
+        </div>
+        <div className='border-b-[1px] border-black'></div>
+      </div>
+      <div>
+        <label>Reason For Visit</label>
+        <div className=' p-2'>
+          {patientFormData["Reason For Visit"].length > 0 ? (
+            patientFormData["Reason For Visit"]
+          ) : (
+            <>&nbsp;</> // non breaking space entity
+          )}
+        </div>
+        <div className='border-b-[1px] border-black'></div>
+      </div>
+      <div>
+        <label>Injury Type</label>
+        <div className=' p-2'>
+          {patientFormData["Injury Type"].length > 0 ? (
+            patientFormData["Injury Type"]
           ) : (
             <>&nbsp;</> // non breaking space entity
           )}

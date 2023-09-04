@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Controller, useController, useForm } from "react-hook-form";
 import PDFPreview from "./PDFPreview";
 import Select from "react-select";
+import { CLIENT, BASE_URL } from "./api";
+import { useSelector } from "react-redux";
+import { RootState } from "../Redux/store";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
 
@@ -19,11 +22,20 @@ const inputs = [
   "State",
   "City",
   "Zipcode",
+  "Reason For Visit",
+  "Injury Type",
 ];
 
 const genderOptions = [
   { value: "Male", label: "Male" },
   { value: "Female", label: "Female" },
+];
+
+const injuryTypeOptions = [
+  { value: "Knee", label: "Knee" },
+  { value: "Shoulders", label: "Shoulders" },
+  { value: "Back", label: "Back" },
+  { value: "Hip", label: "Hip" },
 ];
 
 const insuranceOptions = [
@@ -52,6 +64,8 @@ export interface PatientFormData {
   State: string;
   City: string;
   Zipcode: number | undefined;
+  "Reason For Visit": string;
+  "Injury Type": string;
 }
 
 export default function CreatePatientForm() {
@@ -69,6 +83,8 @@ export default function CreatePatientForm() {
     State: "",
     City: "",
     Zipcode: undefined,
+    "Reason For Visit": "",
+    "Injury Type": "",
   });
   const {
     register,
@@ -78,9 +94,15 @@ export default function CreatePatientForm() {
     getValues,
     formState: { errors },
   } = useForm({ mode: "all" });
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const genderController = useController({
     name: "Gender",
+    control,
+  });
+
+  const injuryTypeController = useController({
+    name: "Injury Type",
     control,
   });
 
@@ -89,14 +111,23 @@ export default function CreatePatientForm() {
     control,
   });
 
-  const totalPages = 3;
+  const totalPages = 4;
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     const isValid = Object.values(getValues()).every(
       (elem) => elem !== undefined
     );
-    if (isValid) {
-      console.log(data);
+    if (!insuranceController.fieldState.isDirty) {
+      setData((prevState) => ({
+        ...prevState,
+        Insurance: getValues("Injury Type"),
+      }));
+      setSelectErrorMessage("Please select an option.");
+    } else {
+      if (isValid) {
+        // console.log(data);
+        await CLIENT.post(`${BASE_URL}/api/patients/${user.id}`, data);
+      }
     }
   };
 
@@ -128,6 +159,9 @@ export default function CreatePatientForm() {
     } else {
       setSelectErrorMessage("Please select an option.");
     }
+    if (result && page === 2) {
+      setPage(page + 1);
+    }
   };
 
   const handleBack = () => {
@@ -151,13 +185,24 @@ export default function CreatePatientForm() {
     insuranceController.field.onChange(option.value);
   };
 
+  const handleInjuryTypeSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    injuryTypeController.field.onChange(option.value);
+  };
+
   return (
     <div className='grid md:grid-cols-3 gap-6 py-5'>
       <form onSubmit={handleSubmit(onSubmit)} className='col-span-1'>
         {inputs
           .slice(
-            page === totalPages - 1 ? page * 4 - 1 : page * 4,
-            page === totalPages - 2 ? (page + 1) * 4 - 1 : (page + 1) * 4
+            page === totalPages - 2 || page === totalPages - 1
+              ? page * 4 - 1
+              : page * 4,
+            page === totalPages - 3
+              ? (page + 1) * 4 - 1
+              : page === totalPages - 2
+              ? (page + 1) * 4 - 1
+              : (page + 1) * 4
           )
           .map((question, index) => (
             <div key={index}>
@@ -199,6 +244,30 @@ export default function CreatePatientForm() {
                         placeholder='Insurance'
                         options={insuranceOptions}
                         onChange={handleInsuranceSelectChange}
+                        className='w-full rounded-lg m-[10px]'
+                      />
+                      {selectErrorMessage && (
+                        <span className='text-red-500'>
+                          {selectErrorMessage}
+                        </span>
+                      )}
+                    </>
+                  )}
+                />
+              ) : page * 4 + index === 13 ? (
+                <Controller
+                  control={control}
+                  name='Insurance'
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        instanceId={inputs[index]}
+                        value={injuryTypeOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        placeholder='Injury Type'
+                        options={injuryTypeOptions}
+                        onChange={handleInjuryTypeSelectChange}
                         className='w-full rounded-lg m-[10px]'
                       />
                       {selectErrorMessage && (
