@@ -11,7 +11,6 @@ interface Props {
 }
 
 export default function PDFPreview({ patientFormData }: Props) {
-  console.log(patientFormData);
   return (
     <div
       className={`${courier_prime.className} p-9 bg-[#f3f8f7] shadow-lg shadow-slate-400 grid grid-cols-3 gap-4`}

@@ -26,6 +26,20 @@ const genderOptions = [
   { value: "Female", label: "Female" },
 ];
 
+const insuranceOptions = [
+  { value: "Humana", label: "Humana" },
+  { value: "Aetna", label: "Aetna" },
+  { value: "Cigna Group", label: "Cigna Group" },
+  { value: "Blue Cross Blue Shield", label: "Blue Cross Blue Shield" },
+  { value: "Anthem", label: "Anthem" },
+  { value: "Fidelis", label: "Fidelis" },
+  { value: "Medicare", label: "Medicare" },
+  { value: "Medicaid", label: "Medicaid" },
+  { value: "United Healthcare Service", label: "United Healthcare Service" },
+  { value: "HCSC", label: "HCSC" },
+  { value: "MetLife", label: "MetLife" },
+];
+
 export interface PatientFormData {
   "Last Name": string;
   "First Name": string;
@@ -61,6 +75,7 @@ export default function CreatePatientForm() {
     handleSubmit,
     trigger,
     control,
+    getValues,
     formState: { errors },
   } = useForm({ mode: "all" });
 
@@ -69,10 +84,20 @@ export default function CreatePatientForm() {
     control,
   });
 
+  const insuranceController = useController({
+    name: "Insurance",
+    control,
+  });
+
   const totalPages = 3;
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    const isValid = Object.values(getValues()).every(
+      (elem) => elem !== undefined
+    );
+    if (isValid) {
+      console.log(data);
+    }
   };
 
   const handleNext = async () => {
@@ -86,6 +111,20 @@ export default function CreatePatientForm() {
     if (result && page === 0 && genderController.fieldState.isDirty) {
       setPage(page + 1);
       setSelectErrorMessage("");
+      setData((prevState) => ({
+        ...prevState,
+        Gender: getValues("Gender"),
+      }));
+    } else {
+      setSelectErrorMessage("Please select an option.");
+    }
+    if (result && page === 1 && insuranceController.fieldState.isDirty) {
+      setPage(page + 1);
+      setSelectErrorMessage("");
+      setData((prevState) => ({
+        ...prevState,
+        Insurance: getValues("Insurance"),
+      }));
     } else {
       setSelectErrorMessage("Please select an option.");
     }
@@ -107,6 +146,11 @@ export default function CreatePatientForm() {
     genderController.field.onChange(option.value);
   };
 
+  const handleInsuranceSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    insuranceController.field.onChange(option.value);
+  };
+
   return (
     <div className='grid md:grid-cols-3 gap-6 py-5'>
       <form onSubmit={handleSubmit(onSubmit)} className='col-span-1'>
@@ -117,7 +161,7 @@ export default function CreatePatientForm() {
           )
           .map((question, index) => (
             <div key={index}>
-              {index === 3 ? (
+              {page * 4 + index === 3 ? (
                 <Controller
                   control={control}
                   name='Gender'
@@ -131,6 +175,30 @@ export default function CreatePatientForm() {
                         placeholder='Gender'
                         options={genderOptions}
                         onChange={handleGenderSelectChange}
+                        className='w-full rounded-lg m-[10px]'
+                      />
+                      {selectErrorMessage && (
+                        <span className='text-red-500'>
+                          {selectErrorMessage}
+                        </span>
+                      )}
+                    </>
+                  )}
+                />
+              ) : page * 4 + index === 6 ? (
+                <Controller
+                  control={control}
+                  name='Insurance'
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        instanceId={inputs[index]}
+                        value={insuranceOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        placeholder='Insurance'
+                        options={insuranceOptions}
+                        onChange={handleInsuranceSelectChange}
                         className='w-full rounded-lg m-[10px]'
                       />
                       {selectErrorMessage && (
