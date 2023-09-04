@@ -1,8 +1,8 @@
-const router = require('express').Router();
-const { Patients } = require('../models');
+const router = require("express").Router();
+const { Patients } = require("../models");
 
 //GET all patients with specific clinic ID
-router.get('/:clinicId', async (req, res, next) => {
+router.get("/:clinicId", async (req, res, next) => {
   try {
     const allPatients = await Patients.findAll({
       where: {
@@ -17,7 +17,7 @@ router.get('/:clinicId', async (req, res, next) => {
 });
 
 //GET specific patient
-router.get('/patient/:patientId', async (req, res, next) => {
+router.get("/patient/:patientId", async (req, res, next) => {
   try {
     const patient = await Patients.findOne({
       where: {
@@ -25,6 +25,17 @@ router.get('/patient/:patientId', async (req, res, next) => {
       },
     });
     res.send(patient);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+//POST create patient
+router.post("/:clinicId", async (req, res, next) => {
+  try {
+    const { clinicId } = req.params;
+    console.log(req.body);
   } catch (error) {
     console.log(error);
     next(error);
