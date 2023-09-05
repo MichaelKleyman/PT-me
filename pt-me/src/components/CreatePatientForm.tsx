@@ -1,6 +1,7 @@
 "use client";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Controller, useController, useForm } from "react-hook-form";
 import PDFPreview from "./PDFPreview";
 import Select from "react-select";
@@ -95,6 +96,7 @@ export default function CreatePatientForm() {
     formState: { errors },
   } = useForm({ mode: "all" });
   const user = useSelector((state: RootState) => state.auth.user);
+  const router = useRouter();
 
   const genderController = useController({
     name: "Gender",
@@ -113,7 +115,7 @@ export default function CreatePatientForm() {
 
   const totalPages = 4;
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (formData: any) => {
     const isValid = Object.values(getValues()).every(
       (elem) => elem !== undefined
     );
@@ -125,8 +127,11 @@ export default function CreatePatientForm() {
       setSelectErrorMessage("Please select an option.");
     } else {
       if (isValid) {
-        // console.log(data);
-        await CLIENT.post(`${BASE_URL}/api/patients/${user.id}`, data);
+        const res = await CLIENT.post(
+          `${BASE_URL}/api/patients/${user.id}`,
+          formData
+        );
+        router.push(`/patient/${res.data.patientId}`);
       }
     }
   };
