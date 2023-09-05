@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useState, useEffect } from "react";
-import patients from "@/components/Patients";
+import { useState, useEffect, forwardRef, ReactElement, Ref } from "react";
+import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { GrCalendar } from "react-icons/gr";
@@ -40,6 +40,14 @@ import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
 // import PatientFlowSheet from "@/components/PatientFlowSheet";
 // import ExerciseTable from "@/components/PatientFlowSheet2";
 
@@ -115,6 +123,15 @@ interface Repetitions {
   id: number;
 }
 
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: ReactElement<any, any>;
+  },
+  ref: Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />;
+});
+
 export default function Patient({ params }: Params) {
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [patient, setPatient] = useState<Patient>();
@@ -124,11 +141,13 @@ export default function Patient({ params }: Params) {
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
+  const [clickedRemove, setClickedRemove] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
     reps: 0,
     id: 0,
   });
+  const router = useRouter();
 
   useEffect(() => {
     async function getPatient() {
@@ -389,9 +408,19 @@ export default function Patient({ params }: Params) {
     setSearchInput("");
   };
 
-  const deletePatient = () => {
-    
-  }
+  const deletePatient = async () => {
+    router.push("/patients");
+    await CLIENT.delete(`${BASE_URL}/api/patients/${patient?.id}`);
+    setClickedRemove(false);
+  };
+
+  const handleOpenDeletePatient = () => {
+    setClickedRemove(true);
+  };
+
+  const handleCloseDeletePatient = () => {
+    setClickedRemove(false);
+  };
 
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
@@ -476,7 +505,7 @@ export default function Patient({ params }: Params) {
             </div>
             <div className='absolute bottom-0 right-0 flex items-center'>
               <button
-                onClick={deletePatient}
+                onClick={handleOpenDeletePatient}
                 className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
               >
                 <FiDelete className='p-2' size={35} /> Remove Patient
@@ -494,6 +523,31 @@ export default function Patient({ params }: Params) {
               <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'>
                 <MdOutlineEdit className='p-2' size={35} /> Edit
               </p>
+            </div>
+            <div>
+              {clickedRemove && (
+                <Dialog
+                  open={clickedRemove}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={handleCloseDeletePatient}
+                  aria-describedby='alert-dialog-slide-description'
+                >
+                  <DialogTitle className='text-red-600'>
+                    {"Warning! You are deleting a patient permanently!"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id='alert-dialog-slide-description'>
+                      By clicking delete, you will lose all of this patients
+                      information.
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseDeletePatient}>Cancel</Button>
+                    <Button onClick={deletePatient}>Delete</Button>
+                  </DialogActions>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
