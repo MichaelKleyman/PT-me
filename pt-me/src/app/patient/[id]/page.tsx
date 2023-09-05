@@ -124,7 +124,6 @@ export default function Patient({ params }: Params) {
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [add, setAddExercise] = useState<boolean>(false);
-  // const [scheduleChanged, setScheduleChanged] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
     reps: 0,
@@ -390,6 +389,10 @@ export default function Patient({ params }: Params) {
     setSearchInput("");
   };
 
+  const deletePatient = () => {
+    
+  }
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -472,6 +475,12 @@ export default function Patient({ params }: Params) {
               </div>
             </div>
             <div className='absolute bottom-0 right-0 flex items-center'>
+              <button
+                onClick={deletePatient}
+                className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+              >
+                <FiDelete className='p-2' size={35} /> Remove Patient
+              </button>
               <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
                 <BsSend className='p-2' size={35} /> Send
               </p>

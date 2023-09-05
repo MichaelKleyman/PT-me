@@ -182,7 +182,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
               Save
             </button>
           )}
-          {!add ? (
+          {/* {!add ? (
             <button
               onClick={handleAdd}
               className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
@@ -198,7 +198,7 @@ const ExerciseTable: React.FC<Props> = ({ patientId }) => {
               <MdOutlineAddCircleOutline className='p-2' size={35} />
               Save
             </button>
-          )}
+          )} */}
         </div>
       </div>
       <div className='overflow-y-scroll overflow-x-scroll'>
