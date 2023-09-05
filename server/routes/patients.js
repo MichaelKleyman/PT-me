@@ -35,7 +35,45 @@ router.get("/patient/:patientId", async (req, res, next) => {
 router.post("/:clinicId", async (req, res, next) => {
   try {
     const { clinicId } = req.params;
-    console.log(req.body);
+    const injuryDictionary = {
+      Shoulders: 1,
+      Back: 2,
+      Knee: 3,
+      Hip: 4,
+    };
+    const { Gender, Age, Insurance, Email, Address } = req.body;
+    const firstName = req.body["First Name"];
+    const lastName = req.body["Last Name"];
+    const phoneNumber =
+      req.body["Phone Number"].slice(0, 3) +
+      "-" +
+      req.body["Phone Number"].slice(3, 6) +
+      "-" +
+      req.body["Phone Number"].slice(6);
+    const reasonForVisit = req.body["Reason For Visit"];
+    const title = `${firstName} ${lastName}`;
+    const address = `${Address},  ${req.body["City"]} ${req.body["State"]}`;
+    const patient_info = {
+      title,
+      gender: Gender,
+      age: Age,
+      address,
+      phoneNumber,
+      email: Email,
+      reasonForVisit,
+      insurance: Insurance,
+      injuryId: injuryDictionary[req.body["Injury Type"]],
+      clinicId,
+      start: new Date(),
+      end: new Date(),
+    };
+    const newPatient = await Patients.create(patient_info);
+
+    if (!newPatient) {
+      return res.status(400).send({ message: "Error creating the patient" });
+    }
+
+    return res.send(newPatient);
   } catch (error) {
     console.log(error);
     next(error);
