@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Patients } = require("../models");
+const { Patients, Schedule } = require("../models");
 
 //GET all patients with specific clinic ID
 router.get("/:clinicId", async (req, res, next) => {
@@ -68,6 +68,9 @@ router.post("/:clinicId", async (req, res, next) => {
       end: new Date(),
     };
     const newPatient = await Patients.create(patient_info);
+    await Schedule.create({
+      patientId: newPatient.id,
+    });
 
     if (!newPatient) {
       return res
