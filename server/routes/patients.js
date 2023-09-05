@@ -70,10 +70,12 @@ router.post("/:clinicId", async (req, res, next) => {
     const newPatient = await Patients.create(patient_info);
 
     if (!newPatient) {
-      return res.status(400).send({ message: "Error creating the patient" });
+      return res
+        .sendStatus(400)
+        .send({ message: "Error creating the patient" });
     }
 
-    return res.send(newPatient);
+    return res.status(200).send({ patientId: newPatient.id });
   } catch (error) {
     console.log(error);
     next(error);
