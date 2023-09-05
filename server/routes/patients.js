@@ -85,4 +85,18 @@ router.post("/:clinicId", async (req, res, next) => {
   }
 });
 
+//DELETE a specific patient
+router.delete("/:patientId", async (req, res, next) => {
+  try {
+    await Patients.destroy({
+      where: {
+        id: req.params.patientId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 module.exports = router;
