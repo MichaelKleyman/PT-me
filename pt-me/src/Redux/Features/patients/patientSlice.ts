@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CLIENT, BASE_URL } from '@/components/api';
-import { create } from 'domain';
-import { RootState } from '@/Redux/store';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CLIENT, BASE_URL } from "@/components/api";
+import { create } from "domain";
+import { RootState } from "@/Redux/store";
 
-interface PatientData {
+export interface PatientData {
   id: number;
   title: string;
   address: string;
@@ -46,43 +46,43 @@ const initialState: PatientState = {
 };
 
 export const fetchAllPatients = createAsyncThunk<PatientData, number>(
-  'patients/fetchAllPatients',
+  "patients/fetchAllPatients",
   async (id: number, thunkAPI) => {
     try {
       const res = await CLIENT.get(`${BASE_URL}/api/patients/${id}`);
       return res.data;
     } catch (error) {
-      console.log('Redux error: ', error);
+      console.log("Redux error: ", error);
     }
   }
 );
 
 export const fetchPatient = createAsyncThunk<PatientData, number>(
-  'patients/fetchPatient',
+  "patients/fetchPatient",
   async (id: number, thunkAPI) => {
     try {
       const res = await CLIENT.get(`${BASE_URL}/api/patients/patient/${id}`);
       return res.data;
     } catch (error) {
-      console.log('Redux error: ', error);
+      console.log("Redux error: ", error);
     }
   }
 );
 
 export const fetchPatientsExercises = createAsyncThunk<ExerciseData, number>(
-  'patients/fetchPatientsExercises',
+  "patients/fetchPatientsExercises",
   async (id: number) => {
     try {
       const res = await CLIENT.get(`${BASE_URL}/api/exercises/patient/${id}`);
       return res.data;
     } catch (error) {
-      console.log('Redux error: ', error);
+      console.log("Redux error: ", error);
     }
   }
 );
 
 export const patientSlice = createSlice({
-  name: 'patients',
+  name: "patients",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

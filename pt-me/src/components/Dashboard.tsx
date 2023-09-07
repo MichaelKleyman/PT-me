@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FC, useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import withDragAndDrop, {
   withDragAndDropProps,
@@ -11,9 +12,11 @@ import enUS from "date-fns/locale/en-US";
 import addHours from "date-fns/addHours";
 import startOfHour from "date-fns/startOfHour";
 import patients from "@/components/Patients";
-
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useDispatch } from "react-redux";
+import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
+import { AppDispatch } from "@/Redux/store";
 
 interface Patient extends Event {
   id: number;
@@ -29,20 +32,41 @@ interface Patient extends Event {
   end?: Date | undefined;
 }
 
+interface Payload {
+  payload: Patient[];
+}
+
 interface DashboardProps {
   clinicName: string;
 }
 
-console.log(patients);
+// console.log(patients);
 
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
-  const [events, setEvents] = useState<Patient[]>(patients);
+  const [events, setEvents] = useState<Patient[]>();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    async function getPatients() {
+      const { payload } = await dispatch(fetchAllPatients(1));
+      console.log(payload);
+      const convertedDatabaseData = (payload as Patient[]).map(
+        (item: Patient) => ({
+          ...item,
+          start: item.start ? new Date(item.start) : undefined,
+          end: item.end ? new Date(item.end) : undefined,
+        })
+      );
+      setEvents(convertedDatabaseData as Patient[]);
+    }
+    getPatients();
+  }, []);
 
   const onEventResize: withDragAndDropProps["onEventResize"] = (data) => {
     console.log(data);
 
     setEvents((currentEvents) => {
-      const updatedEvents = currentEvents.map((event) => {
+      const updatedEvents = currentEvents?.map((event) => {
         if (event.id === (data.event as Patient).id) {
           return {
             ...event,
@@ -60,7 +84,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     console.log(data);
 
     setEvents((currentEvents) => {
-      const updatedEvents = currentEvents.map((event) => {
+      const updatedEvents = currentEvents?.map((event) => {
         if (event.id === (data.event as Patient).id) {
           return {
             ...event,
