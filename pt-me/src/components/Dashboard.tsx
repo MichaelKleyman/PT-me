@@ -123,50 +123,55 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   function clickEvent() {}
 
   return (
-    <div>
-      <p className='text-xl tracking-widest font-bold uppercase'>
-        {clinicName} <span className='text-green-500'>Dashboard</span>{" "}
-      </p>
-      <div className='mt-[2rem] flex'>
-        <div className='w-[75%]'>
-          <DnDCalendar
-            onSelectEvent={clickEvent}
-            defaultView='week'
-            events={events}
-            localizer={localizer}
-            onEventDrop={onEventDrop}
-            onEventResize={onEventResize}
-            resizable
-            style={{ height: "100vh" }}
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        justifyContent: "space-between",
+        gap: "2rem",
+      }}
+    >
+      <div style={{ flex: "75%" }}>
+        <p className='text-xl tracking-widest font-bold uppercase'>
+          {clinicName} <span className='text-green-500'>Dashboard</span>{" "}
+        </p>
+        <DnDCalendar
+          onSelectEvent={clickEvent}
+          defaultView='week'
+          events={events}
+          localizer={localizer}
+          onEventDrop={onEventDrop}
+          onEventResize={onEventResize}
+          resizable
+          style={{ height: "100%" }}
+        />
+      </div>
+      <div style={{ flex: "25%" }}>
+        <div className='flex items-center justify-center py-[1rem]'>
+          <TextField
+            id='outlined-search'
+            value={searchInput}
+            onChange={handleSearch}
+            type='search'
+            focused
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <BsSearch color='#3BE13B' />
+                </InputAdornment>
+              ),
+            }}
+            sx={style}
+            placeholder='Search Patients'
           />
         </div>
-        <div className='ml-7'>
-          <div className='flex items-center justify-center py-[1rem]'>
-            <TextField
-              id='outlined-search'
-              value={searchInput}
-              onChange={handleSearch}
-              type='search'
-              focused
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <BsSearch color='#3BE13B' />
-                  </InputAdornment>
-                ),
-              }}
-              sx={style}
-              placeholder='Search Patients'
-            />
-          </div>
-          <div className='w-full'>
-            <div>
-              {events?.map((patient) => (
-                <div key={patient.id} className='p-2'>
-                  {patient.title}
-                </div>
-              ))}
-            </div>
+        <div className='w-full'>
+          <div>
+            {events?.map((patient) => (
+              <div key={patient.id} className='p-2'>
+                {patient.title}
+              </div>
+            ))}
           </div>
         </div>
       </div>
