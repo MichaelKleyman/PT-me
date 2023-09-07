@@ -21,7 +21,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className='mx-auto max-w-3xl px-4 sm:px-6 md:max-w-5xl mt-[5rem]'>
+    <main className='mx-auto max-w-3xl px-4 ml-[6rem] sm:px-6 md:max-w-[1300px] mt-[5rem]'>
       {!user?.id ? (
         <React.Fragment>
           <AboutUs />
