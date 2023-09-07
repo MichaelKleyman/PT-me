@@ -120,6 +120,10 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     });
   };
 
+  const handleClickPatient = (patient: Patient) => {
+    console.log(patient);
+  };
+
   function clickEvent() {}
 
   return (
@@ -167,11 +171,17 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         </div>
         <div className='w-full'>
           <div>
-            {events?.map((patient) => (
-              <div key={patient.id} className='p-2'>
-                {patient.title}
-              </div>
-            ))}
+            {events
+              ?.filter((patient) => !patient.start || !patient.end)
+              .map((patient) => (
+                <div
+                  key={patient.id}
+                  onClick={() => handleClickPatient(patient)}
+                  className='p-2 hover:bg-[#313586cd] hover:text-white hover:scale-110 duration-300 cursor-pointer'
+                >
+                  {patient.title}
+                </div>
+              ))}
           </div>
         </div>
       </div>
