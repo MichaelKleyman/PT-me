@@ -99,4 +99,27 @@ router.delete("/:patientId", async (req, res, next) => {
   }
 });
 
+//DELETE a patients appointment completely
+router.put("/delete-appointment/:patientId", async (req, res, next) => {
+  try {
+    const [, [updatedPatientAppointment]] = await Patients.update(
+      { start: null, end: null },
+      {
+        returning: true,
+        where: {
+          id: req.params.patientId,
+        },
+      }
+    );
+    if (updatedPatientAppointment) {
+      res.send(updatedPatientAppointment);
+    } else {
+      res.status(404).send({ message: "Patient not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 module.exports = router;
