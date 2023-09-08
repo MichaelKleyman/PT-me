@@ -20,6 +20,15 @@ import { AppDispatch } from "@/Redux/store";
 import { BsSearch } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Paper, { PaperProps } from "@mui/material/Paper";
+import Draggable from "react-draggable";
+import { CLIENT, BASE_URL } from "./api";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -34,6 +43,17 @@ const style = {
   borderRadius: "20px",
   boxShadow: "0px 0px 8px #ddd",
 };
+
+function PaperComponent(props: PaperProps) {
+  return (
+    <Draggable
+      handle='#draggable-dialog-title'
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
 
 interface Patient extends Event {
   id: number;
@@ -62,6 +82,8 @@ interface DashboardProps {
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [events, setEvents] = useState<Patient[]>();
   const [searchInput, setSearchInput] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [patientId, setAppointmentToDelete] = useState<number>();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -124,7 +146,30 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     console.log(patient);
   };
 
-  function clickEvent() {}
+  function clickEvent(data: any) {
+    console.log(data);
+    setOpen(true);
+    setAppointmentToDelete(data.id);
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
+
+  const cancelAppointment = async () => {
+    const { data } = await CLIENT.put(
+      `${BASE_URL}/api/patients/delete-appointment/${patientId}`
+    );
+    const newEventsArray = events?.map((event) => {
+      if (event.id === data.id) {
+        return data;
+      } else {
+        return event;
+      }
+    });
+    setEvents(newEventsArray);
+    setOpen(false);
+  };
 
   return (
     <div
@@ -172,17 +217,44 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         <div className='w-full'>
           <div>
             {events
-              ?.filter((patient) => !patient.start || !patient.end)
+              ?.filter((patient) => !patient?.start || !patient?.end)
               .map((patient) => (
                 <div
-                  key={patient.id}
+                  key={patient?.id}
                   onClick={() => handleClickPatient(patient)}
                   className='p-2 hover:bg-[#313586cd] hover:text-white hover:scale-110 duration-300 cursor-pointer'
                 >
-                  {patient.title}
+                  {patient?.title}
                 </div>
               ))}
           </div>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            PaperComponent={PaperComponent}
+            aria-labelledby='draggable-dialog-title'
+            fullWidth={true}
+          >
+            <DialogTitle
+              style={{ cursor: "move", color: "red" }}
+              id='draggable-dialog-title'
+            >
+              Cancel This Appointment
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to cancel this appointment
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button autoFocus onClick={handleClose}>
+                Exit
+              </Button>
+              <Button className='text-red-600' onClick={cancelAppointment}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     </div>
