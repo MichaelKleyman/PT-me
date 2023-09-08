@@ -67,6 +67,7 @@ interface Patient extends Event {
   insurance: string;
   start?: Date | undefined;
   end?: Date | undefined;
+  isDraggable?: boolean | undefined;
 }
 
 interface Payload {
@@ -184,6 +185,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         <p className='text-xl tracking-widest font-bold uppercase'>
           {clinicName} <span className='text-green-500'>Dashboard</span>{" "}
         </p>
+
         <DnDCalendar
           onSelectEvent={clickEvent}
           defaultView='week'
@@ -218,16 +220,21 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           <div>
             {events
               ?.filter((patient) => !patient?.start || !patient?.end)
-              .map((patient) => (
+              .map((patient, index) => (
                 <div
                   key={patient?.id}
+                  draggable='true'
                   onClick={() => handleClickPatient(patient)}
-                  className='p-2 hover:bg-[#313586cd] hover:text-white hover:scale-110 duration-300 cursor-pointer'
+                  className='bg-[#e6f9e4] flex justify-between m-3 p-7 rounded-lg shadow-lg shadow-green-300'
                 >
-                  {patient?.title}
+                  <h1>{patient?.title}</h1>
+                  <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
+                    Schedule
+                  </button>
                 </div>
               ))}
           </div>
+
           <Dialog
             open={open}
             onClose={handleClose}

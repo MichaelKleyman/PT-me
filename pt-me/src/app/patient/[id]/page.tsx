@@ -637,7 +637,6 @@ export default function Patient({ params }: Params) {
                       >
                         {(provided, snapshot) => (
                           <div
-                            // key={exercise.id}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             ref={provided.innerRef}

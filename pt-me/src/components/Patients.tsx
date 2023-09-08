@@ -1,4 +1,4 @@
-const patients = [
+const events = [
   {
     id: 1,
     title: "Logan Paul",
@@ -79,4 +79,4 @@ const patients = [
   },
 ];
 
-export default patients;
+export default events;
