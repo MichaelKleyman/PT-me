@@ -78,7 +78,7 @@ interface DashboardProps {
   clinicName: string;
 }
 
-// console.log(patients);
+const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [events, setEvents] = useState<Patient[]>();
@@ -232,7 +232,12 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                       Schedule
                     </button>
                   </div>
-                  <p>{patient.reasonForVisit}</p>
+                  <div className='flex items-center'>
+                    <p className='text-sm text-gray-400'>
+                      {patient.reasonForVisit}
+                    </p>
+                    <p>{injuryTypes[patient.injuryId - 1]}</p>
+                  </div>
                 </div>
               ))}
           </div>

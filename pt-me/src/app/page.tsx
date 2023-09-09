@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
 import { me } from "../Redux/Features/auth/authSlice";
 import Dashboard from "@/components/Dashboard";
-import DnDOutsideResource from "@/components/Dash2";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +30,6 @@ export default function Home() {
       ) : (
         <React.Fragment>
           <Dashboard clinicName={user.clinicName} />
-          {/* <DnDOutsideResource /> */}
         </React.Fragment>
       )}
     </main>
