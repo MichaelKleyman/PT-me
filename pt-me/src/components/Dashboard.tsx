@@ -11,7 +11,6 @@ import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import addHours from "date-fns/addHours";
 import startOfHour from "date-fns/startOfHour";
-import patients from "@/components/Patients";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useDispatch } from "react-redux";
@@ -125,9 +124,14 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     });
   };
 
-  const onEventDrop: withDragAndDropProps["onEventDrop"] = (data) => {
-    console.log(data);
+  const updateAppointment = async (event: Patient) => {
+    await CLIENT.put(
+      `${BASE_URL}/api/patients/update-appointment/${event.id}`,
+      event
+    );
+  };
 
+  const onEventDrop: withDragAndDropProps["onEventDrop"] = (data) => {
     setEvents((currentEvents) => {
       const updatedEvents = currentEvents?.map((event) => {
         if (event.id === (data.event as Patient).id) {
@@ -137,7 +141,14 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
             end: new Date(data.end),
           };
         }
+        // updateAppointment(event);
         return event;
+      });
+      console.log(updatedEvents);
+      updatedEvents?.forEach((event) => {
+        if (event.id === (data.event as Patient).id) {
+          updateAppointment(event);
+        }
       });
       return updatedEvents;
     });
@@ -232,11 +243,14 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                       Schedule
                     </button>
                   </div>
-                  <div className='flex items-center'>
+                  <div className='flex items-center gap-4'>
                     <p className='text-sm text-gray-400'>
                       {patient.reasonForVisit}
                     </p>
-                    <p>{injuryTypes[patient.injuryId - 1]}</p>
+                    <div className='h-3 w-[1px] bg-gray-400'></div>
+                    <p className='text-sm text-gray-400'>
+                      {injuryTypes[patient.injuryId - 1]}
+                    </p>
                   </div>
                 </div>
               ))}
