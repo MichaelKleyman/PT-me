@@ -102,7 +102,7 @@ router.delete("/:patientId", async (req, res, next) => {
 //DELETE a patients appointment completely
 router.put("/delete-appointment/:patientId", async (req, res, next) => {
   try {
-    const [, [updatedPatientAppointment]] = await Patients.update(
+    const [, [canceledPatientAppointment]] = await Patients.update(
       { start: null, end: null },
       {
         returning: true,
@@ -111,8 +111,32 @@ router.put("/delete-appointment/:patientId", async (req, res, next) => {
         },
       }
     );
-    if (updatedPatientAppointment) {
-      res.send(updatedPatientAppointment);
+    if (canceledPatientAppointment) {
+      res.send(canceledPatientAppointment);
+    } else {
+      res.status(404).send({ message: "Patient not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+//UPDATE a patients appointment start and end
+router.put("/update-appointment/:patientId", async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const [, [updatedAppointment]] = await Patients.update(
+      { start: req.body.start, end: req.body.end },
+      {
+        returning: true,
+        where: {
+          id: req.params.patientId,
+        },
+      }
+    );
+    if (updatedAppointment) {
+      res.send(updatedAppointment);
     } else {
       res.status(404).send({ message: "Patient not found" });
     }
