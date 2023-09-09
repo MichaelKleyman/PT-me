@@ -216,21 +216,23 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
             placeholder='Search Patients'
           />
         </div>
-        <div className='w-full'>
+        <div className='w-[400px]'>
           <div>
             {events
               ?.filter((patient) => !patient?.start || !patient?.end)
               .map((patient, index) => (
                 <div
                   key={patient?.id}
-                  draggable='true'
                   onClick={() => handleClickPatient(patient)}
-                  className='bg-[#e6f9e4] flex justify-between m-3 p-7 rounded-lg shadow-lg shadow-green-300'
+                  className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
                 >
-                  <h1>{patient?.title}</h1>
-                  <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
-                    Schedule
-                  </button>
+                  <div className='flex justify-between'>
+                    <h1 className='text-lg'>{patient?.title}</h1>
+                    <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
+                      Schedule
+                    </button>
+                  </div>
+                  <p>{patient.reasonForVisit}</p>
                 </div>
               ))}
           </div>
