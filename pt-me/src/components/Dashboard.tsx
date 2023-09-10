@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import withDragAndDrop, {
   withDragAndDropProps,
@@ -28,6 +28,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import Draggable from "react-draggable";
 import { CLIENT, BASE_URL } from "./api";
+import { SlotInfo } from "react-big-calendar";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -80,7 +81,7 @@ interface DashboardProps {
 const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
-  const [events, setEvents] = useState<Patient[]>();
+  const [events, setEvents] = useState<Patient[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [patientId, setAppointmentToDelete] = useState<number>();
@@ -183,6 +184,30 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     setOpen(false);
   };
 
+  const handleSelectSlot = useCallback(
+    (slotInfo: SlotInfo) => {
+      const title = window.prompt("New Event Name");
+      console.log(title);
+      // if (title) {
+      //   const { start, end } = slotInfo;
+      //   // Create a new event object with the required properties
+      //   const newEvent = {
+      //     title,
+      //     start,
+      //     end,
+      //     // Add other necessary properties here
+      //   };
+      //   setEvents((prev) => [...prev, newEvent]);
+      // }
+    },
+    [setEvents]
+  );
+
+  const handleSelectEvent = useCallback(
+    (event: Patient) => window.alert(event.title),
+    []
+  );
+
   return (
     <div
       style={{
@@ -198,6 +223,8 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         </p>
 
         <DnDCalendar
+          dayLayoutAlgorithm='no-overlap'
+          onSelectSlot={handleSelectSlot}
           onSelectEvent={clickEvent}
           defaultView='week'
           events={events}
@@ -205,6 +232,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           onEventDrop={onEventDrop}
           onEventResize={onEventResize}
           resizable
+          selectable
           style={{ height: "100%" }}
         />
       </div>
