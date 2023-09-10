@@ -187,8 +187,9 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
 
   const handleSelectSlot = useCallback(
     (slotInfo: SlotInfo) => {
-      const title = window.prompt("New Event Name");
-      console.log(title);
+      setMakeAppointment(true);
+      // const title = window.prompt("New Event Name");
+      // console.log(title);
       // if (title) {
       //   const { start, end } = slotInfo;
       //   // Create a new event object with the required properties
@@ -208,6 +209,10 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     (event: Patient) => window.alert(event.title),
     []
   );
+
+  const cancelMakeAppointment = () => {
+    setMakeAppointment(false);
+  };
 
   return (
     <div
@@ -238,7 +243,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         />
       </div>
       <div style={{ flex: "25%" }}>
-        <div className='flex items-center justify-center py-[1rem]'>
+        {/* <div className='flex items-center justify-center py-[1rem]'>
           <TextField
             id='outlined-search'
             value={searchInput}
@@ -284,35 +289,107 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                 </div>
               ))}
           </div>
-
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            PaperComponent={PaperComponent}
-            aria-labelledby='draggable-dialog-title'
-            fullWidth={true}
+        </div> */}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          PaperComponent={PaperComponent}
+          aria-labelledby='draggable-dialog-title'
+          fullWidth={true}
+        >
+          <DialogTitle
+            style={{ cursor: "move", color: "red" }}
+            id='draggable-dialog-title'
           >
-            <DialogTitle
-              style={{ cursor: "move", color: "red" }}
-              id='draggable-dialog-title'
-            >
-              Cancel This Appointment
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Are you sure you want to cancel this appointment
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button autoFocus onClick={handleClose}>
-                Exit
-              </Button>
-              <Button className='text-red-600' onClick={cancelAppointment}>
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
+            Cancel This Appointment
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to cancel this appointment
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClose}>
+              Exit
+            </Button>
+            <Button className='text-red-600' onClick={cancelAppointment}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={makeAppointment}
+          onClose={cancelMakeAppointment}
+          PaperComponent={PaperComponent}
+          aria-labelledby='draggable-dialog-title'
+          fullWidth={true}
+        >
+          <DialogTitle
+            style={{ cursor: "move", color: "red" }}
+            id='draggable-dialog-title'
+          >
+            Schedule An Appointment
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <div className='flex items-center justify-center py-[1rem]'>
+                <TextField
+                  id='outlined-search'
+                  value={searchInput}
+                  onChange={handleSearch}
+                  type='search'
+                  focused
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <BsSearch color='#3BE13B' />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={style}
+                  placeholder='Search Patients'
+                />
+              </div>
+              <div>
+                <div>
+                  {events
+                    ?.filter((patient) => !patient?.start || !patient?.end)
+                    .map((patient, index) => (
+                      <div
+                        key={patient?.id}
+                        onClick={() => handleClickPatient(patient)}
+                        className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
+                      >
+                        <div className='flex justify-between'>
+                          <h1 className='text-lg'>{patient?.title}</h1>
+                          <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
+                            Schedule
+                          </button>
+                        </div>
+                        <div className='flex items-center gap-4'>
+                          <p className='text-sm text-gray-400'>
+                            {patient.reasonForVisit}
+                          </p>
+                          <div className='h-3 w-[1px] bg-gray-400'></div>
+                          <p className='text-sm text-gray-400'>
+                            {injuryTypes[patient.injuryId - 1]}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={cancelMakeAppointment}>
+              Exit
+            </Button>
+            <Button className='text-red-600' onClick={cancelAppointment}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </div>
   );
