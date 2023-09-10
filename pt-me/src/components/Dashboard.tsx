@@ -84,6 +84,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [events, setEvents] = useState<Patient[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
+  const [makeAppointment, setMakeAppointment] = useState<boolean>(false);
   const [patientId, setAppointmentToDelete] = useState<number>();
   const dispatch = useDispatch<AppDispatch>();
 
