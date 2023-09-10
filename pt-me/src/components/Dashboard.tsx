@@ -29,6 +29,7 @@ import Paper, { PaperProps } from "@mui/material/Paper";
 import Draggable from "react-draggable";
 import { CLIENT, BASE_URL } from "./api";
 import { SlotInfo } from "react-big-calendar";
+import Alert from "@mui/material/Alert";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -67,7 +68,6 @@ interface Patient extends Event {
   insurance: string;
   start?: Date | undefined;
   end?: Date | undefined;
-  isDraggable?: boolean | undefined;
 }
 
 interface Payload {
@@ -85,7 +85,9 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [makeAppointment, setMakeAppointment] = useState<boolean>(false);
+  const [scheduled, setScheduled] = useState({ clicked: false, id: -1 });
   const [patientId, setAppointmentToDelete] = useState<number>();
+  const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -156,10 +158,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     });
   };
 
-  const handleClickPatient = (patient: Patient) => {
-    console.log(patient);
-  };
-
   function clickEvent(data: any) {
     console.log(data);
     setOpen(true);
@@ -188,42 +186,45 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const handleSelectSlot = useCallback(
     (slotInfo: SlotInfo) => {
       setMakeAppointment(true);
-      // const title = window.prompt("New Event Name");
-      // console.log(title);
-      // if (title) {
-      //   const { start, end } = slotInfo;
-      //   // Create a new event object with the required properties
-      //   const newEvent = {
-      //     title,
-      //     start,
-      //     end,
-      //     // Add other necessary properties here
-      //   };
-      //   setEvents((prev) => [...prev, newEvent]);
-      // }
+      setAppointmentTime(slotInfo);
     },
     [setEvents]
   );
 
-  const handleSelectEvent = useCallback(
-    (event: Patient) => window.alert(event.title),
-    []
-  );
+  const schedulePatient = async (patient: Patient) => {
+    console.log(appointmentTime);
+    const newEvent = {
+      id: patient.id,
+      title: patient.title,
+      address: patient.address,
+      phoneNumber: patient.phoneNumber,
+      email: patient.email,
+      reasonForVisit: patient.reasonForVisit,
+      age: patient.age,
+      injuryId: patient.injuryId,
+      insurance: patient.insurance,
+      start: appointmentTime?.start,
+      end: appointmentTime?.end,
+    };
+    await CLIENT.put(
+      `${BASE_URL}/api/patients/update-appointment/${patient.id}`,
+      { start: appointmentTime?.start, end: appointmentTime?.end }
+    );
+    setEvents((prev) => [...prev, newEvent]);
+    setScheduled({ clicked: true, id: patient.id });
+    setTimeout(() => {
+      setScheduled({ clicked: false, id: -1 });
+      setMakeAppointment(false);
+    }, 1800);
+  };
 
   const cancelMakeAppointment = () => {
     setMakeAppointment(false);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        justifyContent: "space-between",
-        gap: "2rem",
-      }}
-    >
-      <div style={{ flex: "75%" }}>
+    <div>
+      <div>
         <p className='text-xl tracking-widest font-bold uppercase'>
           {clinicName} <span className='text-green-500'>Dashboard</span>{" "}
         </p>
@@ -242,54 +243,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           style={{ height: "100%" }}
         />
       </div>
-      <div style={{ flex: "25%" }}>
-        {/* <div className='flex items-center justify-center py-[1rem]'>
-          <TextField
-            id='outlined-search'
-            value={searchInput}
-            onChange={handleSearch}
-            type='search'
-            focused
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <BsSearch color='#3BE13B' />
-                </InputAdornment>
-              ),
-            }}
-            sx={style}
-            placeholder='Search Patients'
-          />
-        </div>
-        <div className='w-[400px]'>
-          <div>
-            {events
-              ?.filter((patient) => !patient?.start || !patient?.end)
-              .map((patient, index) => (
-                <div
-                  key={patient?.id}
-                  onClick={() => handleClickPatient(patient)}
-                  className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
-                >
-                  <div className='flex justify-between'>
-                    <h1 className='text-lg'>{patient?.title}</h1>
-                    <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
-                      Schedule
-                    </button>
-                  </div>
-                  <div className='flex items-center gap-4'>
-                    <p className='text-sm text-gray-400'>
-                      {patient.reasonForVisit}
-                    </p>
-                    <div className='h-3 w-[1px] bg-gray-400'></div>
-                    <p className='text-sm text-gray-400'>
-                      {injuryTypes[patient.injuryId - 1]}
-                    </p>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div> */}
+      <div>
         <Dialog
           open={open}
           onClose={handleClose}
@@ -357,14 +311,20 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                     .map((patient, index) => (
                       <div
                         key={patient?.id}
-                        onClick={() => handleClickPatient(patient)}
                         className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
                       >
                         <div className='flex justify-between'>
                           <h1 className='text-lg'>{patient?.title}</h1>
-                          <button className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'>
-                            Schedule
-                          </button>
+                          {scheduled.id === patient.id ? (
+                            <Alert severity='success'>Scheduled</Alert>
+                          ) : (
+                            <Button
+                              onClick={() => schedulePatient(patient)}
+                              className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
+                            >
+                              Schedule
+                            </Button>
+                          )}
                         </div>
                         <div className='flex items-center gap-4'>
                           <p className='text-sm text-gray-400'>
@@ -383,9 +343,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           </DialogContent>
           <DialogActions>
             <Button autoFocus onClick={cancelMakeAppointment}>
-              Exit
-            </Button>
-            <Button className='text-red-600' onClick={cancelAppointment}>
               Cancel
             </Button>
           </DialogActions>
