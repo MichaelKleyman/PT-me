@@ -475,7 +475,11 @@ export default function Patient({ params }: Params) {
                     Status{" "}
                     <span className='flex items-center'>
                       {" "}
-                      <BsDot size={50} color='#c3e736' /> Checked in
+                      <BsDot
+                        size={50}
+                        color={`${patient?.start ? "green" : "red"}`}
+                      />{" "}
+                      {`${patient?.start ? "Scheduled" : "No Appointment"}`}
                     </span>
                   </h2>
                 </div>
