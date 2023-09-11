@@ -423,12 +423,16 @@ export default function Patient({ params }: Params) {
     setClickedRemove(false);
   };
 
-  const handlePrint = () => {
+  const handleOpenPrint = () => {
     setClickPrint(true);
   };
 
   const handleClosePrint = () => {
     setClickPrint(false);
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   interface InjuryDictionary {
@@ -558,7 +562,7 @@ export default function Patient({ params }: Params) {
                 <AiOutlineLink className='p-2' size={35} /> Share Link
               </p>
               <button
-                onClick={handlePrint}
+                onClick={handleOpenPrint}
                 className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
               >
                 <BsPrinter className='p-2' size={35} /> Print
@@ -599,10 +603,12 @@ export default function Patient({ params }: Params) {
                   open={clickPrint}
                   TransitionComponent={Transition}
                   keepMounted
+                  fullWidth={true}
+                  maxWidth='md'
                   onClose={handleClosePrint}
                   aria-describedby='alert-dialog-slide-description'
                 >
-                  <DialogTitle className='text-red-600'>
+                  <DialogTitle className='text-center'>
                     Preview the PDF
                   </DialogTitle>
                   <DialogContent>
@@ -611,8 +617,8 @@ export default function Patient({ params }: Params) {
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <Button>Cancel</Button>
-                    <Button>Delete</Button>
+                    <Button onClick={handleClosePrint}>Cancel</Button>
+                    <Button onClick={handlePrint}>Print</Button>
                   </DialogActions>
                 </Dialog>
               )}

@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const clinic = useSelector((state: RootState) => state.auth.user);
   // console.log(user);
 
   useEffect(() => {
@@ -22,14 +22,14 @@ export default function Home() {
 
   return (
     <main className='mx-auto max-w-3xl px-4 ml-[6rem] sm:px-6 md:max-w-[1300px] mt-[5rem]'>
-      {!user?.id ? (
+      {!clinic?.id ? (
         <React.Fragment>
           <AboutUs />
           <Services />
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Dashboard clinicName={user.clinicName} />
+          <Dashboard clinicName={clinic.clinicName} />
         </React.Fragment>
       )}
     </main>

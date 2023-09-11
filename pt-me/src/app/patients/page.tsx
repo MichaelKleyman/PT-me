@@ -10,6 +10,7 @@ import type { AppDispatch, RootState } from "@/Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import { IoMdAddCircle } from "react-icons/io";
+import { me } from "../../Redux/Features/auth/authSlice";
 
 interface PatientData {
   id: number;
@@ -28,11 +29,12 @@ interface PatientData {
 export default function AllPatients() {
   const [patients, setPatients] = useState<PatientData[]>();
   const dispatch = useDispatch<AppDispatch>();
-  // const allPatients = useSelector((state: RootState) => state.patient.data);
+  const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
+    dispatch(me());
     async function getPatients() {
-      const { payload } = await dispatch(fetchAllPatients(1));
+      const { payload } = await dispatch(fetchAllPatients(clinic.id));
       const arrayToSort = [...(payload as PatientData[])];
       const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
       setPatients(sortedPayload as PatientData[]);
