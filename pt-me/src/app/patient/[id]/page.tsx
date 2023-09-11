@@ -48,8 +48,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-// import PatientFlowSheet from "@/components/PatientFlowSheet";
-// import ExerciseTable from "@/components/PatientFlowSheet2";
+import PDFPreview from "@/components/PDFPreview";
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -82,6 +81,7 @@ interface Patient {
   id: number;
   title: string;
   address: string;
+  gender: string;
   phoneNumber: string;
   email: string;
   reasonForVisit: string;
@@ -140,7 +140,7 @@ export default function Patient({ params }: Params) {
   const dispatch = useDispatch<AppDispatch>();
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
-  const [add, setAddExercise] = useState<boolean>(false);
+  const [clickPrint, setClickPrint] = useState<boolean>(false);
   const [clickedRemove, setClickedRemove] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
@@ -159,6 +159,7 @@ export default function Patient({ params }: Params) {
       console.log(payload);
       setExercises(payload as ExerciseData[]);
     }
+
     getPatient();
     getPatientExercises();
   }, [setExercises]);
@@ -422,6 +423,42 @@ export default function Patient({ params }: Params) {
     setClickedRemove(false);
   };
 
+  const handlePrint = () => {
+    setClickPrint(true);
+  };
+
+  const handleClosePrint = () => {
+    setClickPrint(false);
+  };
+
+  interface InjuryDictionary {
+    [key: number]: string;
+  }
+  const injuryDictionary: InjuryDictionary = {
+    1: "Shoulders",
+    2: "Back",
+    3: "Knee",
+    4: "Hip",
+  };
+  const parts = patient?.address.split(",").map((part) => part.trim());
+  const printReadyPatientData = {
+    "Last Name": patient?.title.split(" ")[1] as string,
+    "First Name": patient?.title.split(" ")[0] as string,
+    Age: patient?.age as unknown as number,
+    Gender: patient?.gender as string,
+    Email: patient?.email as string,
+    "Phone Number": patient?.phoneNumber as unknown as number,
+    Insurance: patient?.insurance as string,
+    Address: parts?.[0] as string,
+    State: parts?.[1].split(" ")[1] as string,
+    City: parts?.[1].split(" ")[0] as string,
+    "Reason For Visit": patient?.reasonForVisit as string,
+    Zipcode: parts?.[2] as unknown as number,
+    "Injury Type": patient?.injuryId
+      ? (injuryDictionary[patient.injuryId] as string)
+      : "Unknown",
+  };
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -520,9 +557,12 @@ export default function Patient({ params }: Params) {
               <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
                 <AiOutlineLink className='p-2' size={35} /> Share Link
               </p>
-              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+              <button
+                onClick={handlePrint}
+                className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+              >
                 <BsPrinter className='p-2' size={35} /> Print
-              </p>
+              </button>
               <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
               <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'>
                 <MdOutlineEdit className='p-2' size={35} /> Edit
@@ -549,6 +589,30 @@ export default function Patient({ params }: Params) {
                   <DialogActions>
                     <Button onClick={handleCloseDeletePatient}>Cancel</Button>
                     <Button onClick={deletePatient}>Delete</Button>
+                  </DialogActions>
+                </Dialog>
+              )}
+            </div>
+            <div>
+              {clickPrint && (
+                <Dialog
+                  open={clickPrint}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={handleClosePrint}
+                  aria-describedby='alert-dialog-slide-description'
+                >
+                  <DialogTitle className='text-red-600'>
+                    Preview the PDF
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id='alert-dialog-slide-description'>
+                      <PDFPreview patientFormData={printReadyPatientData} />
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button>Cancel</Button>
+                    <Button>Delete</Button>
                   </DialogActions>
                 </Dialog>
               )}
