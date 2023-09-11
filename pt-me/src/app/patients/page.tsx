@@ -33,8 +33,9 @@ export default function AllPatients() {
   useEffect(() => {
     async function getPatients() {
       const { payload } = await dispatch(fetchAllPatients(1));
-
-      setPatients(payload as PatientData[]);
+      const arrayToSort = [...(payload as PatientData[])];
+      const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
+      setPatients(sortedPayload as PatientData[]);
     }
     getPatients();
   }, []);
@@ -92,9 +93,9 @@ export default function AllPatients() {
           <h1>Phone Number</h1>
           <h1>Reason For Visit</h1>
         </div>
-        {patients?.map((patient, i) => (
+        {patients?.map((patient) => (
           <div
-            key={i}
+            key={patient.id}
             className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-6 shadow-xl shadow-gray-400 border-b-[1px] border-[#eaece1]'
           >
             <div className='flex items-center gap-5'>
