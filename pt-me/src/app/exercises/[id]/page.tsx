@@ -83,6 +83,7 @@ interface PatientData {
 }
 
 export default function SpecificExercise({ params }: Params) {
+  const [results, setResults] = useState<PatientData[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [assigned, setAssigned] = useState<boolean>(false);
   const [patients, setPatients] = useState<PatientData[]>();
@@ -108,6 +109,14 @@ export default function SpecificExercise({ params }: Params) {
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
+    const input = e.target.value;
+    if (input.length >= 2) {
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/patients/search-patients/${input}`
+      );
+
+      setResults(data);
+    }
   };
 
   const clickedPatient = async (id: number) => {
@@ -132,8 +141,6 @@ export default function SpecificExercise({ params }: Params) {
       handleClose();
     }, 2500);
   };
-
-  console.log(ids);
 
   useEffect(() => {
     dispatch(me());
@@ -244,7 +251,7 @@ export default function SpecificExercise({ params }: Params) {
             ) : (
               <div>
                 {patients?.length ? (
-                  patients?.map((patient) => (
+                  (!searchInput.length ? patients : results)?.map((patient) => (
                     <div key={patient.id} className='p-2'>
                       <FormControlLabel
                         control={
