@@ -13,9 +13,9 @@ import addHours from "date-fns/addHours";
 import startOfHour from "date-fns/startOfHour";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
-import { AppDispatch } from "@/Redux/store";
+import { AppDispatch, RootState } from "@/Redux/store";
 import { BsSearch } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -30,6 +30,7 @@ import Draggable from "react-draggable";
 import { CLIENT, BASE_URL } from "./api";
 import { SlotInfo } from "react-big-calendar";
 import Alert from "@mui/material/Alert";
+import { me } from "@/Redux/Features/auth/authSlice";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -89,10 +90,12 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [patientId, setAppointmentToDelete] = useState<number>();
   const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
   const dispatch = useDispatch<AppDispatch>();
+  const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
+    dispatch(me());
     async function getPatients() {
-      const { payload } = await dispatch(fetchAllPatients(1));
+      const { payload } = await dispatch(fetchAllPatients(clinic.id));
       console.log(payload);
       const convertedDatabaseData = (payload as Patient[]).map(
         (item: Patient) => ({

@@ -16,12 +16,13 @@ import Draggable from "react-draggable";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
 import InputAdornment from "@mui/material/InputAdornment";
-import type { AppDispatch } from "../../../Redux/store";
-import { useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "../../../Redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
+import { me } from "@/Redux/Features/auth/authSlice";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -99,6 +100,7 @@ export default function SpecificExercise({ params }: Params) {
     musclesWorked: "",
   });
   const dispatch = useDispatch<AppDispatch>();
+  const clinic = useSelector((state: RootState) => state.auth.user);
 
   const handleClose = () => {
     setClicked(false);
@@ -134,6 +136,7 @@ export default function SpecificExercise({ params }: Params) {
   console.log(ids);
 
   useEffect(() => {
+    dispatch(me());
     const getExercise = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${params.id}`
@@ -151,7 +154,7 @@ export default function SpecificExercise({ params }: Params) {
     setLoading(true);
 
     try {
-      const { payload } = await dispatch(fetchAllPatients(1));
+      const { payload } = await dispatch(fetchAllPatients(clinic.id));
       setPatients(payload as PatientData[]);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -240,16 +243,24 @@ export default function SpecificExercise({ params }: Params) {
               <div>Loading...</div>
             ) : (
               <div>
-                {patients?.map((patient) => (
-                  <div key={patient.id} className='p-2'>
-                    <FormControlLabel
-                      control={
-                        <Checkbox onChange={() => clickedPatient(patient.id)} />
-                      }
-                      label={patient.title}
-                    />
+                {patients?.length ? (
+                  patients?.map((patient) => (
+                    <div key={patient.id} className='p-2'>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={() => clickedPatient(patient.id)}
+                          />
+                        }
+                        label={patient.title}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className='flex items-center justify-center'>
+                    No patients in your clinic
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
