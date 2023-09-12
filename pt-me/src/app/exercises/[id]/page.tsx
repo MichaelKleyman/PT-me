@@ -82,6 +82,8 @@ interface PatientData {
   end?: Date | undefined;
 }
 
+const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
+
 export default function SpecificExercise({ params }: Params) {
   const [results, setResults] = useState<PatientData[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
@@ -252,7 +254,10 @@ export default function SpecificExercise({ params }: Params) {
               <div>
                 {patients?.length ? (
                   (!searchInput.length ? patients : results)?.map((patient) => (
-                    <div key={patient.id} className='p-2'>
+                    <div
+                      key={patient.id}
+                      className='p-2 flex items-center justify-between'
+                    >
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -261,6 +266,15 @@ export default function SpecificExercise({ params }: Params) {
                         }
                         label={patient.title}
                       />
+                      <div className='flex justify-between items-center'>
+                        <p className='text-sm text-green-500'>
+                          {injuryTypes[patient.injuryId - 1]}
+                        </p>
+                        <div className='border-l border-green-300 h-4 mx-2' />
+                        <p className='text-sm text-green-500'>
+                          {patient.reasonForVisit}
+                        </p>
+                      </div>
                     </div>
                   ))
                 ) : (
