@@ -125,20 +125,6 @@ export default function AllExercises() {
               </Link>
             </div>
             <div className='ratio ratio-1x1 p-6'>
-              {/* {loading ? (
-      <iframe
-        width='560'
-        height='315'
-        src={exercise.videoLink}
-        referrerPolicy='same-origin'
-        title='YouTube video player'
-        // frameborder='0'
-        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-        // allowfullscreen
-      ></iframe>
-    ) : (
-      <CircularProgress />
-    )} */}
               <Iframe
                 url={exercise.videoLink}
                 width='360'
@@ -253,7 +239,7 @@ export default function AllExercises() {
           </Link>
         </div>
         <Link
-          href='/'
+          href='/exercises/new-exercise'
           className='mr-[3rem] p-2 bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white flex items-center gap-3'
         >
           <IoMdAddCircle size={22} />
