@@ -6,9 +6,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ReactPaginate from "react-paginate";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
+import { BiAddToQueue } from "react-icons/bi";
 import InputAdornment from "@mui/material/InputAdornment";
 import Iframe from "react-iframe";
 import Link from "next/link";
+import { IoMdAddCircle } from "react-icons/io";
 
 interface Exercise {
   id: number;
@@ -42,6 +44,8 @@ export default function AllExercises() {
     "Back",
     "Knee",
     "Hip",
+    "Neck",
+    "Wrist/Hand",
   ]);
   const [selected, setSelected] = useState<String>("All");
 
@@ -223,27 +227,40 @@ export default function AllExercises() {
     setSearchInput(e.target.value);
   };
 
-  console.log(exercises);
-
   return (
     <div>
       <h1 className='text-green-500 text-xl uppercase tracking-widest m-4'>
         Exercises
       </h1>
-      <div className='mt-1 flex'>
-        {exerciseOptions.map((option: String, i) => (
-          <button
-            onClick={() => filterExercises(option)}
-            key={i}
-            className={`${
-              selected === option ? "bg-green-500 text-white" : ""
-            } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
+      <div className='mt-1 flex justify-between items-center'>
+        <div className='flex'>
+          {exerciseOptions.map((option: String, i) => (
+            <button
+              onClick={() => filterExercises(option)}
+              key={i}
+              className={`${
+                selected === option ? "bg-green-500 text-white" : ""
+              } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
+            >
+              {option}
+            </button>
+          ))}
+          <Link
+            className='cursor-pointer m-2 hover:bg-slate-200 rounded-lg p-2 shadow-lg hover:shadow-gray-300 duration-300 hover:scale-110'
+            href={""}
           >
-            {option}
-          </button>
-        ))}
+            <BiAddToQueue size={30} />
+          </Link>
+        </div>
+        <Link
+          href='/'
+          className='mr-[3rem] p-2 bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white flex items-center gap-3'
+        >
+          <IoMdAddCircle size={22} />
+          New Exercise
+        </Link>
       </div>
-      <div className='flex items-center justify-center'>
+      <div className='flex items-center justify-center my-4'>
         <TextField
           id='outlined-search'
           value={searchInput}
