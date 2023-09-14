@@ -6,7 +6,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ReactPaginate from "react-paginate";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
-import { BiAddToQueue } from "react-icons/bi";
 import InputAdornment from "@mui/material/InputAdornment";
 import Iframe from "react-iframe";
 import Link from "next/link";
@@ -47,6 +46,8 @@ export default function AllExercises() {
     "Neck",
     "Wrist/Hand",
     "Ankle/Foot",
+    "Abdominal",
+    "Gluteal",
   ]);
   const [selected, setSelected] = useState<String>("All");
 
@@ -232,12 +233,6 @@ export default function AllExercises() {
               {option}
             </button>
           ))}
-          <Link
-            className='cursor-pointer m-2 hover:bg-slate-200 rounded-lg p-2 shadow-lg hover:shadow-gray-300 duration-300 hover:scale-110'
-            href={""}
-          >
-            <BiAddToQueue size={30} />
-          </Link>
         </div>
         <Link
           href='/exercises/new-exercise'
