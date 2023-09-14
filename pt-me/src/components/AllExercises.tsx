@@ -46,6 +46,7 @@ export default function AllExercises() {
     "Hip",
     "Neck",
     "Wrist/Hand",
+    "Ankle/Foot",
   ]);
   const [selected, setSelected] = useState<String>("All");
 
@@ -226,7 +227,7 @@ export default function AllExercises() {
               key={i}
               className={`${
                 selected === option ? "bg-green-500 text-white" : ""
-              } p-2 cursor-pointer border border-green-500 m-2 rounded-lg hover:bg-green-500 hover:text-white`}
+              } className='cursor-pointer m-2 hover:bg-slate-200 rounded-lg p-2 shadow-lg hover:shadow-gray-300 duration-300 hover:scale-110'`}
             >
               {option}
             </button>

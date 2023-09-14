@@ -18,8 +18,12 @@ export default function CreateExerciseForm() {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const onSubmit = async (formData: any) => {
+    console.log(formData);
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className='flex items-center justify-evenly'>
         <div className='w-[70%]'>
           <TextField
@@ -36,7 +40,7 @@ export default function CreateExerciseForm() {
             required
             label='Muscles Worked'
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
-            {...register("exerciseName", {
+            {...register("exerciseWorked", {
               required: true,
             })}
           />
@@ -47,6 +51,9 @@ export default function CreateExerciseForm() {
           type='text'
           required
           sx={styling}
+          {...register("exerciseDescription", {
+            required: true,
+          })}
           label='Exercise Description'
         />
       </div>
@@ -58,8 +65,8 @@ export default function CreateExerciseForm() {
               required
               label='Add Tips For The Exercise'
               sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
-              {...register("exerciseName", {
-                required: true,
+              {...register("exerciseTips", {
+                required: false,
               })}
             />
             <button className='h-[40px]  bg-[#3BE13B] w-[30%] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white'>
@@ -76,7 +83,7 @@ export default function CreateExerciseForm() {
             required
             label='Link To Exercise Instruction Video'
             sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
-            {...register("exerciseName", {
+            {...register("exerciseVideo", {
               required: true,
             })}
           />
@@ -93,6 +100,6 @@ export default function CreateExerciseForm() {
           Submit
         </button>
       </div>
-    </div>
+    </form>
   );
 }
