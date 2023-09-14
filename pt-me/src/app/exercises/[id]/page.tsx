@@ -150,10 +150,8 @@ export default function SpecificExercise({ params }: Params) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${params.id}`
       );
-      console.log(data);
 
       setExercise(data);
-      // setLoading(false);
     };
     getExercise();
   }, []);

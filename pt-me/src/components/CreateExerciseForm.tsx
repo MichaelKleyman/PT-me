@@ -6,6 +6,7 @@ import { Controller, useController, useForm } from "react-hook-form";
 import Select from "react-select";
 import { CLIENT, BASE_URL } from "./api";
 import { AiFillCloseSquare, AiOutlineCloseSquare } from "react-icons/ai";
+import Iframe from "react-iframe";
 
 const styling = { width: "70%", borderRadius: "10px", margin: "10px" };
 
@@ -22,7 +23,7 @@ const exerciseTypeOptions = [
 
 export default function CreateExerciseForm() {
   const [selectErrorMessage, setSelectErrorMessage] = useState<string>("");
-  const [hover, setHover] = useState<boolean>(false);
+  const [videoLink, setLink] = useState<string>();
   const [tips, setTips] = useState<string[]>([]);
   const [newTip, setNewTip] = useState<string>("");
   const {
@@ -40,12 +41,33 @@ export default function CreateExerciseForm() {
   });
 
   const onSubmit = async (formData: any) => {
-    console.log(formData);
+    const {
+      exerciseName,
+      exerciseType,
+      musclesWorked,
+      exerciseDescription,
+      exerciseVideo,
+    } = formData;
+    const finalFormData = {
+      exerciseName,
+      exerciseType,
+      musclesWorked,
+      exerciseDescription,
+      tips,
+      exerciseVideo,
+    };
+    console.log(finalFormData);
   };
 
   const handleExerciseTypeSelectChange = (option: any) => {
     setSelectErrorMessage("");
     exerciseTypeController.field.onChange(option.value);
+  };
+
+  const handleVideoLink = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const videoId = e.target.value.split("v=")[1];
+    const embedLink = `https://www.youtube.com/embed/${videoId}`;
+    setLink(embedLink);
   };
 
   const handleAddTip = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +124,7 @@ export default function CreateExerciseForm() {
             required
             label='Muscles Worked'
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
-            {...register("exerciseWorked", {
+            {...register("musclesWorked", {
               required: true,
             })}
           />
@@ -133,8 +155,9 @@ export default function CreateExerciseForm() {
               })}
             />
             <button
+              type='button'
               onClick={addTip}
-              className='h-[40px]  bg-[#3BE13B] w-[30%] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white'
+              className='h-[40px] bg-[#3BE13B] w-[30%] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white'
             >
               Add
             </button>
@@ -147,13 +170,9 @@ export default function CreateExerciseForm() {
                   onClick={() => deleteTip(index)}
                   onMouseLeave={() => setHover(false)}
                   onMouseOver={() => setHover(true)}
-                  className='duration-300 hover:scale-100'
+                  className='duration-300 hover:scale-100 shadow-lg shadow-slate-300 hover:shadow-slate-500'
                 >
-                  {hover ? (
-                    <AiFillCloseSquare size={23} color='#3BE13B' />
-                  ) : (
-                    <AiOutlineCloseSquare size={23} />
-                  )}
+                  <AiOutlineCloseSquare size={23} />
                 </button>
               </div>
             ))}
@@ -167,8 +186,21 @@ export default function CreateExerciseForm() {
             sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
             {...register("exerciseVideo", {
               required: true,
+              onChange: (e) => handleVideoLink(e),
             })}
           />
+          {/* https://www.youtube.com/embed/TGmnvU2Tc-c?si=43l58nE-f3qfmd-_ */}
+          {/* https://www.youtube.com/watch?v=TGmnvU2Tc-c */}
+          {videoLink && (
+            <div className='text-center'>
+              <Iframe
+                url={videoLink}
+                width='560'
+                height='215'
+                allowFullScreen
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className='flex items-center justify-center mt-[2rem] gap-4'>
