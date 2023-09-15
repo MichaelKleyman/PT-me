@@ -58,7 +58,21 @@ router.get("/:id", async (req, res, next) => {
 //CREATE a new exercise
 router.post("/create-exercise", async (req, res, next) => {
   try {
-    console.log(req.body);
+    const { name, injuryId, videoLink, tips, description, musclesWorked } =
+      req.body;
+    const newExercise = Exercises.create({
+      name,
+      injuryId,
+      videoLink,
+      tips,
+      description,
+      musclesWorked,
+    });
+    if (!newExercise) {
+      return res.status(400).send({ message: "Error making the exercise" });
+    }
+
+    return res.send(newExercise);
   } catch (error) {
     console.log("Error creating an exercise: ", error);
     next(error);
