@@ -16,6 +16,24 @@ router.get("/:clinicId", async (req, res, next) => {
   }
 });
 
+//GET patients based on search input patients/search-patients
+router.get("/search-patients/:input", async (req, res, next) => {
+  try {
+    const { input } = req.params;
+    const patients = await Patients.findAll();
+    const filteredPatients = patients.filter((ex) =>
+      ex.title.toLowerCase().includes(input)
+    );
+    if (filteredPatients.length) {
+      return res.send(filteredPatients);
+    }
+  } catch (error) {
+    console.error("Error fetching patients:", error);
+    res.status(500).json({ message: "Internal server error" });
+    next(error);
+  }
+});
+
 //GET specific patient
 router.get("/patient/:patientId", async (req, res, next) => {
   try {

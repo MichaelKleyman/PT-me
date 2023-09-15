@@ -55,6 +55,16 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+//CREATE a new exercise
+router.post("/create-exercise", async (req, res, next) => {
+  try {
+    console.log(req.body);
+  } catch (error) {
+    console.log("Error creating an exercise: ", error);
+    next(error);
+  }
+});
+
 //GET  exercises/injury/:injuryId
 router.get("/injury/:injuryId", async (req, res, next) => {
   try {
