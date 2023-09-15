@@ -34,11 +34,27 @@ export default function CreateExerciseForm() {
     getValues,
     formState: { errors },
   } = useForm({ mode: "all" });
+  const router = useRouter();
 
   const exerciseTypeController = useController({
     name: "exerciseType",
     control,
   });
+
+  interface InjuryDictionary {
+    [key: string]: number;
+  }
+  const injuryDictionary: InjuryDictionary = {
+    Shoulders: 1,
+    Back: 2,
+    Knee: 3,
+    Hip: 4,
+    Neck: 5,
+    "Wrist/Hand": 6,
+    "Ankle/Foot": 7,
+    Abdominal: 8,
+    Gluteal: 9,
+  };
 
   const onSubmit = async (formData: any) => {
     const {
@@ -49,18 +65,19 @@ export default function CreateExerciseForm() {
       exerciseVideo,
     } = formData;
     const finalFormData = {
-      exerciseName,
-      exerciseType,
+      name: exerciseName,
+      injuryId: injuryDictionary[exerciseType],
       musclesWorked,
-      exerciseDescription,
-      tips,
-      exerciseVideo,
+      description: exerciseDescription,
+      tips: tips.join(","),
+      videoLink: exerciseVideo,
     };
-    // console.log(finalFormData);
-    await CLIENT.post(
+
+    const exercise = await CLIENT.post(
       `${BASE_URL}/api/exercises/create-exercise`,
       finalFormData
     );
+    if (exercise) router.push("/exercises");
   };
 
   const handleExerciseTypeSelectChange = (option: any) => {
@@ -166,9 +183,12 @@ export default function CreateExerciseForm() {
               Add
             </button>
           </div>
-          <div className='p-3 bg-slate-100 rounded-sm shadow-lg shadow-gray-200 w-[90%] h-[140px]'>
+          <div className='p-3 bg-slate-100 overflow-y-scroll rounded-sm shadow-lg shadow-gray-200 w-[90%] h-[140px]'>
             {tips?.map((tip, index) => (
-              <div key={index} className='flex items-center justify-between'>
+              <div
+                key={index}
+                className='flex items-center justify-between my-2'
+              >
                 <p>{tip}</p>
                 <button
                   onClick={() => deleteTip(index)}
