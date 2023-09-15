@@ -69,12 +69,16 @@ export default function AllExercises() {
       getAllExercises();
       setSpecificExercise([]);
     } else {
-      console.log(exerciseType);
       const fetchExerciseTypeInjuryId = {
         Shoulders: 1,
         Back: 2,
         Knee: 3,
         Hip: 4,
+        Neck: 5,
+        "Wrist/Hand": 6,
+        "Ankle/Foot": 7,
+        Abdominal: 8,
+        Gluteal: 9,
       };
       if (exerciseType === "Shoulders") {
         const { data } = await CLIENT.get(
@@ -94,6 +98,31 @@ export default function AllExercises() {
       } else if (exerciseType === "Hip") {
         const { data } = await CLIENT.get(
           `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Hip"]}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === "Neck") {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Neck"]}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === "Wrist/Hand") {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Wrist/Hand"]}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === "Ankle/Foot") {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Ankle/Foot"]}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === "Abdominal") {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Abdominal"]}`
+        );
+        setSpecificExercise(data);
+      } else if (exerciseType === "Gluteal") {
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Gluteal"]}`
         );
         setSpecificExercise(data);
       }

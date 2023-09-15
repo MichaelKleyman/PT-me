@@ -70,7 +70,7 @@ export default function CreateExerciseForm() {
       musclesWorked,
       description: exerciseDescription,
       tips: tips.join(","),
-      videoLink: exerciseVideo,
+      videoLink: videoLink,
     };
 
     const exercise = await CLIENT.post(
