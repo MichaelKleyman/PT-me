@@ -56,7 +56,11 @@ export default function CreateExerciseForm() {
       tips,
       exerciseVideo,
     };
-    console.log(finalFormData);
+    // console.log(finalFormData);
+    await CLIENT.post(
+      `${BASE_URL}/api/exercises/create-exercise`,
+      finalFormData
+    );
   };
 
   const handleExerciseTypeSelectChange = (option: any) => {
@@ -150,7 +154,7 @@ export default function CreateExerciseForm() {
               label='Add Tips For The Exercise'
               sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
               {...register("exerciseTips", {
-                required: false,
+                required: true,
                 onChange: (e) => handleAddTip(e),
               })}
             />
@@ -168,8 +172,6 @@ export default function CreateExerciseForm() {
                 <p>{tip}</p>
                 <button
                   onClick={() => deleteTip(index)}
-                  onMouseLeave={() => setHover(false)}
-                  onMouseOver={() => setHover(true)}
                   className='duration-300 hover:scale-100 shadow-lg shadow-slate-300 hover:shadow-slate-500'
                 >
                   <AiOutlineCloseSquare size={23} />
