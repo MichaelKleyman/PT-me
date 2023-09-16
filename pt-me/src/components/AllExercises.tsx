@@ -5,7 +5,7 @@ import "../styles/exercises.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import ReactPaginate from "react-paginate";
 import TextField from "@mui/material/TextField";
-import { BsSearch } from "react-icons/bs";
+import { BsSearch, BsThreeDotsVertical } from "react-icons/bs";
 import InputAdornment from "@mui/material/InputAdornment";
 import Iframe from "react-iframe";
 import Link from "next/link";
@@ -141,13 +141,21 @@ export default function AllExercises() {
         <div key={i} className='p-2'>
           <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex items-center justify-between'>
-              <p
-                className={`tracking-wide ${
-                  exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
-                }`}
-              >
-                {exercise.name}
-              </p>
+              <div className='flex items-center justify-between gap-4'>
+                <button
+                  // onClick={}
+                  className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                >
+                  <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                </button>
+                <p
+                  className={`tracking-wide ${
+                    exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
+                  }`}
+                >
+                  {exercise.name}
+                </p>
+              </div>
               <Link
                 href={`/exercises/${exercise.id}`}
                 className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
@@ -176,13 +184,21 @@ export default function AllExercises() {
         <div key={i} className='p-2'>
           <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex justify-between items-center'>
-              <p
-                className={`tracking-wide ${
-                  exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
-                }`}
-              >
-                {exercise.name}
-              </p>
+              <div className='flex items-center justify-between gap-4'>
+                <button
+                  // onClick={}
+                  className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                >
+                  <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                </button>
+                <p
+                  className={`tracking-wide ${
+                    exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
+                  }`}
+                >
+                  {exercise.name}
+                </p>
+              </div>
               <Link
                 href={`/exercises/${exercise.id}`}
                 className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
