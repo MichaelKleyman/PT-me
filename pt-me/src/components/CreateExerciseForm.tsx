@@ -7,6 +7,7 @@ import Select from "react-select";
 import { CLIENT, BASE_URL } from "./api";
 import { AiFillCloseSquare, AiOutlineCloseSquare } from "react-icons/ai";
 import Iframe from "react-iframe";
+import Link from "next/link";
 
 const styling = { width: "70%", borderRadius: "10px", margin: "10px" };
 
@@ -226,9 +227,12 @@ export default function CreateExerciseForm() {
         </div>
       </div>
       <div className='flex items-center justify-center mt-[2rem] gap-4'>
-        <button className='w-[20%] hover:bg-[#3BE13B] hover:text-white bg-white text-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110  px-4 py-2'>
+        <Link
+          href='/exercises'
+          className='text-center w-[20%] hover:bg-[#3BE13B] hover:text-white bg-white text-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110  px-4 py-2'
+        >
           Cancel
-        </button>
+        </Link>
         <button
           type='submit'
           className='w-[20%] bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'

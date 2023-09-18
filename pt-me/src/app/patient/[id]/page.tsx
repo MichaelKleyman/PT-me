@@ -568,9 +568,12 @@ export default function Patient({ params }: Params) {
                 <BsPrinter className='p-2' size={35} /> Print
               </button>
               <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
-              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'>
+              <Link
+                href={`/patient/edit-profile/${params.id}`}
+                className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
+              >
                 <MdOutlineEdit className='p-2' size={35} /> Edit
-              </p>
+              </Link>
             </div>
             <div>
               {clickedRemove && (
