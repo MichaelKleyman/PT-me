@@ -9,6 +9,7 @@ export interface PatientData {
   id: number;
   title: string;
   address: string;
+  gender: string;
   phoneNumber: string;
   email: string;
   reasonForVisit: string;

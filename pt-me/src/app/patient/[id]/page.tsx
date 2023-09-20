@@ -134,7 +134,7 @@ const Transition = forwardRef(function Transition(
 
 export default function Patient({ params }: Params) {
   const [results, setResults] = useState<ExerciseData[]>([]);
-  const [patient, setPatient] = useState<Patient>();
+  const [patient, setPatient] = useState<Patient | undefined>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [patientsExercises, setExercises] = useState<ExerciseData[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -463,6 +463,9 @@ export default function Patient({ params }: Params) {
       : "Unknown",
   };
 
+  console.log(patient?.start);
+  let startAppointmentTime = new Date(patient?.start as Date);
+
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
@@ -518,9 +521,15 @@ export default function Patient({ params }: Params) {
                       {" "}
                       <BsDot
                         size={50}
-                        color={`${patient?.start ? "green" : "red"}`}
+                        color={`${
+                          startAppointmentTime > new Date() ? "green" : "red"
+                        }`}
                       />{" "}
-                      {`${patient?.start ? "Scheduled" : "No Appointment"}`}
+                      {`${
+                        startAppointmentTime > new Date()
+                          ? "Scheduled"
+                          : "No Appointment"
+                      }`}
                     </span>
                   </h2>
                 </div>
