@@ -37,6 +37,11 @@ const injuryTypeOptions = [
   { value: "Shoulders", label: "Shoulders" },
   { value: "Back", label: "Back" },
   { value: "Hip", label: "Hip" },
+  { value: "Neck", label: "Neck" },
+  { value: "Wrist/Hand", label: "Wrist/Hand" },
+  { value: "Ankle/Foot", label: "Ankle/Foot" },
+  { value: "Abdominal", label: "Abdominal" },
+  { value: "Gluteal", label: "Gluteal" },
 ];
 
 const insuranceOptions = [

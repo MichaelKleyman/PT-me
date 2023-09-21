@@ -41,6 +41,11 @@ const injuryTypeOptions = [
   { value: "Shoulders", label: "Shoulders" },
   { value: "Back", label: "Back" },
   { value: "Hip", label: "Hip" },
+  { value: "Neck", label: "Neck" },
+  { value: "Wrist/Hand", label: "Wrist/Hand" },
+  { value: "Ankle/Foot", label: "Ankle/Foot" },
+  { value: "Abdominal", label: "Abdominal" },
+  { value: "Gluteal", label: "Gluteal" },
 ];
 
 const insuranceOptions = [
@@ -148,6 +153,18 @@ export default function EditPatientInfo() {
             //   onChange: (e) => handleChange(e),
           })}
         />
+        <TextField
+          type='text'
+          label='Address'
+          required
+          value={patient?.address}
+          sx={styling}
+          {...register(`Address`, {
+            required: true,
+            //   onChange: (e) => handleChange(e),
+          })}
+        />
+
         <Controller
           control={control}
           name='Gender'
