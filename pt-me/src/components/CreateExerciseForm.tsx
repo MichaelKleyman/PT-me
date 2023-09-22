@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useController, useForm } from "react-hook-form";
 import Select from "react-select";
 import { CLIENT, BASE_URL } from "./api";
-import { AiFillCloseSquare, AiOutlineCloseSquare } from "react-icons/ai";
+import { AiOutlineCloseSquare } from "react-icons/ai";
 import Iframe from "react-iframe";
 import Link from "next/link";
 

@@ -62,6 +62,19 @@ const insuranceOptions = [
   { value: "MetLife", label: "MetLife" },
 ];
 
+const injuryTypes = [
+  "All",
+  "Shoulders",
+  "Back",
+  "Knee",
+  "Hip",
+  "Neck",
+  "Wrist/Hand",
+  "Ankle/Foot",
+  "Abdominal",
+  "Gluteal",
+];
+
 export default function EditPatientInfo() {
   const [patient, setPatient] = useState<Patient>();
   const dispatch = useDispatch<AppDispatch>();
@@ -84,8 +97,22 @@ export default function EditPatientInfo() {
     getPatient();
   }, []);
 
+  const onSubmit = (editedData: any) => {
+    console.log(editedData);
+  };
+
+  const patientAddress = patient?.address.split(",")[0];
+  const patientState = patient?.address.split(",")[1].split(" ")[1];
+  const patientCity = patient?.address.split(",")[1].split(" ")[2];
+
+  const defaultInsurance = insuranceOptions.filter((option) => {
+    if (option.value === patient?.insurance) {
+      return option.value;
+    }
+  });
+
   return (
-    <div className='mt-[1rem] ml-[6rem] p-4'>
+    <div className='mt-[1rem] ml-[6rem] p-4 m-4'>
       <div className='flex text-center gap-2'>
         <Link
           href={`/patient/${id}`}
@@ -97,126 +124,183 @@ export default function EditPatientInfo() {
         <div>/</div>
         <div className='mb-5 text-sm'>Edit Profile</div>
       </div>
-      <div className='mt-[2rem] grid grid-cols-3 gap-4'>
-        <TextField
-          type='text'
-          label='First Name'
-          required
-          value={patient?.title.split(" ")[0]}
-          sx={styling}
-          {...register(`First Name`, {
-            required: true,
-            // onChange: (e) => handleChange(e),
-          })}
-        />
-        <TextField
-          type='text'
-          label='Last Name'
-          required
-          value={patient?.title.split(" ")[1]}
-          sx={styling}
-          {...register("Last Name", {
-            required: true,
-            // onChange: (e) => handleChange(e),
-          })}
-        />
-        <TextField
-          type='number'
-          label='Age'
-          required
-          value={patient?.age}
-          sx={styling}
-          {...register(`Age`, {
-            required: true,
-            //   onChange: (e) => handleChange(e),
-          })}
-        />
-        <TextField
-          type='email'
-          label='Email'
-          required
-          value={patient?.email}
-          sx={styling}
-          {...register("Email", {
-            required: true,
-            // onChange: (e) => handleChange(e),
-          })}
-        />
-        <TextField
-          type='number'
-          label='Phone Number'
-          required
-          value={patient?.phoneNumber}
-          sx={styling}
-          {...register(`Phone Number`, {
-            required: true,
-            //   onChange: (e) => handleChange(e),
-          })}
-        />
-        <TextField
-          type='text'
-          label='Address'
-          required
-          value={patient?.address}
-          sx={styling}
-          {...register(`Address`, {
-            required: true,
-            //   onChange: (e) => handleChange(e),
-          })}
-        />
 
-        <Controller
-          control={control}
-          name='Gender'
-          render={({ field }) => (
-            <>
-              <Select
-                placeholder='Gender'
-                options={genderOptions}
-                // onChange={handleGenderSelectChange}
-                className='w-full rounded-lg m-[10px]'
-              />
-              {/* {selectErrorMessage && (
+      <form onSubmit={handleSubmit(onSubmit)} className='mt-[2rem]'>
+        <div className='grid grid-cols-3 gap-4'>
+          <TextField
+            type='text'
+            label='First Name'
+            required
+            value={patient?.title.split(" ")[0]}
+            sx={styling}
+            {...register(`First Name`, {
+              required: true,
+            })}
+          />
+          <TextField
+            type='text'
+            label='Last Name'
+            required
+            value={patient?.title.split(" ")[1]}
+            sx={styling}
+            {...register("Last Name", {
+              required: true,
+            })}
+          />
+          <TextField
+            type='number'
+            label='Age'
+            required
+            value={patient?.age}
+            sx={styling}
+            {...register(`Age`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+          <TextField
+            type='email'
+            label='Email'
+            required
+            value={patient?.email}
+            sx={styling}
+            {...register("Email", {
+              required: true,
+            })}
+          />
+          <TextField
+            type='number'
+            label='Phone Number'
+            required
+            value={patient?.phoneNumber.replace(/-/g, "")}
+            sx={styling}
+            {...register(`Phone Number`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+          <TextField
+            type='text'
+            label='Address'
+            required
+            value={patientAddress}
+            sx={styling}
+            {...register(`Address`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+          <TextField
+            type='text'
+            label='City'
+            required
+            value={patientCity}
+            sx={styling}
+            {...register(`City`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+          <TextField
+            type='text'
+            label='State'
+            required
+            value={patientState}
+            sx={styling}
+            {...register(`State`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+
+          <Controller
+            control={control}
+            name='Gender'
+            render={({ field }) => (
+              <>
+                <Select
+                  placeholder='Gender'
+                  defaultValue={
+                    genderOptions[0].value === patient?.gender
+                      ? genderOptions[1]
+                      : genderOptions[0]
+                  }
+                  options={genderOptions}
+                  // onChange={handleGenderSelectChange}
+                  className='w-full rounded-lg m-[10px] z-[50]'
+                />
+                {/* {selectErrorMessage && (
                 <span className='text-red-500'>{selectErrorMessage}</span>
               )} */}
-            </>
-          )}
-        />
-        <Controller
-          control={control}
-          name='Insurance'
-          render={({ field }) => (
-            <>
-              <Select
-                placeholder='Insurance'
-                options={insuranceOptions}
-                // onChange={handleInsuranceSelectChange}
-                className='w-full rounded-lg m-[10px]'
-              />
-              {/* {selectErrorMessage && (
+              </>
+            )}
+          />
+          <Controller
+            control={control}
+            name='Insurance'
+            render={({ field }) => (
+              <>
+                <Select
+                  placeholder='Insurance'
+                  defaultValue={defaultInsurance[0]}
+                  options={insuranceOptions}
+                  // onChange={handleInsuranceSelectChange}
+                  className='w-full rounded-lg m-[10px]'
+                />
+                {/* {selectErrorMessage && (
                 <span className='text-red-500'>{selectErrorMessage}</span>
               )} */}
-            </>
-          )}
-        />
-        <Controller
-          control={control}
-          name='Insurance'
-          render={({ field }) => (
-            <>
-              <Select
-                placeholder='Injury Type'
-                options={injuryTypeOptions}
-                // onChange={handleInjuryTypeSelectChange}
-                className='w-full rounded-lg m-[10px]'
-              />
-              {/* {selectErrorMessage && (
+              </>
+            )}
+          />
+          <Controller
+            control={control}
+            name='Insurance'
+            render={({ field }) => (
+              <>
+                <Select
+                  placeholder='Injury Type'
+                  // defaultValue={injuryTypeOptions.filter(
+                  //   (option) =>
+                  //     patient && option.value === injuryTypes[patient.injuryId]
+                  // )}
+                  options={injuryTypeOptions}
+                  // onChange={handleInjuryTypeSelectChange}
+                  className='w-full rounded-lg m-[10px]'
+                />
+                {/* {selectErrorMessage && (
                 <span className='text-red-500'>{selectErrorMessage}</span>
               )} */}
-            </>
-          )}
-        />
-      </div>
+              </>
+            )}
+          />
+          <TextField
+            type='text'
+            label='Reason For Visit'
+            required
+            value={patient?.reasonForVisit}
+            sx={styling}
+            {...register(`Reason For Visit`, {
+              required: true,
+              //   onChange: (e) => handleChange(e),
+            })}
+          />
+        </div>
+        <div className='flex items-center justify-center mt-[2rem] gap-4'>
+          <Link
+            href={`/patient/${patient?.id}`}
+            className='text-center w-[20%] hover:bg-[#3BE13B] hover:text-white bg-white text-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110  px-4 py-2'
+          >
+            Cancel
+          </Link>
+          <button
+            type='submit'
+            className='w-[20%] bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
