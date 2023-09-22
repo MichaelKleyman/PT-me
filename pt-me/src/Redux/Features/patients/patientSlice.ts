@@ -62,7 +62,9 @@ export const fetchPatient = createAsyncThunk<PatientData, number>(
   "patients/fetchPatient",
   async (id: number, thunkAPI) => {
     try {
-      const res = await CLIENT.get(`${BASE_URL}/api/patients/patient/${id}`);
+      const res = await CLIENT.get(
+        `${BASE_URL}/api/patients/specific-patient/${id}`
+      );
       return res.data;
     } catch (error) {
       console.log("Redux error: ", error);

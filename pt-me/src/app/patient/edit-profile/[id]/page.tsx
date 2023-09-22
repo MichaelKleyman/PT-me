@@ -12,6 +12,7 @@ import { Patient } from "../../../../../types";
 import Select from "react-select";
 import { TextField } from "@mui/material";
 import { Controller, useController, useForm } from "react-hook-form";
+import { BASE_URL, CLIENT } from "@/components/api";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
 
@@ -77,6 +78,7 @@ const injuryTypes = [
 
 export default function EditPatientInfo() {
   const [patient, setPatient] = useState<Patient>();
+  const [selectErrorMessage, setSelectErrorMessage] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
   const {
     register,
@@ -97,8 +99,61 @@ export default function EditPatientInfo() {
     getPatient();
   }, []);
 
-  const onSubmit = (editedData: any) => {
-    console.log(editedData);
+  const genderController = useController({
+    name: "Gender",
+    control,
+  });
+
+  const injuryTypeController = useController({
+    name: "Injury Type",
+    control,
+  });
+
+  const insuranceController = useController({
+    name: "Insurance",
+    control,
+  });
+
+  const onSubmit = async (formData: any) => {
+    const updatedData = {
+      "First Name":
+        formData["First Name"] || patient?.title.split(" ")[0] || "",
+      "Last Name": formData["Last Name"] || patient?.title.split(" ")[1] || "",
+      Age: formData.Age || patient?.age || "",
+      Email: formData.Email || patient?.email || "",
+      "Phone Number":
+        formData["Phone Number"] ||
+        patient?.phoneNumber.replace(/-/g, "") ||
+        "",
+      Address: formData.Address || patientAddress || "",
+      City: formData.City || patientCity || "",
+      State: formData.State || patientState || "",
+      Gender:
+        formData.Gender ||
+        (genderOptions[0].value === patient?.gender
+          ? genderOptions[1]
+          : genderOptions[0]),
+      Insurance: formData.Insurance || defaultInsurance[0],
+      "Injury Type": formData["Injury Type"] || "",
+      "Reason For Visit":
+        formData["Reason For Visit"] || patient?.reasonForVisit || "",
+    };
+    await CLIENT.put(`${BASE_URL}/api/patients/update/${id}`, updatedData);
+  };
+
+  const handleGenderSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    genderController.field.onChange(option.value);
+  };
+
+  const handleInsuranceSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    insuranceController.field.onChange(option.value);
+  };
+
+  const handleInjuryTypeSelectChange = (option: any) => {
+    setSelectErrorMessage("");
+    injuryTypeController.field.onChange(option.value);
   };
 
   const patientAddress = patient?.address.split(",")[0];
@@ -134,7 +189,7 @@ export default function EditPatientInfo() {
             defaultValue={patient?.title.split(" ")[0]}
             sx={styling}
             {...register(`First Name`, {
-              required: true,
+              required: false,
             })}
           />
           <TextField
@@ -144,7 +199,7 @@ export default function EditPatientInfo() {
             defaultValue={patient?.title.split(" ")[1]}
             sx={styling}
             {...register("Last Name", {
-              required: true,
+              required: false,
             })}
           />
           <TextField
@@ -154,8 +209,7 @@ export default function EditPatientInfo() {
             defaultValue={patient?.age}
             sx={styling}
             {...register(`Age`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
           <TextField
@@ -165,7 +219,7 @@ export default function EditPatientInfo() {
             defaultValue={patient?.email}
             sx={styling}
             {...register("Email", {
-              required: true,
+              required: false,
             })}
           />
           <TextField
@@ -175,8 +229,7 @@ export default function EditPatientInfo() {
             defaultValue={patient?.phoneNumber.replace(/-/g, "")}
             sx={styling}
             {...register(`Phone Number`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
           <TextField
@@ -186,8 +239,7 @@ export default function EditPatientInfo() {
             defaultValue={patientAddress}
             sx={styling}
             {...register(`Address`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
           <TextField
@@ -197,8 +249,7 @@ export default function EditPatientInfo() {
             defaultValue={patientCity}
             sx={styling}
             {...register(`City`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
           <TextField
@@ -208,8 +259,7 @@ export default function EditPatientInfo() {
             defaultValue={patientState}
             sx={styling}
             {...register(`State`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
 
@@ -226,7 +276,7 @@ export default function EditPatientInfo() {
                       : genderOptions[0]
                   }
                   options={genderOptions}
-                  // onChange={handleGenderSelectChange}
+                  onChange={handleGenderSelectChange}
                   className='w-full rounded-lg m-[10px] z-[50]'
                 />
               </>
@@ -241,7 +291,7 @@ export default function EditPatientInfo() {
                   placeholder='Insurance'
                   defaultValue={defaultInsurance[0]}
                   options={insuranceOptions}
-                  // onChange={handleInsuranceSelectChange}
+                  onChange={handleInsuranceSelectChange}
                   className='w-full rounded-lg m-[10px]'
                 />
               </>
@@ -255,7 +305,7 @@ export default function EditPatientInfo() {
                 <Select
                   placeholder='Injury Type'
                   options={injuryTypeOptions}
-                  // onChange={handleInjuryTypeSelectChange}
+                  onChange={handleInjuryTypeSelectChange}
                   className='w-full rounded-lg m-[10px]'
                 />
               </>
@@ -265,11 +315,10 @@ export default function EditPatientInfo() {
             type='text'
             label='Reason For Visit'
             required
-            // value={patient?.reasonForVisit}
+            defaultValue={patient?.reasonForVisit}
             sx={styling}
             {...register(`Reason For Visit`, {
-              required: true,
-              //   onChange: (e) => handleChange(e),
+              required: false,
             })}
           />
         </div>

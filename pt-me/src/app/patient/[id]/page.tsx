@@ -156,7 +156,6 @@ export default function Patient({ params }: Params) {
     }
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
-      console.log(payload);
       setExercises(payload as ExerciseData[]);
     }
 
