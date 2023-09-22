@@ -35,7 +35,7 @@ router.get("/search-patients/:input", async (req, res, next) => {
 });
 
 //GET specific patient
-router.get("/patient/:patientId", async (req, res, next) => {
+router.get("/specific-patient/:patientId", async (req, res, next) => {
   try {
     const patient = await Patients.findOne({
       where: {
@@ -158,6 +158,16 @@ router.put("/update-appointment/:patientId", async (req, res, next) => {
     } else {
       res.status(404).send({ message: "Patient not found" });
     }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+//UPDATE a patients information
+router.put("/update/:patientId", async (req, res, next) => {
+  try {
+    console.log(req.body);
   } catch (error) {
     console.log(error);
     next(error);
