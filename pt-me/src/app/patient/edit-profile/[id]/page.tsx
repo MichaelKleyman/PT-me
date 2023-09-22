@@ -131,7 +131,7 @@ export default function EditPatientInfo() {
             type='text'
             label='First Name'
             required
-            value={patient?.title.split(" ")[0]}
+            defaultValue={patient?.title.split(" ")[0]}
             sx={styling}
             {...register(`First Name`, {
               required: true,
@@ -141,7 +141,7 @@ export default function EditPatientInfo() {
             type='text'
             label='Last Name'
             required
-            value={patient?.title.split(" ")[1]}
+            defaultValue={patient?.title.split(" ")[1]}
             sx={styling}
             {...register("Last Name", {
               required: true,
@@ -151,7 +151,7 @@ export default function EditPatientInfo() {
             type='number'
             label='Age'
             required
-            value={patient?.age}
+            defaultValue={patient?.age}
             sx={styling}
             {...register(`Age`, {
               required: true,
@@ -162,7 +162,7 @@ export default function EditPatientInfo() {
             type='email'
             label='Email'
             required
-            value={patient?.email}
+            defaultValue={patient?.email}
             sx={styling}
             {...register("Email", {
               required: true,
@@ -172,7 +172,7 @@ export default function EditPatientInfo() {
             type='number'
             label='Phone Number'
             required
-            value={patient?.phoneNumber.replace(/-/g, "")}
+            defaultValue={patient?.phoneNumber.replace(/-/g, "")}
             sx={styling}
             {...register(`Phone Number`, {
               required: true,
@@ -183,7 +183,7 @@ export default function EditPatientInfo() {
             type='text'
             label='Address'
             required
-            value={patientAddress}
+            defaultValue={patientAddress}
             sx={styling}
             {...register(`Address`, {
               required: true,
@@ -194,7 +194,7 @@ export default function EditPatientInfo() {
             type='text'
             label='City'
             required
-            value={patientCity}
+            defaultValue={patientCity}
             sx={styling}
             {...register(`City`, {
               required: true,
@@ -205,7 +205,7 @@ export default function EditPatientInfo() {
             type='text'
             label='State'
             required
-            value={patientState}
+            defaultValue={patientState}
             sx={styling}
             {...register(`State`, {
               required: true,
@@ -229,9 +229,6 @@ export default function EditPatientInfo() {
                   // onChange={handleGenderSelectChange}
                   className='w-full rounded-lg m-[10px] z-[50]'
                 />
-                {/* {selectErrorMessage && (
-                <span className='text-red-500'>{selectErrorMessage}</span>
-              )} */}
               </>
             )}
           />
@@ -247,30 +244,20 @@ export default function EditPatientInfo() {
                   // onChange={handleInsuranceSelectChange}
                   className='w-full rounded-lg m-[10px]'
                 />
-                {/* {selectErrorMessage && (
-                <span className='text-red-500'>{selectErrorMessage}</span>
-              )} */}
               </>
             )}
           />
           <Controller
             control={control}
-            name='Insurance'
+            name='Injury Type'
             render={({ field }) => (
               <>
                 <Select
                   placeholder='Injury Type'
-                  // defaultValue={injuryTypeOptions.filter(
-                  //   (option) =>
-                  //     patient && option.value === injuryTypes[patient.injuryId]
-                  // )}
                   options={injuryTypeOptions}
                   // onChange={handleInjuryTypeSelectChange}
                   className='w-full rounded-lg m-[10px]'
                 />
-                {/* {selectErrorMessage && (
-                <span className='text-red-500'>{selectErrorMessage}</span>
-              )} */}
               </>
             )}
           />
@@ -278,7 +265,7 @@ export default function EditPatientInfo() {
             type='text'
             label='Reason For Visit'
             required
-            value={patient?.reasonForVisit}
+            // value={patient?.reasonForVisit}
             sx={styling}
             {...register(`Reason For Visit`, {
               required: true,
