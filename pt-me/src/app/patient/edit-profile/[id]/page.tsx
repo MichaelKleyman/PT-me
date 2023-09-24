@@ -13,24 +13,9 @@ import Select from "react-select";
 import { TextField } from "@mui/material";
 import { Controller, useController, useForm } from "react-hook-form";
 import { BASE_URL, CLIENT } from "@/components/api";
+import { useRouter } from "next/navigation";
 
 const styling = { width: "100%", borderRadius: "10px", margin: "10px" };
-
-const inputs = [
-  "Last Name",
-  "First Name",
-  "Age",
-  "Gender",
-  "Email",
-  "Phone Number",
-  "Insurance",
-  "Address",
-  "State",
-  "City",
-  "Zipcode",
-  "Reason For Visit",
-  "Injury Type",
-];
 
 const genderOptions = [
   { value: "Male", label: "Male" },
@@ -88,6 +73,7 @@ export default function EditPatientInfo() {
     getValues,
     formState: { errors },
   } = useForm({ mode: "all" });
+  const router = useRouter();
 
   const { id } = useParams();
 
@@ -134,11 +120,17 @@ export default function EditPatientInfo() {
           ? genderOptions[1]
           : genderOptions[0]),
       Insurance: formData.Insurance || defaultInsurance[0],
-      "Injury Type": formData["Injury Type"] || "",
+      "Injury Type": formData["Injury Type"] || patient?.injuryId || "",
       "Reason For Visit":
         formData["Reason For Visit"] || patient?.reasonForVisit || "",
     };
-    await CLIENT.put(`${BASE_URL}/api/patients/update/${id}`, updatedData);
+    const result = await CLIENT.put(
+      `${BASE_URL}/api/patients/update/${id}`,
+      updatedData
+    );
+    if (result.status === 200) {
+      router.push(`/patient/${id}`);
+    }
   };
 
   const handleGenderSelectChange = (option: any) => {
@@ -156,9 +148,9 @@ export default function EditPatientInfo() {
     injuryTypeController.field.onChange(option.value);
   };
 
-  const patientAddress = patient?.address.split(",")[0];
-  const patientState = patient?.address.split(",")[1].split(" ")[1];
-  const patientCity = patient?.address.split(",")[1].split(" ")[2];
+  const patientAddress = patient?.address?.split(",")[0];
+  const patientState = patient?.address?.split(",")[1]?.split(" ")[1];
+  const patientCity = patient?.address?.split(",")[1]?.split(" ")[2];
 
   const defaultInsurance = insuranceOptions.filter((option) => {
     if (option.value === patient?.insurance) {

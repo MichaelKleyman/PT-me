@@ -453,15 +453,14 @@ export default function Patient({ params }: Params) {
     "Phone Number": patient?.phoneNumber as unknown as number,
     Insurance: patient?.insurance as string,
     Address: parts?.[0] as string,
-    State: parts?.[1].split(" ")[1] as string,
-    City: parts?.[1].split(" ")[0] as string,
+    State: parts?.[1]?.split(" ")[1] as string,
+    City: parts?.[1]?.split(" ")[0] as string,
     "Reason For Visit": patient?.reasonForVisit as string,
     Zipcode: parts?.[2] as unknown as number,
     "Injury Type": patient?.injuryId
       ? (injuryDictionary[patient.injuryId] as string)
       : "Unknown",
   };
-
   console.log(patient?.start);
   let startAppointmentTime = new Date(patient?.start as Date);
 
