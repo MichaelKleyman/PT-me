@@ -58,6 +58,11 @@ router.post("/:clinicId", async (req, res, next) => {
       Back: 2,
       Knee: 3,
       Hip: 4,
+      Neck: 5,
+      "Wrist/Hand": 6,
+      "Ankle/Foot": 7,
+      Abdominal: 8,
+      Gluteal: 9,
     };
     const { Gender, Age, Insurance, Email, Address } = req.body;
     const firstName = req.body["First Name"];
@@ -167,7 +172,46 @@ router.put("/update-appointment/:patientId", async (req, res, next) => {
 //UPDATE a patients information
 router.put("/update/:patientId", async (req, res, next) => {
   try {
-    console.log(req.body);
+    const injuryOptions = [
+      "Shoulders",
+      "Back",
+      "Knee",
+      "Hip",
+      "Neck",
+      "Wrist/Hand",
+      "Ankle/Foot",
+      "Abdominal",
+      "Gluteal",
+    ];
+    const newPatientData = await Patients.update(
+      {
+        title: req.body["First Name"] + " " + req.body["Last Name"],
+        gender: req.body.Gender.value,
+        age: req.body.Age,
+        address: req.body.Address + "," + req.body.City + " " + req.body.State,
+        phoneNumber:
+          req.body["Phone Number"].slice(0, 3) +
+          "-" +
+          req.body["Phone Number"].slice(3, 6) +
+          "-" +
+          req.body["Phone Number"].slice(6),
+        email: req.body.Email,
+        reasonForVisit: req.body["Reason For Visit"],
+        insurance: req.body.Insurance.value,
+        injuryId: injuryOptions.indexOf(req.body["Injury Type"]) + 1,
+      },
+      {
+        returning: true,
+        where: {
+          id: req.params.patientId,
+        },
+      }
+    );
+    if (newPatientData) {
+      res.send(newPatientData);
+    } else {
+      res.status(404).send({ message: "Patient data can't be edited." });
+    }
   } catch (error) {
     console.log(error);
     next(error);
