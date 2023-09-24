@@ -576,7 +576,10 @@ export default function Patient({ params }: Params) {
               </button>
               <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
               <Link
-                href={`/patient/edit-profile/${params.id}`}
+                href={{
+                  pathname: `/patient/edit-profile/${params.id}`,
+                  query: { name: patient?.title },
+                }}
                 className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
               >
                 <MdOutlineEdit className='p-2' size={35} /> Edit

@@ -210,9 +210,14 @@ export default function SpecificExercise({ params }: Params) {
           />
         </div>
       </div>
-      <div className='hover:bg-blue-100 hover:text-white mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'>
-        <button onClick={clickAssign}>Assign</button>
-      </div>
+
+      <button
+        className='hover:bg-blue-100 hover:text-white mt-[2rem] cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%] md:w-[30%] lg:w-[10%]'
+        onClick={clickAssign}
+      >
+        Assign
+      </button>
+
       <Dialog
         open={clicked}
         onClose={handleClose}

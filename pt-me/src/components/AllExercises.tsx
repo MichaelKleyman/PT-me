@@ -255,13 +255,16 @@ export default function AllExercises() {
               horizontal: "left",
             }}
           >
-            <Typography sx={{ p: 2 }}>
-              <h1 className='text-center my-2 border border-green-500 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-green-500 cursor-pointer'>
+            <Typography sx={{ p: 2 }} className='flex flex-col'>
+              <Link
+                href={`/exercises/edit-exercise/${exercise.id}`}
+                className='text-center my-2 border border-green-500 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-green-500 cursor-pointer'
+              >
                 Edit
-              </h1>
-              <h1 className='text-center my-2 border border-red-400 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-red-500 cursor-pointer'>
+              </Link>
+              <button className='text-center my-2 border border-red-400 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-red-500 cursor-pointer'>
                 Remove
-              </h1>
+              </button>
             </Typography>
           </Popover>
         </div>
