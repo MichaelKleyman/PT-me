@@ -4,11 +4,11 @@ import { Controller, useController, useForm } from "react-hook-form";
 import { CLIENT, BASE_URL } from "@/components/api";
 import { ExerciseData } from "../../types";
 import TextField from "@mui/material/TextField";
-import { useRouter } from "next/navigation";
 import Select from "react-select";
 import Iframe from "react-iframe";
 import Link from "next/link";
 import { AiOutlineCloseSquare } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 interface Props {
   exerciseId: string | string[];
 }
@@ -55,13 +55,13 @@ export default function EditExercise({ exerciseId }: Props) {
     formState,
     reset,
   } = useForm({ mode: "all" });
+  const router = useRouter();
 
   useEffect(() => {
     const getExercise = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${exerciseId}`
       );
-
       setExercise(data);
       setTips(data.tips.split(".").slice(0, -1));
     };
@@ -83,7 +83,8 @@ export default function EditExercise({ exerciseId }: Props) {
 
   const addTip = () => {
     if (newTip.trim() !== "") {
-      setTips([...tips, newTip]); // Add the new tip to the list
+      const tipToAdd = newTip.endsWith(".") ? newTip : newTip + ".";
+      setTips([...tips, tipToAdd]); // Add the new tip to the list
       reset(); // Clear the input field
     }
   };
@@ -107,23 +108,28 @@ export default function EditExercise({ exerciseId }: Props) {
       injuryId: injuryDictionary[exerciseType] || exercise?.injuryId || "",
       musclesWorked: musclesWorked || exercise?.musclesWorked || "",
       description: exerciseDescription || exercise?.description || "",
-      tips: tips.join(",") || exercise?.tips || "",
+      tips:
+        tips
+          .map((tip) => {
+            // Remove any existing trailing period
+            const trimmedTip = tip.trim().replace(/\.$/, "");
+
+            // Add a period to the end
+            return trimmedTip + ".";
+          })
+          .join(" ") ||
+        exercise?.tips ||
+        "",
       videoLink: videoLink || exercise?.videoLink || "",
     };
-    await CLIENT.put(
+    const result = await CLIENT.put(
       `${BASE_URL}/api/exercises/update/${exercise?.id}`,
       finalFormData
     );
+    if (result.status === 200) {
+      router.push(`/exercises/${exercise?.id}`);
+    }
   };
-
-  // const defaultExerciseOption = exerciseTypeOptions.filter((option) => {
-  //   const matchedExercise = Object.entries(injuryDictionary).find(
-  //     (val) => val[1] === exercise?.injuryId
-  //   );
-  //   if (option.value === matchedExercise?.[0]) {
-  //     return option.value;
-  //   }
-  // });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
