@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Select from "react-select";
 import Iframe from "react-iframe";
 import Link from "next/link";
+import { AiOutlineCloseSquare } from "react-icons/ai";
 interface Props {
   exerciseId: string | string[];
 }
@@ -45,17 +46,24 @@ export default function EditExercise({ exerciseId }: Props) {
   const [videoLink, setLink] = useState<string>();
   const [tips, setTips] = useState<string[]>([]);
   const [newTip, setNewTip] = useState<string>("");
-  const { register, handleSubmit, trigger, control, getValues, formState } =
-    useForm({ mode: "all" });
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    control,
+    getValues,
+    formState,
+    reset,
+  } = useForm({ mode: "all" });
 
   useEffect(() => {
     const getExercise = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${exerciseId}`
       );
-      console.log(data);
 
       setExercise(data);
+      setTips(data.tips.split(".").slice(0, -1));
     };
     getExercise();
   }, []);
@@ -69,19 +77,47 @@ export default function EditExercise({ exerciseId }: Props) {
     exerciseTypeController.field.onChange(option.value);
   };
 
+  const handleAddTip = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTip(e.target.value);
+  };
+
+  const addTip = () => {
+    if (newTip.trim() !== "") {
+      setTips([...tips, newTip]); // Add the new tip to the list
+      reset(); // Clear the input field
+    }
+  };
+
+  console.log(getValues("exerciseTips"));
+
+  const deleteTip = (index: number) => {
+    const newTipsArray = tips.filter((tip, i) => index !== i);
+    setTips(newTipsArray);
+  };
+
   const handleVideoLink = (e: React.ChangeEvent<HTMLInputElement>) => {
     const videoId = e.target.value.split("v=")[1];
     const embedLink = `https://www.youtube.com/embed/${videoId}`;
     setLink(embedLink);
   };
 
-  const onSubmit = async (formData: any) => {};
-
-  console.log(
-    Object.entries(injuryDictionary).find(
-      (val) => val[1] === exercise?.injuryId
-    )
-  );
+  const onSubmit = async (formData: any) => {
+    const {
+      exerciseName,
+      exerciseType,
+      musclesWorked,
+      exerciseDescription,
+      exerciseVideo,
+    } = formData;
+    const finalFormData = {
+      name: exerciseName,
+      injuryId: injuryDictionary[exerciseType],
+      musclesWorked,
+      description: exerciseDescription,
+      tips: tips.join(","),
+      videoLink: videoLink,
+    };
+  };
 
   const defaultExerciseOption = exerciseTypeOptions.filter((option) => {
     const matchedExercise = Object.entries(injuryDictionary).find(
@@ -98,13 +134,10 @@ export default function EditExercise({ exerciseId }: Props) {
         <div className='w-[70%]'>
           <TextField
             type='text'
-            required
             label='Exercise Name'
             defaultValue={exercise?.name}
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
-            {...register("exerciseName", {
-              required: true,
-            })}
+            {...register("exerciseName")}
           />
           <Controller
             control={control}
@@ -112,10 +145,9 @@ export default function EditExercise({ exerciseId }: Props) {
             render={({ field }) => (
               <>
                 <Select
-                  defaultValue={defaultExerciseOption}
                   placeholder='Exercise Type'
                   options={exerciseTypeOptions}
-                  // onChange={handleExerciseTypeSelectChange}
+                  onChange={handleExerciseTypeSelectChange}
                   className='w-[90%] rounded-lg m-[10px] z-[50]'
                 />
               </>
@@ -123,23 +155,19 @@ export default function EditExercise({ exerciseId }: Props) {
           />
           <TextField
             type='text'
-            required
+            defaultValue={exercise?.musclesWorked}
             label='Muscles Worked'
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
-            {...register("musclesWorked", {
-              required: true,
-            })}
+            {...register("musclesWorked")}
           />
         </div>
         <TextField
           multiline
           rows={5}
           type='text'
-          required
+          defaultValue={exercise?.description}
           sx={styling}
-          {...register("exerciseDescription", {
-            required: true,
-          })}
+          {...register("exerciseDescription")}
           label='Exercise Description'
         />
       </div>
@@ -148,24 +176,22 @@ export default function EditExercise({ exerciseId }: Props) {
           <div className='flex items-center w-[90%]'>
             <TextField
               type='text'
-              required
               label='Add Tips For The Exercise'
               sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
               {...register("exerciseTips", {
-                required: true,
-                // onChange: (e) => handleAddTip(e),
+                onChange: (e) => handleAddTip(e),
               })}
             />
             <button
               type='button'
-              // onClick={addTip}
+              onClick={addTip}
               className='h-[40px] bg-[#3BE13B] w-[30%] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white'
             >
               Add
             </button>
           </div>
           <div className='p-3 bg-slate-100 overflow-y-scroll rounded-sm shadow-lg shadow-gray-200 w-[90%] h-[140px]'>
-            {/* {tips?.map((tip, index) => (
+            {tips?.map((tip, index) => (
               <div
                 key={index}
                 className='flex items-center justify-between my-2'
@@ -178,26 +204,34 @@ export default function EditExercise({ exerciseId }: Props) {
                   <AiOutlineCloseSquare size={23} />
                 </button>
               </div>
-            ))} */}
+            ))}
           </div>
         </div>
         <div className='w-full'>
           <TextField
             type='text'
-            required
+            defaultValue={exercise?.videoLink}
             label='Link To Exercise Instruction Video'
             sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
             {...register("exerciseVideo", {
-              required: true,
-              // onChange: (e) => handleVideoLink(e),
+              onChange: (e) => handleVideoLink(e),
             })}
           />
           {/* https://www.youtube.com/embed/TGmnvU2Tc-c?si=43l58nE-f3qfmd-_ */}
           {/* https://www.youtube.com/watch?v=TGmnvU2Tc-c */}
-          {videoLink && (
+          {videoLink ? (
             <div className='text-center'>
               <Iframe
                 url={videoLink}
+                width='560'
+                height='215'
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className='text-center'>
+              <Iframe
+                url={exercise?.videoLink as string}
                 width='560'
                 height='215'
                 allowFullScreen
