@@ -180,4 +180,14 @@ router.post(
   }
 );
 
+//UPDATE exercise info
+router.put("/update/:exerciseId", async (req, res, next) => {
+  try {
+    console.log(req.body);
+  } catch (error) {
+    console.log("Error updating exercise: ", error);
+    next(error);
+  }
+});
+
 module.exports = router;

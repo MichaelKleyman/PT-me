@@ -188,7 +188,14 @@ router.put("/update/:patientId", async (req, res, next) => {
         title: req.body["First Name"] + " " + req.body["Last Name"],
         gender: req.body.Gender.value,
         age: req.body.Age,
-        address: req.body.Address + "," + req.body.City + " " + req.body.State,
+        address:
+          req.body.Address +
+          ", " +
+          req.body.City +
+          " " +
+          req.body.State +
+          ", " +
+          req.body.Zipcode,
         phoneNumber:
           req.body["Phone Number"].slice(0, 3) +
           "-" +
