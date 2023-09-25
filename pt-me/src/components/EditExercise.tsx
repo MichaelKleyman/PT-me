@@ -88,10 +88,8 @@ export default function EditExercise({ exerciseId }: Props) {
     }
   };
 
-  console.log(getValues("exerciseTips"));
-
   const deleteTip = (index: number) => {
-    const newTipsArray = tips.filter((tip, i) => index !== i);
+    const newTipsArray = tips.filter((_, i) => index !== i);
     setTips(newTipsArray);
   };
 
@@ -102,31 +100,30 @@ export default function EditExercise({ exerciseId }: Props) {
   };
 
   const onSubmit = async (formData: any) => {
-    const {
-      exerciseName,
-      exerciseType,
-      musclesWorked,
-      exerciseDescription,
-      exerciseVideo,
-    } = formData;
+    const { exerciseName, exerciseType, musclesWorked, exerciseDescription } =
+      formData;
     const finalFormData = {
-      name: exerciseName,
-      injuryId: injuryDictionary[exerciseType],
-      musclesWorked,
-      description: exerciseDescription,
-      tips: tips.join(","),
-      videoLink: videoLink,
+      name: exerciseName || exercise?.name || "",
+      injuryId: injuryDictionary[exerciseType] || exercise?.injuryId || "",
+      musclesWorked: musclesWorked || exercise?.musclesWorked || "",
+      description: exerciseDescription || exercise?.description || "",
+      tips: tips.join(",") || exercise?.tips || "",
+      videoLink: videoLink || exercise?.videoLink || "",
     };
+    await CLIENT.put(
+      `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+      finalFormData
+    );
   };
 
-  const defaultExerciseOption = exerciseTypeOptions.filter((option) => {
-    const matchedExercise = Object.entries(injuryDictionary).find(
-      (val) => val[1] === exercise?.injuryId
-    );
-    if (option.value === matchedExercise?.[0]) {
-      return option.value;
-    }
-  });
+  // const defaultExerciseOption = exerciseTypeOptions.filter((option) => {
+  //   const matchedExercise = Object.entries(injuryDictionary).find(
+  //     (val) => val[1] === exercise?.injuryId
+  //   );
+  //   if (option.value === matchedExercise?.[0]) {
+  //     return option.value;
+  //   }
+  // });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
