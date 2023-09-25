@@ -23,6 +23,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import { me } from "@/Redux/Features/auth/authSlice";
+import { ExerciseData, Patient } from "../../../../types";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -57,38 +58,13 @@ type Params = {
   params: Obj;
 };
 
-interface ExerciseData {
-  id: number;
-  map: any;
-  name: String;
-  injuryId: Number;
-  videoLink: string;
-  tips: String;
-  description: String;
-  musclesWorked: String;
-}
-
-interface PatientData {
-  id: number;
-  title: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  reasonForVisit: string;
-  age: string;
-  injuryId: number;
-  insurance: string;
-  start?: Date | undefined;
-  end?: Date | undefined;
-}
-
 const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
 export default function SpecificExercise({ params }: Params) {
-  const [results, setResults] = useState<PatientData[]>([]);
+  const [results, setResults] = useState<Patient[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [assigned, setAssigned] = useState<boolean>(false);
-  const [patients, setPatients] = useState<PatientData[]>();
+  const [patients, setPatients] = useState<Patient[]>();
   const [ids, setIds] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -162,7 +138,7 @@ export default function SpecificExercise({ params }: Params) {
 
     try {
       const { payload } = await dispatch(fetchAllPatients(clinic.id));
-      setPatients(payload as PatientData[]);
+      setPatients(payload as Patient[]);
     } catch (error) {
       console.error("Error fetching patients:", error);
     } finally {

@@ -12,3 +12,14 @@ export interface Patient {
   start?: Date | undefined;
   end?: Date | undefined;
 }
+
+export interface ExerciseData {
+  id: number;
+  map: any;
+  name: String;
+  injuryId: Number;
+  videoLink: string;
+  tips: String;
+  description: String;
+  musclesWorked: String;
+}

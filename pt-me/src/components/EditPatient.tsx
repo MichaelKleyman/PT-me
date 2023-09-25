@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
 import { useEffect, useState } from "react";
 import { AppDispatch } from "@/Redux/store";
 import { useDispatch } from "react-redux";
@@ -64,16 +63,10 @@ const injuryTypes = [
 
 export default function EditPatient({ patientId }: Props) {
   const [patient, setPatient] = useState<Patient>();
-  const [selectErrorMessage, setSelectErrorMessage] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    control,
-    getValues,
-    formState: { errors },
-  } = useForm({ mode: "all" });
+  const { register, handleSubmit, control, formState } = useForm({
+    mode: "all",
+  });
   const router = useRouter();
   useEffect(() => {
     async function getPatient() {
@@ -133,17 +126,14 @@ export default function EditPatient({ patientId }: Props) {
   };
 
   const handleGenderSelectChange = (option: any) => {
-    setSelectErrorMessage("");
     genderController.field.onChange(option.value);
   };
 
   const handleInsuranceSelectChange = (option: any) => {
-    setSelectErrorMessage("");
     insuranceController.field.onChange(option.value);
   };
 
   const handleInjuryTypeSelectChange = (option: any) => {
-    setSelectErrorMessage("");
     injuryTypeController.field.onChange(option.value);
   };
 
@@ -159,174 +149,172 @@ export default function EditPatient({ patientId }: Props) {
   });
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className='mt-[2rem]'>
-        <div className='grid grid-cols-3 gap-4'>
-          <TextField
-            type='text'
-            label='First Name'
-            required
-            defaultValue={patient?.title.split(" ")[0]}
-            sx={styling}
-            {...register(`First Name`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='text'
-            label='Last Name'
-            required
-            defaultValue={patient?.title.split(" ")[1]}
-            sx={styling}
-            {...register("Last Name", {
-              required: false,
-            })}
-          />
-          <TextField
-            type='number'
-            label='Age'
-            required
-            defaultValue={patient?.age}
-            sx={styling}
-            {...register(`Age`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='email'
-            label='Email'
-            required
-            defaultValue={patient?.email}
-            sx={styling}
-            {...register("Email", {
-              required: false,
-            })}
-          />
-          <TextField
-            type='number'
-            label='Phone Number'
-            required
-            defaultValue={patient?.phoneNumber.replace(/-/g, "")}
-            sx={styling}
-            {...register(`Phone Number`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='text'
-            label='Address'
-            required
-            defaultValue={patientAddress}
-            sx={styling}
-            {...register(`Address`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='text'
-            label='City'
-            required
-            defaultValue={patientCity}
-            sx={styling}
-            {...register(`City`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='text'
-            label='State'
-            required
-            defaultValue={patientState}
-            sx={styling}
-            {...register(`State`, {
-              required: false,
-            })}
-          />
-          <TextField
-            type='number'
-            label='Zipcode'
-            required
-            defaultValue={patientZipcode}
-            sx={styling}
-            {...register(`Zipcode`, {
-              required: false,
-            })}
-          />
+    <form onSubmit={handleSubmit(onSubmit)} className='mt-[2rem]'>
+      <div className='grid grid-cols-3 gap-4'>
+        <TextField
+          type='text'
+          label='First Name'
+          required
+          defaultValue={patient?.title.split(" ")[0]}
+          sx={styling}
+          {...register(`First Name`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='text'
+          label='Last Name'
+          required
+          defaultValue={patient?.title.split(" ")[1]}
+          sx={styling}
+          {...register("Last Name", {
+            required: false,
+          })}
+        />
+        <TextField
+          type='number'
+          label='Age'
+          required
+          defaultValue={patient?.age}
+          sx={styling}
+          {...register(`Age`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='email'
+          label='Email'
+          required
+          defaultValue={patient?.email}
+          sx={styling}
+          {...register("Email", {
+            required: false,
+          })}
+        />
+        <TextField
+          type='number'
+          label='Phone Number'
+          required
+          defaultValue={patient?.phoneNumber.replace(/-/g, "")}
+          sx={styling}
+          {...register(`Phone Number`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='text'
+          label='Address'
+          required
+          defaultValue={patientAddress}
+          sx={styling}
+          {...register(`Address`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='text'
+          label='City'
+          required
+          defaultValue={patientCity}
+          sx={styling}
+          {...register(`City`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='text'
+          label='State'
+          required
+          defaultValue={patientState}
+          sx={styling}
+          {...register(`State`, {
+            required: false,
+          })}
+        />
+        <TextField
+          type='number'
+          label='Zipcode'
+          required
+          defaultValue={patientZipcode}
+          sx={styling}
+          {...register(`Zipcode`, {
+            required: false,
+          })}
+        />
 
-          <Controller
-            control={control}
-            name='Gender'
-            render={({ field }) => (
-              <>
-                <Select
-                  placeholder='Gender'
-                  defaultValue={
-                    genderOptions[0].value === patient?.gender
-                      ? genderOptions[1]
-                      : genderOptions[0]
-                  }
-                  options={genderOptions}
-                  onChange={handleGenderSelectChange}
-                  className='w-full rounded-lg m-[10px] z-[50]'
-                />
-              </>
-            )}
-          />
-          <Controller
-            control={control}
-            name='Insurance'
-            render={({ field }) => (
-              <>
-                <Select
-                  placeholder='Insurance'
-                  defaultValue={defaultInsurance[0]}
-                  options={insuranceOptions}
-                  onChange={handleInsuranceSelectChange}
-                  className='w-full rounded-lg m-[10px]'
-                />
-              </>
-            )}
-          />
-          <Controller
-            control={control}
-            name='Injury Type'
-            render={({ field }) => (
-              <>
-                <Select
-                  placeholder='Injury Type'
-                  options={injuryTypeOptions}
-                  onChange={handleInjuryTypeSelectChange}
-                  className='w-full rounded-lg m-[10px]'
-                />
-              </>
-            )}
-          />
-          <TextField
-            type='text'
-            label='Reason For Visit'
-            required
-            defaultValue={patient?.reasonForVisit}
-            sx={styling}
-            {...register(`Reason For Visit`, {
-              required: false,
-            })}
-          />
-        </div>
-        <div className='flex items-center justify-center mt-[2rem] gap-4'>
-          <Link
-            href={`/patient/${patient?.id}`}
-            className='text-center w-[20%] hover:bg-[#3BE13B] hover:text-white bg-white text-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110  px-4 py-2'
-          >
-            Cancel
-          </Link>
-          <button
-            type='submit'
-            className='w-[20%] bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
-          >
-            Save
-          </button>
-        </div>
-      </form>
-    </div>
+        <Controller
+          control={control}
+          name='Gender'
+          render={({ field }) => (
+            <>
+              <Select
+                placeholder='Gender'
+                defaultValue={
+                  genderOptions[0].value === patient?.gender
+                    ? genderOptions[1]
+                    : genderOptions[0]
+                }
+                options={genderOptions}
+                onChange={handleGenderSelectChange}
+                className='w-full rounded-lg m-[10px] z-[50]'
+              />
+            </>
+          )}
+        />
+        <Controller
+          control={control}
+          name='Insurance'
+          render={({ field }) => (
+            <>
+              <Select
+                placeholder='Insurance'
+                defaultValue={defaultInsurance[0]}
+                options={insuranceOptions}
+                onChange={handleInsuranceSelectChange}
+                className='w-full rounded-lg m-[10px]'
+              />
+            </>
+          )}
+        />
+        <Controller
+          control={control}
+          name='Injury Type'
+          render={({ field }) => (
+            <>
+              <Select
+                placeholder='Injury Type'
+                options={injuryTypeOptions}
+                onChange={handleInjuryTypeSelectChange}
+                className='w-full rounded-lg m-[10px]'
+              />
+            </>
+          )}
+        />
+        <TextField
+          type='text'
+          label='Reason For Visit'
+          required
+          defaultValue={patient?.reasonForVisit}
+          sx={styling}
+          {...register(`Reason For Visit`, {
+            required: false,
+          })}
+        />
+      </div>
+      <div className='flex items-center justify-center mt-[2rem] gap-4'>
+        <Link
+          href={`/patient/${patient?.id}`}
+          className='text-center w-[20%] hover:bg-[#3BE13B] hover:text-white bg-white text-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110  px-4 py-2'
+        >
+          Cancel
+        </Link>
+        <button
+          type='submit'
+          className='w-[20%] bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
+        >
+          Save
+        </button>
+      </div>
+    </form>
   );
 }

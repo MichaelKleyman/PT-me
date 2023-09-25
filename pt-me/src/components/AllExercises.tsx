@@ -10,8 +10,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Iframe from "react-iframe";
 import Link from "next/link";
 import { IoMdAddCircle } from "react-icons/io";
-import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
+import Popover from "@mui/material/Popover";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 
 interface Exercise {
   id: number;
@@ -34,7 +35,6 @@ export default function AllExercises() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageNumber2, setPageNumber2] = useState<number>(0);
-  // const [loading, setLoading] = useState<Boolean>(true);
   //exercises state is an array, where each key is a exercise object
   const [exercises, setExercises] = useState<Exercise[]>([]);
   //specific exercises state is an array of objects where each key is a string and each value is a a string.
@@ -53,23 +53,9 @@ export default function AllExercises() {
   ]);
   const [selected, setSelected] = useState<String>("All");
 
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
     setExercises(data);
-    // setLoading(false);
   };
 
   useEffect(() => {
@@ -157,12 +143,42 @@ export default function AllExercises() {
           <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex items-center justify-between'>
               <div className='flex items-center justify-between gap-4'>
-                <button
-                  onClick={handleClick}
-                  className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
-                >
-                  <BsThreeDotsVertical color='#B2BEB5' size={15} />
-                </button>
+                <PopupState variant='popover' popupId='demo-popup-popover'>
+                  {(popupState) => (
+                    <div>
+                      <button
+                        {...bindTrigger(popupState)}
+                        className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                      >
+                        <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                      </button>
+                      <Popover
+                        {...bindPopover(popupState)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      >
+                        <Typography sx={{ p: 2 }}>
+                          <div className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                            <Link
+                              href={`/exercises/edit-exercise/${exercise.id}`}
+                            >
+                              Edit
+                            </Link>
+                          </div>
+                          <h1 className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                            Remove
+                          </h1>
+                        </Typography>
+                      </Popover>
+                    </div>
+                  )}
+                </PopupState>
                 <p
                   className={`tracking-wide ${
                     exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
@@ -187,21 +203,6 @@ export default function AllExercises() {
               />
             </div>
           </div>
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <Typography sx={{ p: 2 }}>
-              <h1 className='my-2'>Edit</h1>
-              <h1 className='my-2'>Remove</h1>
-            </Typography>
-          </Popover>
         </div>
       );
     });
@@ -215,12 +216,42 @@ export default function AllExercises() {
           <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
             <div className='p-3 text-xl flex justify-between items-center'>
               <div className='flex items-center justify-between gap-4'>
-                <button
-                  onClick={handleClick}
-                  className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
-                >
-                  <BsThreeDotsVertical color='#B2BEB5' size={15} />
-                </button>
+                <PopupState variant='popover' popupId='demo-popup-popover'>
+                  {(popupState) => (
+                    <div>
+                      <button
+                        {...bindTrigger(popupState)}
+                        className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                      >
+                        <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                      </button>
+                      <Popover
+                        {...bindPopover(popupState)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      >
+                        <Typography sx={{ p: 2 }}>
+                          <div className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                            <Link
+                              href={`/exercises/edit-exercise/${exercise.id}`}
+                            >
+                              Edit
+                            </Link>
+                          </div>
+                          <h1 className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                            Remove
+                          </h1>
+                        </Typography>
+                      </Popover>
+                    </div>
+                  )}
+                </PopupState>
                 <p
                   className={`tracking-wide ${
                     exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
@@ -245,28 +276,6 @@ export default function AllExercises() {
               />
             </div>
           </div>
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            <Typography sx={{ p: 2 }} className='flex flex-col'>
-              <Link
-                href={`/exercises/edit-exercise/${exercise.id}`}
-                className='text-center my-2 border border-green-500 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-green-500 cursor-pointer'
-              >
-                Edit
-              </Link>
-              <button className='text-center my-2 border border-red-400 p-2 rounded-lg duration-300 hover:scale-110 hover:text-white hover:bg-red-500 cursor-pointer'>
-                Remove
-              </button>
-            </Typography>
-          </Popover>
         </div>
       );
     });
