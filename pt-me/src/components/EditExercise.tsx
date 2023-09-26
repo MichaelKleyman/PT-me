@@ -89,6 +89,8 @@ export default function EditExercise({ exerciseId }: Props) {
   const [tips, setTips] = useState<string[]>([]);
   const [newTip, setNewTip] = useState<string>("");
   const [editedData, setEditedData] = useState<ExerciseData>();
+  const [editorName, setEditorName] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, control, reset } = useForm({ mode: "all" });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -165,18 +167,30 @@ export default function EditExercise({ exerciseId }: Props) {
   };
 
   const onSubmit2 = async () => {
-    // const result = await CLIENT.put(
-    //   `${BASE_URL}/api/exercises/update/${exercise?.id}`,
-    //   finaldata
-    // );
-    // if (result.status === 200) {
-    //   router.push(`/exercises/${exercise?.id}`);
-    // }
-    console.log(editedData);
+    if (editorName) {
+      const updateStatus = await CLIENT.put(
+        `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+        editedData
+      );
+      const credentialStatus = await CLIENT.post(
+        `${BASE_URL}/api/exEditCredentials/new-edit/${exercise?.id}`,
+        { clinicName: clinic?.clinicName, editorName }
+      );
+      if (updateStatus.status === 200 && credentialStatus.status === 200) {
+        router.push(`/exercises/${exercise?.id}`);
+        setError(null);
+      }
+    } else {
+      setError("Please type editor name*");
+    }
   };
 
   const handleClose = () => {
     setClicked(false);
+  };
+
+  const handleEditorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditorName(e.target.value);
   };
 
   return (
@@ -324,14 +338,17 @@ export default function EditExercise({ exerciseId }: Props) {
             value={clinic?.clinicName}
             label='Clinic Name'
             sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
-            {...register("clinicName")}
           />
           <TextField
             type='text'
             label='Editor Name'
             sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
-            {...register("editorName")}
+            value={editorName}
+            onChange={handleEditorChange}
           />
+          {error && (
+            <div className='text-red-500 text-sm text-center'>{error}</div>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
