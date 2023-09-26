@@ -183,7 +183,17 @@ router.post(
 //UPDATE exercise info
 router.put("/update/:exerciseId", async (req, res, next) => {
   try {
-    console.log(req.body);
+    const updatedExercise = await Exercises.update(req.body, {
+      returning: true,
+      where: {
+        id: req.params.exerciseId,
+      },
+    });
+    if (updatedExercise) {
+      res.send(updatedExercise);
+    } else {
+      res.status(404).send({ message: "Exercise data can't be edited." });
+    }
   } catch (error) {
     console.log("Error updating exercise: ", error);
     next(error);
