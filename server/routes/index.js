@@ -7,6 +7,6 @@ const exerciseEditCredentialsRouter = require("./exEditCredentials");
 router.use("/exercises", exercisesRouter);
 router.use("/patients", patientsRouter);
 router.use("/schedule", scheduleRouter);
-router.use("exEditCredentials", exerciseEditCredentialsRouter);
+router.use("/exEditCredentials", exerciseEditCredentialsRouter);
 
 module.exports = router;
