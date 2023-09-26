@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Controller, useController, useForm } from "react-hook-form";
@@ -9,8 +10,43 @@ import Iframe from "react-iframe";
 import Link from "next/link";
 import { AiOutlineCloseSquare } from "react-icons/ai";
 import { useRouter } from "next/navigation";
-interface Props {
-  exerciseId: string | string[];
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Paper, { PaperProps } from "@mui/material/Paper";
+import Draggable from "react-draggable";
+import { Alert, Button } from "@mui/material";
+import type { AppDispatch, RootState } from "@/Redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { me } from "../Redux/Features/auth/authSlice";
+import { FieldValues } from "react-hook-form";
+import { AnyARecord } from "dns";
+
+const style = {
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#fdfff5",
+      borderRadius: "15px",
+    },
+  },
+  width: "100%",
+  height: "100%",
+  backgroundColor: "white",
+  borderRadius: "20px",
+  boxShadow: "0px 0px 8px #ddd",
+};
+
+function PaperComponent(props: PaperProps) {
+  return (
+    <Draggable
+      handle='#draggable-dialog-title'
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
 }
 
 const styling = { width: "70%", borderRadius: "10px", margin: "10px" };
@@ -25,10 +61,14 @@ const exerciseTypeOptions = [
   { value: "Abdominal", label: "Abdominal" },
   { value: "Gluteal", label: "Gluteal" },
 ];
+interface Props {
+  exerciseId: string | string[];
+}
 
 interface InjuryDictionary {
   [key: string]: number;
 }
+
 const injuryDictionary: InjuryDictionary = {
   Shoulders: 1,
   Back: 2,
@@ -44,20 +84,18 @@ const injuryDictionary: InjuryDictionary = {
 export default function EditExercise({ exerciseId }: Props) {
   const [exercise, setExercise] = useState<ExerciseData>();
   const [videoLink, setLink] = useState<string>();
+  const [clicked, setClicked] = useState<boolean>(false);
+  const [saved, setSaved] = useState<boolean>(false);
   const [tips, setTips] = useState<string[]>([]);
   const [newTip, setNewTip] = useState<string>("");
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    control,
-    getValues,
-    formState,
-    reset,
-  } = useForm({ mode: "all" });
+  const [editedData, setEditedData] = useState<ExerciseData>();
+  const { register, handleSubmit, control, reset } = useForm({ mode: "all" });
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
+    dispatch(me());
     const getExercise = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${exerciseId}`
@@ -100,10 +138,10 @@ export default function EditExercise({ exerciseId }: Props) {
     setLink(embedLink);
   };
 
-  const onSubmit = async (formData: any) => {
+  const onSubmit = (data: any) => {
     const { exerciseName, exerciseType, musclesWorked, exerciseDescription } =
-      formData;
-    const finalFormData = {
+      data;
+    const finalData = {
       name: exerciseName || exercise?.name || "",
       injuryId: injuryDictionary[exerciseType] || exercise?.injuryId || "",
       musclesWorked: musclesWorked || exercise?.musclesWorked || "",
@@ -122,13 +160,23 @@ export default function EditExercise({ exerciseId }: Props) {
         "",
       videoLink: videoLink || exercise?.videoLink || "",
     };
-    const result = await CLIENT.put(
-      `${BASE_URL}/api/exercises/update/${exercise?.id}`,
-      finalFormData
-    );
-    if (result.status === 200) {
-      router.push(`/exercises/${exercise?.id}`);
-    }
+    setEditedData(finalData as ExerciseData);
+    setClicked(true);
+  };
+
+  const onSubmit2 = async () => {
+    // const result = await CLIENT.put(
+    //   `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+    //   finaldata
+    // );
+    // if (result.status === 200) {
+    //   router.push(`/exercises/${exercise?.id}`);
+    // }
+    console.log(editedData);
+  };
+
+  const handleClose = () => {
+    setClicked(false);
   };
 
   return (
@@ -250,6 +298,7 @@ export default function EditExercise({ exerciseId }: Props) {
         >
           Cancel
         </Link>
+
         <button
           type='submit'
           className='w-[20%] bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
@@ -257,6 +306,47 @@ export default function EditExercise({ exerciseId }: Props) {
           Submit
         </button>
       </div>
+      <Dialog
+        open={clicked}
+        onClose={handleClose}
+        PaperComponent={PaperComponent}
+        aria-labelledby='draggable-dialog-title'
+        fullWidth={true}
+      >
+        <DialogTitle style={{ cursor: "move" }} id='draggable-dialog-title'>
+          Who's making these changes
+        </DialogTitle>
+
+        <DialogContent>
+          <TextField
+            type='text'
+            disabled
+            value={clinic?.clinicName}
+            label='Clinic Name'
+            sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
+            {...register("clinicName")}
+          />
+          <TextField
+            type='text'
+            label='Editor Name'
+            sx={{ width: "100%", borderRadius: "10px", margin: "10px" }}
+            {...register("editorName")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          {saved ? (
+            <Alert severity='success'>Successfully Saved</Alert>
+          ) : (
+            <Button
+              onClick={onSubmit2}
+              className='bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white px-4 py-2'
+            >
+              Save
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     </form>
   );
 }

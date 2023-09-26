@@ -23,3 +23,4 @@ export interface ExerciseData {
   description: String;
   musclesWorked: String;
 }
+

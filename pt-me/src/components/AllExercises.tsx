@@ -171,9 +171,9 @@ export default function AllExercises() {
                               Edit
                             </Link>
                           </div>
-                          <h1 className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <button className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
                             Remove
-                          </h1>
+                          </button>
                         </Typography>
                       </Popover>
                     </div>
@@ -210,6 +210,7 @@ export default function AllExercises() {
   const displayAllExercises = exercises
     .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited, pagesVisited + exercisesPerPage)
+    .sort((a, b) => a.id - b.id)
     .map((exercise, i) => {
       return (
         <div key={i} className='p-2'>
@@ -244,9 +245,9 @@ export default function AllExercises() {
                               Edit
                             </Link>
                           </div>
-                          <h1 className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <button className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
                             Remove
-                          </h1>
+                          </button>
                         </Typography>
                       </Popover>
                     </div>
