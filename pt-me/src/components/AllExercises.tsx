@@ -62,6 +62,8 @@ export default function AllExercises() {
     getAllExercises();
   }, []);
 
+  console.log(exercises.sort((a, b) => a.id - b.id));
+
   const filterExercises = async (exerciseType: String) => {
     setSelected(exerciseType);
     setPageNumber(0);
@@ -135,6 +137,7 @@ export default function AllExercises() {
   const pagesVisited2 = pageNumber2 * exercisesPerPage;
 
   const displaySpecificExercise = specificExercise
+    .sort((a, b) => a.id - b.id)
     .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
     .map((exercise, i) => {
@@ -208,9 +211,9 @@ export default function AllExercises() {
     });
 
   const displayAllExercises = exercises
+    .sort((a, b) => a.id - b.id)
     .filter((ex) => ex.name.toLowerCase().includes(searchInput))
     .slice(pagesVisited, pagesVisited + exercisesPerPage)
-    .sort((a, b) => a.id - b.id)
     .map((exercise, i) => {
       return (
         <div key={i} className='p-2'>

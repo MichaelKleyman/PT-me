@@ -58,6 +58,12 @@ type Params = {
   params: Obj;
 };
 
+interface Credential {
+  ex_id: number;
+  clinicName: string;
+  editorName: string;
+}
+
 const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
 export default function SpecificExercise({ params }: Params) {
@@ -68,6 +74,7 @@ export default function SpecificExercise({ params }: Params) {
   const [ids, setIds] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
+  const [credential, setCredential] = useState<Credential>();
   const [exercise, setExercise] = useState<ExerciseData>({
     name: "",
     id: 0,
@@ -80,6 +87,25 @@ export default function SpecificExercise({ params }: Params) {
   });
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    dispatch(me());
+    const getExercise = async () => {
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/exercises/${params.id}`
+      );
+
+      setExercise(data);
+    };
+    const getExerciseCredentialsHistory = async () => {
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/exEditCredentials/credential-history/${params.id}`
+      );
+      setCredential(data[0]);
+    };
+    getExercise();
+    getExerciseCredentialsHistory();
+  }, []);
 
   const handleClose = () => {
     setClicked(false);
@@ -120,18 +146,6 @@ export default function SpecificExercise({ params }: Params) {
     }, 2500);
   };
 
-  useEffect(() => {
-    dispatch(me());
-    const getExercise = async () => {
-      const { data } = await CLIENT.get(
-        `${BASE_URL}/api/exercises/${params.id}`
-      );
-
-      setExercise(data);
-    };
-    getExercise();
-  }, []);
-
   const clickAssign = async () => {
     setClicked(true);
     setLoading(true);
@@ -164,6 +178,11 @@ export default function SpecificExercise({ params }: Params) {
           <h1 className='uppercase tracking-widest text-2xl font-medium'>
             {exercise?.name}
           </h1>
+          <p className='mt-2 text-[12px] text-gray-400'>
+            {credential
+              ? `Edited by ${credential?.editorName} from ${credential?.clinicName}`
+              : "No edits have been made to this exercise page"}
+          </p>
           <div className='mt-4'>
             <h1 className='underline text-green-500 my-2'>Description</h1>
             <p>{exercise?.description}</p>
