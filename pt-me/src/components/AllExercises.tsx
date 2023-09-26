@@ -167,14 +167,14 @@ export default function AllExercises() {
                         }}
                       >
                         <Typography sx={{ p: 2 }}>
-                          <div className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                             <Link
                               href={`/exercises/edit-exercise/${exercise.id}`}
                             >
                               Edit
                             </Link>
                           </div>
-                          <button className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                             Remove
                           </button>
                         </Typography>
@@ -192,7 +192,7 @@ export default function AllExercises() {
               </div>
               <Link
                 href={`/exercises/${exercise.id}`}
-                className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
+                className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
               >
                 View Exercise
               </Link>
@@ -241,14 +241,14 @@ export default function AllExercises() {
                         }}
                       >
                         <Typography sx={{ p: 2 }}>
-                          <div className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                             <Link
                               href={`/exercises/edit-exercise/${exercise.id}`}
                             >
                               Edit
                             </Link>
                           </div>
-                          <button className='my-2 m-2 duration-300 hover:scale-110 border border-green-500 p-2 rounded-lg cursor-pointer text-center'>
+                          <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                             Remove
                           </button>
                         </Typography>
@@ -266,7 +266,7 @@ export default function AllExercises() {
               </div>
               <Link
                 href={`/exercises/${exercise.id}`}
-                className='text-sm self-center border border-gray-200 text-gray-400 p-2 rounded-lg hover:text-white hover:bg-green-500 duration-300 hover:scale-110'
+                className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
               >
                 View Exercise
               </Link>
