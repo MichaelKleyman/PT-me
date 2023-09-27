@@ -173,6 +173,7 @@ router.put("/update-appointment/:patientId", async (req, res, next) => {
 router.put("/update/:patientId", async (req, res, next) => {
   try {
     console.log(req.body);
+    const typeOfInjuryId = typeof req.body["Injury Type"];
     const injuryOptions = [
       "Shoulders",
       "Back",
@@ -206,7 +207,10 @@ router.put("/update/:patientId", async (req, res, next) => {
         email: req.body.Email,
         reasonForVisit: req.body["Reason For Visit"],
         insurance: req.body.Insurance,
-        injuryId: injuryOptions.indexOf(req.body["Injury Type"]) + 1,
+        injuryId:
+          typeOfInjuryId === "string"
+            ? injuryOptions.indexOf(req.body["Injury Type"])
+            : req.body["Injury Type"],
       },
       {
         returning: true,
