@@ -172,6 +172,7 @@ router.put("/update-appointment/:patientId", async (req, res, next) => {
 //UPDATE a patients information
 router.put("/update/:patientId", async (req, res, next) => {
   try {
+    console.log(req.body);
     const injuryOptions = [
       "Shoulders",
       "Back",
@@ -204,7 +205,7 @@ router.put("/update/:patientId", async (req, res, next) => {
           req.body["Phone Number"].slice(6),
         email: req.body.Email,
         reasonForVisit: req.body["Reason For Visit"],
-        insurance: req.body.Insurance.value,
+        insurance: req.body.Insurance,
         injuryId: injuryOptions.indexOf(req.body["Injury Type"]) + 1,
       },
       {
