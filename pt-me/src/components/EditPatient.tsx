@@ -61,16 +61,41 @@ const injuryTypes = [
   "Gluteal",
 ];
 
+interface PayloadType {
+  id: number;
+  title: string;
+  address: string;
+  gender: string;
+  phoneNumber: string;
+  email: string;
+  reasonForVisit: string;
+  age: string;
+  injuryId: number;
+  insurance: string;
+  start?: Date | undefined;
+  end?: Date | undefined;
+}
+
 export default function EditPatient({ patientId }: Props) {
   const [patient, setPatient] = useState<Patient>();
+  const [insuranceOptionIndex, setInjuryIndex] = useState<number>();
   const dispatch = useDispatch<AppDispatch>();
   const { register, handleSubmit, control, formState } = useForm({
     mode: "all",
   });
   const router = useRouter();
+
   useEffect(() => {
     async function getPatient() {
-      const { payload } = await dispatch(fetchPatient(Number(patientId)));
+      const { payload } = (await dispatch(fetchPatient(Number(patientId)))) as {
+        payload: PayloadType; // Specify the type of 'payload'
+      };
+      for (let i = 0; i < insuranceOptions.length; i++) {
+        if (insuranceOptions[i].value === payload?.insurance) {
+          setInjuryIndex(i);
+          break;
+        }
+      }
       setPatient(payload as Patient);
     }
     getPatient();
@@ -137,16 +162,18 @@ export default function EditPatient({ patientId }: Props) {
     injuryTypeController.field.onChange(option.value);
   };
 
-  const patientAddress = patient?.address?.split(",")[0];
-  const patientState = patient?.address?.split(",")[1]?.split(" ")[1];
-  const patientCity = patient?.address?.split(",")[1]?.split(" ")[2];
-  const patientZipcode = patient?.address?.split(",")[2];
-
   const defaultInsurance = insuranceOptions.filter((option) => {
     if (option.value === patient?.insurance) {
       return option.value;
     }
   });
+
+  console.log(defaultInsurance);
+
+  const patientAddress = patient?.address?.split(",")[0];
+  const patientState = patient?.address?.split(",")[1]?.split(" ")[1];
+  const patientCity = patient?.address?.split(",")[1]?.split(" ")[2];
+  const patientZipcode = patient?.address?.split(",")[2];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mt-[2rem]'>
@@ -154,7 +181,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='First Name'
-          required
           defaultValue={patient?.title.split(" ")[0]}
           sx={styling}
           {...register(`First Name`, {
@@ -164,7 +190,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='Last Name'
-          required
           defaultValue={patient?.title.split(" ")[1]}
           sx={styling}
           {...register("Last Name", {
@@ -174,7 +199,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='number'
           label='Age'
-          required
           defaultValue={patient?.age}
           sx={styling}
           {...register(`Age`, {
@@ -184,7 +208,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='email'
           label='Email'
-          required
           defaultValue={patient?.email}
           sx={styling}
           {...register("Email", {
@@ -194,7 +217,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='number'
           label='Phone Number'
-          required
           defaultValue={patient?.phoneNumber.replace(/-/g, "")}
           sx={styling}
           {...register(`Phone Number`, {
@@ -204,7 +226,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='Address'
-          required
           defaultValue={patientAddress}
           sx={styling}
           {...register(`Address`, {
@@ -214,7 +235,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='City'
-          required
           defaultValue={patientCity}
           sx={styling}
           {...register(`City`, {
@@ -224,7 +244,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='State'
-          required
           defaultValue={patientState}
           sx={styling}
           {...register(`State`, {
@@ -232,9 +251,8 @@ export default function EditPatient({ patientId }: Props) {
           })}
         />
         <TextField
-          type='number'
+          type='text'
           label='Zipcode'
-          required
           defaultValue={patientZipcode}
           sx={styling}
           {...register(`Zipcode`, {
@@ -266,13 +284,17 @@ export default function EditPatient({ patientId }: Props) {
           name='Insurance'
           render={({ field }) => (
             <>
-              <Select
-                placeholder='Insurance'
-                defaultValue={defaultInsurance[0]}
-                options={insuranceOptions}
-                onChange={handleInsuranceSelectChange}
-                className='w-full rounded-lg m-[10px]'
-              />
+              {insuranceOptionIndex !== undefined ? (
+                <Select
+                  placeholder='Insurance'
+                  defaultValue={insuranceOptions[insuranceOptionIndex]}
+                  options={insuranceOptions}
+                  onChange={handleInsuranceSelectChange}
+                  className='w-full rounded-lg m-[10px]'
+                />
+              ) : (
+                <div>Loading...</div> // You can show a loading indicator until the value is available
+              )}
             </>
           )}
         />
@@ -293,7 +315,6 @@ export default function EditPatient({ patientId }: Props) {
         <TextField
           type='text'
           label='Reason For Visit'
-          required
           defaultValue={patient?.reasonForVisit}
           sx={styling}
           {...register(`Reason For Visit`, {
