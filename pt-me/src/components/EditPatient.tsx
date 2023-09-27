@@ -48,19 +48,6 @@ const insuranceOptions = [
   { value: "MetLife", label: "MetLife" },
 ];
 
-const injuryTypes = [
-  "All",
-  "Shoulders",
-  "Back",
-  "Knee",
-  "Hip",
-  "Neck",
-  "Wrist/Hand",
-  "Ankle/Foot",
-  "Abdominal",
-  "Gluteal",
-];
-
 interface PayloadType {
   id: number;
   title: string;
@@ -78,7 +65,8 @@ interface PayloadType {
 
 export default function EditPatient({ patientId }: Props) {
   const [patient, setPatient] = useState<Patient>();
-  const [insuranceOptionIndex, setInjuryIndex] = useState<number>();
+  const [insuranceOptionIndex, setInsuranceIndex] = useState<number>();
+  const [injuryOptionIndex, setInjuryIndex] = useState<number>();
   const dispatch = useDispatch<AppDispatch>();
   const { register, handleSubmit, control, formState } = useForm({
     mode: "all",
@@ -92,6 +80,15 @@ export default function EditPatient({ patientId }: Props) {
       };
       for (let i = 0; i < insuranceOptions.length; i++) {
         if (insuranceOptions[i].value === payload?.insurance) {
+          setInsuranceIndex(i);
+          break;
+        }
+      }
+      for (let i = 0; i < injuryTypeOptions.length; i++) {
+        if (
+          injuryTypeOptions[i].value ===
+          injuryTypeOptions[payload?.injuryId].value
+        ) {
           setInjuryIndex(i);
           break;
         }
@@ -136,7 +133,7 @@ export default function EditPatient({ patientId }: Props) {
         (genderOptions[0].value === patient?.gender
           ? genderOptions[1]
           : genderOptions[0]),
-      Insurance: formData.Insurance || defaultInsurance[0],
+      Insurance: formData.Insurance || defaultInsurance[0].value,
       "Injury Type": formData["Injury Type"] || patient?.injuryId || "",
       "Reason For Visit":
         formData["Reason For Visit"] || patient?.reasonForVisit || "",
@@ -167,8 +164,6 @@ export default function EditPatient({ patientId }: Props) {
       return option.value;
     }
   });
-
-  console.log(defaultInsurance);
 
   const patientAddress = patient?.address?.split(",")[0];
   const patientState = patient?.address?.split(",")[1]?.split(" ")[1];
@@ -303,12 +298,17 @@ export default function EditPatient({ patientId }: Props) {
           name='Injury Type'
           render={({ field }) => (
             <>
-              <Select
-                placeholder='Injury Type'
-                options={injuryTypeOptions}
-                onChange={handleInjuryTypeSelectChange}
-                className='w-full rounded-lg m-[10px]'
-              />
+              {injuryOptionIndex !== undefined ? (
+                <Select
+                  placeholder='Injury Type'
+                  defaultValue={injuryTypeOptions[injuryOptionIndex]}
+                  options={injuryTypeOptions}
+                  onChange={handleInjuryTypeSelectChange}
+                  className='w-full rounded-lg m-[10px]'
+                />
+              ) : (
+                <div>Loading...</div> // You can show a loading indicator until the value is available
+              )}
             </>
           )}
         />
