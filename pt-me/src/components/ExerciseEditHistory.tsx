@@ -14,9 +14,10 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   useEffect(() => {
     const getExerciseCredentialsHistory = async () => {
       const amountOfCredentials = "All";
-      const { data } = await CLIENT.get(
+      const { data } = await CLIENT.get<Credential[]>(
         `${BASE_URL}/api/exEditCredentials/credential-history/${exerciseId}/${amountOfCredentials}`
       );
+      console.log(data);
       setEditHistory(data);
     };
     getExerciseCredentialsHistory();
@@ -33,6 +34,9 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
             >
               <h1 className='text-lg font-bold'>{editor.clinicName}</h1>
               <p className='text-sm text-gray-400 mt-2'>{editor.editorName}</p>
+              <p className='text-center w-[30%] p-1 text-[10px] mt-2 border border-green-500 text-green-500'>
+                {new Date(editor.createdAt).toDateString()}
+              </p>
             </button>
           ))}
         </div>

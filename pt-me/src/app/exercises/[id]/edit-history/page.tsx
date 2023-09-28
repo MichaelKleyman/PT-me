@@ -30,7 +30,7 @@ export default function EditExerciseHistoryComponent({
           {exerciseName}
         </Link>
         <div>/</div>
-        <p className='text-sm'>Edit Exercise</p>
+        <p className='text-sm font-medium'>Edit Exercise</p>
       </div>
       <h1 className='ml-[4rem]'>Edit History For {exerciseName} </h1>
       <ExerciseEditHistory exerciseId={exerciseId} />

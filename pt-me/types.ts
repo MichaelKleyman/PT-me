@@ -29,4 +29,5 @@ export interface Credential {
   ex_id: number;
   clinicName: string;
   editorName: string;
+  createdAt: string;
 }
