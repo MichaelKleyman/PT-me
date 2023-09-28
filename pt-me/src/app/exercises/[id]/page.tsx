@@ -23,7 +23,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import { me } from "@/Redux/Features/auth/authSlice";
-import { ExerciseData, Patient } from "../../../../types";
+import { ExerciseData, Patient, Credential } from "../../../../types";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -57,12 +57,6 @@ type Obj = {
 type Params = {
   params: Obj;
 };
-
-interface Credential {
-  ex_id: number;
-  clinicName: string;
-  editorName: string;
-}
 
 const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
@@ -98,10 +92,11 @@ export default function SpecificExercise({ params }: Params) {
       setExercise(data);
     };
     const getExerciseCredentialsHistory = async () => {
+      const amountOfCredentials = "One";
       const { data } = await CLIENT.get(
-        `${BASE_URL}/api/exEditCredentials/credential-history/${params.id}`
+        `${BASE_URL}/api/exEditCredentials/credential-history/${params.id}/${amountOfCredentials}`
       );
-      setCredential(data[0]);
+      setCredential(data);
     };
     getExercise();
     getExerciseCredentialsHistory();

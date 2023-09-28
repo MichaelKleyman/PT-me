@@ -24,3 +24,9 @@ export interface ExerciseData {
   musclesWorked: String;
 }
 
+export interface Credential {
+  id: number;
+  ex_id: number;
+  clinicName: string;
+  editorName: string;
+}
