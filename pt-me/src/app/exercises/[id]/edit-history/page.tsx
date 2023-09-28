@@ -13,8 +13,8 @@ export default function EditExerciseHistoryComponent({
   const exerciseId = params.id;
 
   return (
-    <div className='mt-[1rem] ml-[2rem] p-4'>
-      <div className='flex text-center gap-2 ml-[4rem]'>
+    <div className='mt-[1rem] ml-[2rem]'>
+      <div className='flex text-center gap-2 ml-[4rem] p-4'>
         <Link
           href='/exercises'
           className='mb-5 text-sm text-gray-400 hover:underline duration-300 hover:scale-110 flex items-center gap-2'
@@ -32,7 +32,7 @@ export default function EditExerciseHistoryComponent({
         <div>/</div>
         <p className='text-sm font-medium'>Edit Exercise</p>
       </div>
-      <h1 className='ml-[4rem]'>Edit History For {exerciseName} </h1>
+      <h1 className='ml-[5rem]'>Edit History For {exerciseName} </h1>
       <ExerciseEditHistory exerciseId={exerciseId} />
     </div>
   );

@@ -31,3 +31,10 @@ export interface Credential {
   editorName: string;
   createdAt: string;
 }
+
+export interface Clinic {
+  id: number;
+  email: string;
+  clinicName: string;
+  address: string;
+}
