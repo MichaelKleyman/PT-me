@@ -178,11 +178,21 @@ export default function SpecificExercise({ params }: Params) {
           <h1 className='uppercase tracking-widest text-2xl font-medium'>
             {exercise?.name}
           </h1>
-          <p className='mt-2 text-[12px] text-gray-400'>
-            {credential
-              ? `Edited by ${credential?.editorName} from ${credential?.clinicName}`
-              : "No edits have been made to this exercise page"}
-          </p>
+          <div className='mt-2 text-[12px] text-gray-400'>
+            {credential ? (
+              <Link
+                href={{
+                  pathname: `/exercises/${exercise.id}/edit-history`,
+                  query: { name: `${exercise.name}` },
+                }}
+                className='hover:underline hover:cursor-pointer'
+              >
+                Edited by {credential?.editorName} from {credential?.clinicName}
+              </Link>
+            ) : (
+              "No edits have been made to this exercise page"
+            )}
+          </div>
           <div className='mt-4'>
             <h1 className='underline text-green-500 my-2'>Description</h1>
             <p>{exercise?.description}</p>
