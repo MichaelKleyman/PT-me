@@ -89,9 +89,14 @@ export default function EditExercise({ exerciseId }: Props) {
   const [tips, setTips] = useState<string[]>([]);
   const [newTip, setNewTip] = useState<string>("");
   const [editedData, setEditedData] = useState<ExerciseData>();
+  const [injuryOptionIndex, setInjuryIndex] = useState<number>();
   const [editorName, setEditorName] = useState<string>("");
+  const [editedFields, setEditedFields] = useState<[string, unknown][]>();
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, control, reset } = useForm({ mode: "all" });
+  const { register, handleSubmit, control, reset, watch, setValue } = useForm({
+    mode: "all",
+  });
+  const watchedFields = watch(); // Get all watched fields
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
@@ -102,6 +107,15 @@ export default function EditExercise({ exerciseId }: Props) {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${exerciseId}`
       );
+      for (let i = 0; i < exerciseTypeOptions.length; i++) {
+        if (
+          exerciseTypeOptions[i].value ===
+          exerciseTypeOptions[data?.injuryId].value
+        ) {
+          setInjuryIndex(i);
+          break;
+        }
+      }
       setExercise(data);
       setTips(data.tips.split(".").slice(0, -1));
     };
@@ -139,8 +153,15 @@ export default function EditExercise({ exerciseId }: Props) {
     const embedLink = `https://www.youtube.com/embed/${videoId}`;
     setLink(embedLink);
   };
+  console.log("Touched/Edited fields:", watchedFields);
 
   const onSubmit = (data: any) => {
+    console.log(watchedFields);
+    const edited = Object.entries(watchedFields).filter(
+      (field: any) => field[1]?.length > 1
+    );
+    console.log(edited);
+    // setEditedFields(edited);
     const { exerciseName, exerciseType, musclesWorked, exerciseDescription } =
       data;
     const finalData = {
@@ -168,18 +189,23 @@ export default function EditExercise({ exerciseId }: Props) {
 
   const onSubmit2 = async () => {
     if (editorName) {
-      const updateStatus = await CLIENT.put(
-        `${BASE_URL}/api/exercises/update/${exercise?.id}`,
-        editedData
-      );
+      // const updateStatus = await CLIENT.put(
+      //   `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+      //   editedData
+      // );
       const credentialStatus = await CLIENT.post(
         `${BASE_URL}/api/exEditCredentials/new-edit/${exercise?.id}`,
-        { clinicName: clinic?.clinicName, editorName }
+        {
+          clinicName: clinic?.clinicName,
+          editorName,
+          editedFields,
+          tips: editedData?.tips,
+        }
       );
-      if (updateStatus.status === 200 && credentialStatus.status === 200) {
-        router.push(`/exercises/${exercise?.id}`);
-        setError(null);
-      }
+      // if (updateStatus.status === 200 && credentialStatus.status === 200) {
+      //   router.push(`/exercises/${exercise?.id}`);
+      //   setError(null);
+      // }
     } else {
       setError("Please type editor name*");
     }
@@ -209,12 +235,16 @@ export default function EditExercise({ exerciseId }: Props) {
             name='exerciseType'
             render={({ field }) => (
               <>
-                <Select
-                  placeholder='Exercise Type'
-                  options={exerciseTypeOptions}
-                  onChange={handleExerciseTypeSelectChange}
-                  className='w-[90%] rounded-lg m-[10px] z-[50]'
-                />
+                {injuryOptionIndex !== undefined ? (
+                  <Select
+                    placeholder='Exercise Type'
+                    options={exerciseTypeOptions}
+                    onChange={handleExerciseTypeSelectChange}
+                    className='w-[90%] rounded-lg m-[10px] z-[50]'
+                  />
+                ) : (
+                  <div>Loading...</div> // You can show a loading indicator until the value is available
+                )}
               </>
             )}
           />

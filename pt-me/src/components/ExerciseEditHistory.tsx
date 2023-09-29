@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Credential, Clinic } from "../../types";
 import { CLIENT, BASE_URL } from "@/components/api";
+import { AiOutlineMail, AiOutlineEdit } from "react-icons/ai";
+import { BsPersonCheck } from "react-icons/bs";
 
 type Props = {
   exerciseId: number;
@@ -69,11 +71,29 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
           ))}
         </div>
       </div>
-      <div className=''>
-        <h1 className='text-[2rem] font-bold'>
-          {selectedClinic ? selectedClinic.clinicName : ""}
-        </h1>
-      </div>
+      {selectedClinic && (
+        <div className=' flex flex-col'>
+          <div>
+            <h1 className='text-[2rem] font-bold'>
+              {selectedClinic.clinicName}
+            </h1>
+            <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
+              <AiOutlineMail /> {selectedClinic.email}
+            </h3>
+            <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
+              <BsPersonCheck /> {selectEditor?.editorName}
+            </h3>
+            <p className='mt-2 text-gray-500 flex items-center gap-3'>
+              <AiOutlineEdit />
+              Latest edit made on
+              <span className='text-green-500'>
+                {new Date(selectEditor?.createdAt as string).toDateString()}
+              </span>
+            </p>
+          </div>
+          <div>m</div>
+        </div>
+      )}
     </div>
   );
 }
