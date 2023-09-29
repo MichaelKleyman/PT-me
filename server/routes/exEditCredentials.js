@@ -43,18 +43,33 @@ router.get(
 //POST a new person editing the exercise data
 router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
   try {
-    console.log(req.body);
-    const editedCredentials = await Exercise_Edited_Credentials.create({
-      ex_id: req.params.exerciseId,
-      clinicName: req.body.clinicName,
-      editorName: req.body.editorName,
+    const fieldNameTranslation = {
+      exerciseType: "Exercise Type",
+      exerciseName: "Exercise Name",
+      musclesWorked: "Muscles Worked",
+      exerciseDescription: "Exercise Description",
+      exerciseVideo: "Exercise Video Link",
+      tips: "Exercise Tips",
+    };
+    // console.log(">>>>>", req.body);
+    const allEditedData = [];
+    // console.log(fieldNameTranslation[req.body.editedFields[0][0]]);
+    req.body.editedFields.forEach((arrayElem) => {
+      const obj = { [fieldNameTranslation[arrayElem[0]]]: arrayElem[1] };
+      allEditedData.push(obj);
     });
-    if (!editedCredentials) {
-      return res
-        .status(404)
-        .send({ message: "Exercise credentials can't be added." });
-    }
-    return res.send(editedCredentials);
+    console.log(allEditedData);
+    // const editedCredentials = await Exercise_Edited_Credentials.create({
+    //   ex_id: req.params.exerciseId,
+    //   clinicName: req.body.clinicName,
+    //   editorName: req.body.editorName,
+    // });
+    // if (!editedCredentials) {
+    //   return res
+    //     .status(404)
+    //     .send({ message: "Exercise credentials can't be added." });
+    // }
+    // return res.send(editedCredentials);
   } catch (error) {
     console.error(error);
     next(error);
