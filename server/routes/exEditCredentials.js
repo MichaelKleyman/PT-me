@@ -49,12 +49,13 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
       musclesWorked: "Muscles Worked",
       exerciseDescription: "Exercise Description",
       exerciseVideo: "Exercise Video Link",
-      tips: "Exercise Tips",
+      exerciseTips: "Exercise Tips",
     };
-    // console.log(">>>>>", req.body);
+
+    const { editedFields } = req.body;
     const allEditedData = [];
-    // console.log(fieldNameTranslation[req.body.editedFields[0][0]]);
-    req.body.editedFields.forEach((arrayElem) => {
+
+    Object.entries(editedFields).forEach((arrayElem) => {
       const obj = { [fieldNameTranslation[arrayElem[0]]]: arrayElem[1] };
       allEditedData.push(obj);
     });
