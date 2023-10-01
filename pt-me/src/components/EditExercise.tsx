@@ -91,12 +91,12 @@ export default function EditExercise({ exerciseId }: Props) {
   const [editedData, setEditedData] = useState<ExerciseData>();
   const [injuryOptionIndex, setInjuryIndex] = useState<number>();
   const [editorName, setEditorName] = useState<string>("");
-  const [editedFields, setEditedFields] = useState<[string, unknown][]>();
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, control, reset, watch, setValue } = useForm({
+  const [editedFields, setEditedFields] = useState({});
+  const { register, handleSubmit, control, reset, setValue } = useForm({
     mode: "all",
   });
-  const watchedFields = watch(); // Get all watched fields
+
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
@@ -129,6 +129,7 @@ export default function EditExercise({ exerciseId }: Props) {
 
   const handleExerciseTypeSelectChange = (option: any) => {
     exerciseTypeController.field.onChange(option.value);
+    handleFieldChange("exerciseType", option.value);
   };
 
   const handleAddTip = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,6 +140,7 @@ export default function EditExercise({ exerciseId }: Props) {
     if (newTip.trim() !== "") {
       const tipToAdd = newTip.endsWith(".") ? newTip : newTip + ".";
       setTips([...tips, tipToAdd]); // Add the new tip to the list
+      handleFieldChange("exerciseTips", tipToAdd);
       reset(); // Clear the input field
     }
   };
@@ -153,15 +155,16 @@ export default function EditExercise({ exerciseId }: Props) {
     const embedLink = `https://www.youtube.com/embed/${videoId}`;
     setLink(embedLink);
   };
-  console.log("Touched/Edited fields:", watchedFields);
+
+  const handleFieldChange = (fieldName: string, value: string) => {
+    // Update the editedFields state with the edited field
+    setEditedFields({
+      ...editedFields,
+      [fieldName]: value,
+    });
+  };
 
   const onSubmit = (data: any) => {
-    console.log(watchedFields);
-    const edited = Object.entries(watchedFields).filter(
-      (field: any) => field[1]?.length > 1
-    );
-    console.log(edited);
-    // setEditedFields(edited);
     const { exerciseName, exerciseType, musclesWorked, exerciseDescription } =
       data;
     const finalData = {
@@ -229,6 +232,10 @@ export default function EditExercise({ exerciseId }: Props) {
             defaultValue={exercise?.name}
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
             {...register("exerciseName")}
+            onChange={(e) => {
+              // Call the handleFieldChange function to track the edited field
+              handleFieldChange("exerciseName", e.target.value);
+            }}
           />
           <Controller
             control={control}
@@ -254,6 +261,10 @@ export default function EditExercise({ exerciseId }: Props) {
             label='Muscles Worked'
             sx={{ width: "90%", borderRadius: "10px", margin: "10px" }}
             {...register("musclesWorked")}
+            onChange={(e) => {
+              // Call the handleFieldChange function to track the edited field
+              handleFieldChange("musclesWorked", e.target.value);
+            }}
           />
         </div>
         <TextField
@@ -263,6 +274,10 @@ export default function EditExercise({ exerciseId }: Props) {
           defaultValue={exercise?.description}
           sx={styling}
           {...register("exerciseDescription")}
+          onChange={(e) => {
+            // Call the handleFieldChange function to track the edited field
+            handleFieldChange("exerciseDescription", e.target.value);
+          }}
           label='Exercise Description'
         />
       </div>
@@ -311,6 +326,10 @@ export default function EditExercise({ exerciseId }: Props) {
             {...register("exerciseVideo", {
               onChange: (e) => handleVideoLink(e),
             })}
+            onChange={(e) => {
+              // Call the handleFieldChange function to track the edited field
+              handleFieldChange("exerciseVideo", e.target.value);
+            }}
           />
           {/* https://www.youtube.com/embed/TGmnvU2Tc-c?si=43l58nE-f3qfmd-_ */}
           {/* https://www.youtube.com/watch?v=TGmnvU2Tc-c */}
