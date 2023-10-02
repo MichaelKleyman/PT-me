@@ -5,6 +5,7 @@ import { Credential, Clinic } from "../../types";
 import { CLIENT, BASE_URL } from "@/components/api";
 import { AiOutlineMail, AiOutlineEdit } from "react-icons/ai";
 import { BsPersonCheck } from "react-icons/bs";
+import { FaArrowRight } from "react-icons/fa";
 
 type Props = {
   exerciseId: number;
@@ -38,8 +39,6 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     getSpecificClinic();
   };
 
-  console.log(selectEditor);
-
   return (
     <div className='flex ml-[2rem] gap-8'>
       <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
@@ -67,8 +66,8 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       </div>
       {selectedClinic && (
         <div className='w-[70%]'>
-          <div className='flex gap-[4rem]'>
-            <div className='border-r-[0.5px] border-gray-400 pr-8 h-[20%]'>
+          <div className='flex gap-[1rem]'>
+            <div className='flex-grow border-r-[0.5px] border-gray-400'>
               <h1 className='text-[2rem] font-bold'>
                 {selectedClinic.clinicName}
               </h1>
@@ -86,24 +85,36 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
                 </span>
               </p>
             </div>
-            <div className='w-[50%]'>
+            <div className='w-[55%] mr-[3rem] p-3'>
               <h1 className='font-medium text-[1.2rem]'>Changes made:</h1>
-              <div className='mt-6'>
-                <div className='grid lg:grid-cols-2 font-medium mb-4 underline'>
-                  <h1>Previous</h1>
-                  <h1>Updated</h1>
+              <div className='font-medium mt-4 underline flex justify-around'>
+                <h1>Previous</h1>
+                <h1>Updated</h1>
+              </div>
+              <div className='mt-6 grid lg:grid-cols-3'>
+                <div>
+                  {selectEditor?.editedFields.map((field, i) => (
+                    <div key={i} className='text-[14px]'>
+                      <p className='text-gray-400'>
+                        {Object.entries(field)[0][0]}
+                      </p>
+                      <p>{Object.entries(field)[0][1]}</p>
+                    </div>
+                  ))}
                 </div>
-                {selectEditor?.editedFields.map((field, i) => (
-                  <div key={i} className='grid lg:grid-cols-2'>
-                    {Object.entries(field).map((innerField, j) => (
-                      <div key={j} className='text-[14px]'>
-                        <p className='text-gray-400'>{innerField[0]}</p>
-
-                        <p>{innerField[1]}</p>
-                      </div>
-                    ))}
-                  </div>
-                ))}
+                <div className='flex items-center justify-center'>
+                  <FaArrowRight color='green' />
+                </div>
+                <div>
+                  {selectEditor?.editedFields.map((field, i) => (
+                    <div key={i} className='text-[14px]'>
+                      <p className='text-gray-400'>
+                        {Object.entries(field)[1][0]}
+                      </p>
+                      <p>{Object.entries(field)[1][1]}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -114,14 +125,17 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   );
 }
 
+const elem = [
+  {
+    "Old Exercise Name": "Pendulum",
+    "Exercise Name": "Pendulumm",
+  },
+];
+console.log(Object.entries(elem[0])[0]);
+
 // editedFields: [
 //   {
-//     'Muscles Worked': 'Posterior deltoid, Traps',
-//     'Old Muscles Worked': 'Posterior deltoid'
+//     'Exercise Name': 'Pendulumm',
+//     'Old Exercise Name': 'Pendulum'
 //   },
-//   {
-//     'Exercise Tips': 'Feel the stretch.',
-//     'Old Exercise Tips':
-//       'Do not pull or put pressure on your elbow. Feel the stretch.'
-//   }
 // ]
