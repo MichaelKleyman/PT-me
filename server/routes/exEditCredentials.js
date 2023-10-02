@@ -13,12 +13,12 @@ router.get(
           },
           order: [["createdAt", "DESC"]], //Latest edits to oldest edits
         });
-        if (!credential) {
-          return res
-            .status(404)
-            .send({ message: "Credential cant be fetched" });
+        console.log(credential);
+        if (credential) {
+          return res.send(credential);
+        } else {
+          console.error("Credential cannot be fetched");
         }
-        return res.send(credential);
       } else {
         const credential = await Exercise_Edited_Credentials.findAll({
           where: {
@@ -26,12 +26,12 @@ router.get(
           },
           order: [["createdAt", "DESC"]], //Latest edits to oldest edits
         });
-        if (!credential) {
-          return res
-            .status(404)
-            .send({ message: "Credentials cant be fetched" });
+
+        if (credential) {
+          return res.send(credential);
+        } else {
+          console.error("Credentials cannot be fetched");
         }
-        return res.send(credential);
       }
     } catch (error) {
       console.error(error);
@@ -43,6 +43,18 @@ router.get(
 //POST a new person editing the exercise data
 router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
   try {
+    const injuryOptions = [
+      "",
+      "Shoulders",
+      "Back",
+      "Knee",
+      "Hip",
+      "Neck",
+      "Wrist/Hand",
+      "Ankle/Foot",
+      "Abdominal",
+      "Gluteal",
+    ];
     const fieldNameTranslation = {
       exerciseType: "Exercise Type",
       exerciseName: "Exercise Name",
@@ -52,25 +64,49 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
       exerciseTips: "Exercise Tips",
     };
 
-    const { editedFields } = req.body;
+    const databaseNameMap = {
+      exerciseType: "injuryId",
+      exerciseName: "name",
+      musclesWorked: "musclesWorked",
+      exerciseDescription: "description",
+      exerciseVideo: "videoLink",
+      exerciseTips: "tips",
+    };
+
+    const { editedFields, currentExercise } = req.body;
+    console.log(editedFields);
+    console.log(currentExercise);
+
     const allEditedData = [];
 
+    //first KV pair is the updated fields, second KV pair is the previous fields
     Object.entries(editedFields).forEach((arrayElem) => {
-      const obj = { [fieldNameTranslation[arrayElem[0]]]: arrayElem[1] };
+      const obj = {
+        [`Old ${fieldNameTranslation[arrayElem[0]]}`]:
+          databaseNameMap[arrayElem[0]] === "injuryId"
+            ? injuryOptions[currentExercise[databaseNameMap[arrayElem[0]]]]
+            : databaseNameMap[arrayElem[0]] === "tips"
+            ? `${currentExercise[databaseNameMap[arrayElem[0]]]} ${
+                arrayElem[1]
+              }`
+            : currentExercise[databaseNameMap[arrayElem[0]]],
+        [fieldNameTranslation[arrayElem[0]]]: arrayElem[1],
+      };
       allEditedData.push(obj);
     });
     console.log(allEditedData);
-    // const editedCredentials = await Exercise_Edited_Credentials.create({
-    //   ex_id: req.params.exerciseId,
-    //   clinicName: req.body.clinicName,
-    //   editorName: req.body.editorName,
-    // });
-    // if (!editedCredentials) {
-    //   return res
-    //     .status(404)
-    //     .send({ message: "Exercise credentials can't be added." });
-    // }
-    // return res.send(editedCredentials);
+    const editedCredentials = await Exercise_Edited_Credentials.create({
+      ex_id: req.params.exerciseId,
+      clinicName: req.body.clinicName,
+      editorName: req.body.editorName,
+      editedFields: allEditedData,
+    });
+    if (!editedCredentials) {
+      return res
+        .status(404)
+        .send({ message: "Exercise credentials can't be added." });
+    }
+    return res.send(editedCredentials);
   } catch (error) {
     console.error(error);
     next(error);
