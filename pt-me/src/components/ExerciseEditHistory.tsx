@@ -35,21 +35,15 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       );
       setClinic(data);
     };
-    // const getExerciseCredentialHistory = async () => {
-    //   const amountOfCredentials = "One";
-    //   const { data } = await CLIENT.get<Credential>(
-    //     `${BASE_URL}/api/exEditCredentials/credential-history/${exerciseId}/${amountOfCredentials}`
-    //   );
-    //   setEditor(data);
-    // };
-    // getExerciseCredentialHistory();
     getSpecificClinic();
   };
 
+  console.log(selectEditor);
+
   return (
     <div className='flex ml-[2rem] gap-8'>
-      <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between'>
-        <div className='mt-3 overflow-y-scroll'>
+      <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
+        <div className='mt-3'>
           {editHistory?.map((editor) => (
             <button
               onClick={() => handleSelectEditor(editor)}
@@ -72,28 +66,62 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
         </div>
       </div>
       {selectedClinic && (
-        <div className=' flex flex-col'>
-          <div>
-            <h1 className='text-[2rem] font-bold'>
-              {selectedClinic.clinicName}
-            </h1>
-            <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
-              <AiOutlineMail /> {selectedClinic.email}
-            </h3>
-            <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
-              <BsPersonCheck /> {selectEditor?.editorName}
-            </h3>
-            <p className='mt-2 text-gray-500 flex items-center gap-3'>
-              <AiOutlineEdit />
-              Latest edit made on
-              <span className='text-green-500'>
-                {new Date(selectEditor?.createdAt as string).toDateString()}
-              </span>
-            </p>
+        <div className='w-[70%]'>
+          <div className='flex gap-[4rem]'>
+            <div className='border-r-[0.5px] border-gray-400 pr-8 h-[20%]'>
+              <h1 className='text-[2rem] font-bold'>
+                {selectedClinic.clinicName}
+              </h1>
+              <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
+                <AiOutlineMail /> {selectedClinic.email}
+              </h3>
+              <h3 className='mt-2 text-gray-500 flex items-center gap-3'>
+                <BsPersonCheck /> {selectEditor?.editorName}
+              </h3>
+              <p className='mt-2 text-gray-500 flex items-center gap-3'>
+                <AiOutlineEdit />
+                Latest edit made on
+                <span className='text-green-500'>
+                  {new Date(selectEditor?.createdAt as string).toDateString()}
+                </span>
+              </p>
+            </div>
+            <div className='w-[50%]'>
+              <h1 className='font-medium text-[1.2rem]'>Changes made:</h1>
+              <div className='mt-6'>
+                <div className='grid lg:grid-cols-2 font-medium mb-4 underline'>
+                  <h1>Previous</h1>
+                  <h1>Updated</h1>
+                </div>
+                {selectEditor?.editedFields.map((field, i) => (
+                  <div key={i} className='grid lg:grid-cols-2'>
+                    {Object.entries(field).map((innerField, j) => (
+                      <div key={j} className='text-[14px]'>
+                        <p className='text-gray-400'>{innerField[0]}</p>
+
+                        <p>{innerField[1]}</p>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div>m</div>
+          <div className='mt-5'>wjkgwje</div>
         </div>
       )}
     </div>
   );
 }
+
+// editedFields: [
+//   {
+//     'Muscles Worked': 'Posterior deltoid, Traps',
+//     'Old Muscles Worked': 'Posterior deltoid'
+//   },
+//   {
+//     'Exercise Tips': 'Feel the stretch.',
+//     'Old Exercise Tips':
+//       'Do not pull or put pressure on your elbow. Feel the stretch.'
+//   }
+// ]

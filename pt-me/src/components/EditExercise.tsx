@@ -192,23 +192,24 @@ export default function EditExercise({ exerciseId }: Props) {
 
   const onSubmit2 = async () => {
     if (editorName) {
-      // const updateStatus = await CLIENT.put(
-      //   `${BASE_URL}/api/exercises/update/${exercise?.id}`,
-      //   editedData
-      // );
+      const updateStatus = await CLIENT.put(
+        `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+        editedData
+      );
       const credentialStatus = await CLIENT.post(
         `${BASE_URL}/api/exEditCredentials/new-edit/${exercise?.id}`,
         {
           clinicName: clinic?.clinicName,
           editorName,
           editedFields,
+          currentExercise: exercise,
           tips: editedData?.tips,
         }
       );
-      // if (updateStatus.status === 200 && credentialStatus.status === 200) {
-      //   router.push(`/exercises/${exercise?.id}`);
-      //   setError(null);
-      // }
+      if (updateStatus.status === 200 && credentialStatus.status === 200) {
+        router.push(`/exercises/${exercise?.id}`);
+        setError(null);
+      }
     } else {
       setError("Please type editor name*");
     }

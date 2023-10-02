@@ -29,6 +29,7 @@ export interface Credential {
   ex_id: number;
   clinicName: string;
   editorName: string;
+  editedFields: { [fieldName: string]: string }[];
   createdAt: string;
 }
 
