@@ -9,6 +9,7 @@ import { FaArrowRight } from "react-icons/fa";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import { Button } from "@mui/material";
 
 type Props = {
   exerciseId: number;
@@ -18,6 +19,8 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   const [editHistory, setEditHistory] = useState<Credential[]>([]);
   const [selectEditor, setSelected] = useState<Credential>();
   const [selectedClinic, setClinic] = useState<Clinic>();
+  const [newComment, setNewComment] = useState<string>();
+  const [comments, setComments] = useState<string[]>([]);
 
   useEffect(() => {
     const getExerciseCredentialsHistory = async () => {
@@ -33,7 +36,6 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   const handleSelectEditor = (editor: Credential) => {
     setSelected(editor);
     const getSpecificClinic = async () => {
-      console.log(editor?.clinicName);
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/clinic/${editor?.clinicName}`
       );
@@ -70,6 +72,18 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     };
   }
 
+  const handleNewComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewComment(e.target.value);
+  };
+
+  const submitComment = async () => {
+    await CLIENT.post(
+      `${BASE_URL}/api/exEditCredentials/comment/${selectEditor?.id}`,
+      { comment: newComment }
+    );
+    setNewComment("");
+  };
+
   return (
     <div className='flex ml-[2rem] '>
       <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
@@ -97,7 +111,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       </div>
       {selectedClinic && (
         <div className='w-[70%]'>
-          <div className='flex gap-[1rem] shadow-lg shadow-gray-400 rounded-lg p-5'>
+          <div className='max-h-[250px] overflow-y-scroll flex gap-[1rem] shadow-lg shadow-gray-400 rounded-lg p-5'>
             <div className='flex-grow border-r-[0.5px] border-gray-400'>
               <h1 className='text-[2rem] font-bold'>
                 {selectedClinic.clinicName}
@@ -149,8 +163,8 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
               </div>
             </div>
           </div>
-          <div className='mt-6 m-5'>
-            <h2 className='mb-2'>0 Comments</h2>
+          <div className='mt-6 m-5 overflow-y-scroll'>
+            <h2 className='mb-4'>{selectEditor?.comments?.length} Comments</h2>
             <div className='flex gap-6'>
               <Stack direction='row' spacing={2}>
                 <Avatar
@@ -167,8 +181,17 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
                 label='Add a comment'
                 variant='standard'
                 fullWidth
+                value={newComment}
+                onChange={handleNewComment}
               />
             </div>
+            <Button onClick={submitComment} className='absolute right-3'>
+              Comment
+            </Button>
+            {selectEditor?.comments &&
+              selectEditor?.comments.map((comment, i) => (
+                <p key={i}>{comment}</p>
+              ))}
           </div>
         </div>
       )}
