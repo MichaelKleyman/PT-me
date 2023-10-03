@@ -6,6 +6,9 @@ import { CLIENT, BASE_URL } from "@/components/api";
 import { AiOutlineMail, AiOutlineEdit } from "react-icons/ai";
 import { BsPersonCheck } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
+import TextField from "@mui/material/TextField";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 
 type Props = {
   exerciseId: number;
@@ -39,8 +42,36 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     getSpecificClinic();
   };
 
+  function stringToColor(string: string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+  function stringAvatar(name: string) {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
+    };
+  }
+
   return (
-    <div className='flex ml-[2rem] gap-8'>
+    <div className='flex ml-[2rem] '>
       <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
         <div className='mt-3'>
           {editHistory?.map((editor) => (
@@ -66,7 +97,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       </div>
       {selectedClinic && (
         <div className='w-[70%]'>
-          <div className='flex gap-[1rem]'>
+          <div className='flex gap-[1rem] shadow-lg shadow-gray-400 rounded-lg p-5'>
             <div className='flex-grow border-r-[0.5px] border-gray-400'>
               <h1 className='text-[2rem] font-bold'>
                 {selectedClinic.clinicName}
@@ -118,24 +149,29 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
               </div>
             </div>
           </div>
-          <div className='mt-5'>wjkgwje</div>
+          <div className='mt-6 m-5'>
+            <h2 className='mb-2'>0 Comments</h2>
+            <div className='flex gap-6'>
+              <Stack direction='row' spacing={2}>
+                <Avatar
+                  {...stringAvatar(selectedClinic.clinicName)}
+                  sx={{
+                    width: 56,
+                    height: 56,
+                    bgcolor: `${stringToColor(selectedClinic.clinicName)}`,
+                  }}
+                />
+              </Stack>
+              <TextField
+                id='standard-basic'
+                label='Add a comment'
+                variant='standard'
+                fullWidth
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
-
-const elem = [
-  {
-    "Old Exercise Name": "Pendulum",
-    "Exercise Name": "Pendulumm",
-  },
-];
-console.log(Object.entries(elem[0])[0]);
-
-// editedFields: [
-//   {
-//     'Exercise Name': 'Pendulumm',
-//     'Old Exercise Name': 'Pendulum'
-//   },
-// ]
