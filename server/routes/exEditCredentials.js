@@ -74,26 +74,27 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
     };
 
     const { editedFields, currentExercise } = req.body;
-    console.log(editedFields);
-    console.log(currentExercise);
-
     const allEditedData = [];
 
-    //first KV pair is the updated fields, second KV pair is the previous fields
+    //first KV pair is the previous fields, second KV pair is the updated fields
     Object.entries(editedFields).forEach((arrayElem) => {
       const obj = {
         [`Old ${fieldNameTranslation[arrayElem[0]]}`]:
           databaseNameMap[arrayElem[0]] === "injuryId"
             ? injuryOptions[currentExercise[databaseNameMap[arrayElem[0]]]]
             : databaseNameMap[arrayElem[0]] === "tips"
-            ? `${currentExercise[databaseNameMap[arrayElem[0]]]} ${
-                arrayElem[1]
+            ? `${currentExercise[databaseNameMap[arrayElem[0]]]}
               }`
             : currentExercise[databaseNameMap[arrayElem[0]]],
-        [fieldNameTranslation[arrayElem[0]]]: arrayElem[1],
+        [fieldNameTranslation[arrayElem[0]]]:
+          databaseNameMap[arrayElem[0]] === "tips"
+            ? `${currentExercise[databaseNameMap[arrayElem[0]]]}
+      } ${arrayElem[1]}`
+            : arrayElem[1],
       };
       allEditedData.push(obj);
     });
+
     console.log(allEditedData);
     const editedCredentials = await Exercise_Edited_Credentials.create({
       ex_id: req.params.exerciseId,
@@ -107,6 +108,25 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
         .send({ message: "Exercise credentials can't be added." });
     }
     return res.send(editedCredentials);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//POST a comment for the specific exercise
+router.post("/comment/:id", async (req, res, next) => {
+  try {
+    console.log(req.body);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//GET all comments for the specific exercise
+router.get("/comments/:id", async (req, res, next) => {
+  try {
   } catch (error) {
     console.error(error);
     next(error);

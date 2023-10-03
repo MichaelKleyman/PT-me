@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       clinicName: DataTypes.STRING,
       editorName: DataTypes.STRING,
       editedFields: DataTypes.ARRAY(DataTypes.JSON),
+      comments: DataTypes.ARRAY(DataTypes.JSON),
     },
     {
       sequelize,

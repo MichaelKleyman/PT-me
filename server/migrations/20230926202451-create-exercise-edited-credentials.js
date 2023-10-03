@@ -24,6 +24,9 @@ module.exports = {
         type: Sequelize.ARRAY(Sequelize.JSON),
         allowNull: false,
       },
+      comments: {
+        type: Sequelize.ARRAY(Sequelize.JSON),
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
