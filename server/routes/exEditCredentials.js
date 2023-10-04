@@ -118,15 +118,30 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
 router.post("/comment/:id", async (req, res, next) => {
   try {
     console.log(req.body);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+    const credential = await Exercise_Edited_Credentials.findByPk(
+      req.params.id
+    );
+    if (!credential) {
+      return res.status(404).json({ message: "Record not found" });
+    }
 
-//GET all comments for the specific exercise
-router.get("/comments/:id", async (req, res, next) => {
-  try {
+    // Add the new comment to the comment array
+    if (credential.comments === null) {
+      credential.comments = [
+        { comment: req.body.comment, clinicName: req.body.clinicName },
+      ];
+      await credential.save();
+      return res.status(200).json({ message: "Comment added successfully" });
+    }
+    const newComments = [
+      ...credential.comments,
+      { comment: req.body.comment, clinicName: req.body.clinicName },
+    ];
+    credential.comments = newComments;
+    await credential.save();
+    return res
+      .status(200)
+      .json({ message: "Comment added successfully", comments: newComments });
   } catch (error) {
     console.error(error);
     next(error);
