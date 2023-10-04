@@ -30,7 +30,7 @@ export interface Credential {
   clinicName: string;
   editorName: string;
   editedFields: { [fieldName: string]: string }[];
-  comments: string[];
+  comments: { comment: string; clinicName: string }[];
   createdAt: string;
 }
 

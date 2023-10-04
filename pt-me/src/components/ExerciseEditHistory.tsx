@@ -10,6 +10,8 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { Button } from "@mui/material";
+import type { RootState } from "@/Redux/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   exerciseId: number;
@@ -19,8 +21,11 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   const [editHistory, setEditHistory] = useState<Credential[]>([]);
   const [selectEditor, setSelected] = useState<Credential>();
   const [selectedClinic, setClinic] = useState<Clinic>();
-  const [newComment, setNewComment] = useState<string>();
-  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState<string>("");
+  const [comments, setComments] = useState<
+    { comment: string; clinicName: string }[]
+  >([]);
+  const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const getExerciseCredentialsHistory = async () => {
@@ -35,6 +40,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
 
   const handleSelectEditor = (editor: Credential) => {
     setSelected(editor);
+    setComments(editor.comments);
     const getSpecificClinic = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/clinic/${editor?.clinicName}`
@@ -77,10 +83,11 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
   };
 
   const submitComment = async () => {
-    await CLIENT.post(
+    const { data } = await CLIENT.post(
       `${BASE_URL}/api/exEditCredentials/comment/${selectEditor?.id}`,
-      { comment: newComment }
+      { comment: newComment, clinicName: clinic?.clinicName }
     );
+    setComments(data.comments);
     setNewComment("");
   };
 
@@ -163,35 +170,56 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
               </div>
             </div>
           </div>
-          <div className='mt-6 m-5 overflow-y-scroll'>
-            <h2 className='mb-4'>{selectEditor?.comments?.length} Comments</h2>
-            <div className='flex gap-6'>
-              <Stack direction='row' spacing={2}>
-                <Avatar
-                  {...stringAvatar(selectedClinic.clinicName)}
-                  sx={{
-                    width: 56,
-                    height: 56,
-                    bgcolor: `${stringToColor(selectedClinic.clinicName)}`,
-                  }}
+          <div className='mt-6 m-5 h-[50%] overflow-y-scroll'>
+            <div>
+              <h2 className='mb-4'>{comments?.length} Comments</h2>
+              <div className='flex gap-6'>
+                <Stack direction='row' spacing={2}>
+                  <Avatar
+                    {...stringAvatar(selectedClinic.clinicName)}
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      bgcolor: `${stringToColor(selectedClinic.clinicName)}`,
+                    }}
+                  />
+                </Stack>
+                <TextField
+                  id='standard-basic'
+                  label='Add a comment'
+                  variant='standard'
+                  fullWidth
+                  value={newComment}
+                  onChange={handleNewComment}
                 />
-              </Stack>
-              <TextField
-                id='standard-basic'
-                label='Add a comment'
-                variant='standard'
-                fullWidth
-                value={newComment}
-                onChange={handleNewComment}
-              />
+              </div>
+              <Button onClick={submitComment} className='absolute right-3'>
+                Comment
+              </Button>
             </div>
-            <Button onClick={submitComment} className='absolute right-3'>
-              Comment
-            </Button>
-            {selectEditor?.comments &&
-              selectEditor?.comments.map((comment, i) => (
-                <p key={i}>{comment}</p>
-              ))}
+            <div className='m-8'>
+              {comments ? (
+                comments.map((elem, i) => (
+                  <div key={i} className='py-3 flex items-center gap-4'>
+                    <Stack direction='row' spacing={2}>
+                      <Avatar
+                        {...stringAvatar(elem.clinicName)}
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          bgcolor: `${stringToColor(elem.clinicName)}`,
+                        }}
+                      />
+                    </Stack>
+                    <p>{elem.comment}</p>
+                  </div>
+                ))
+              ) : (
+                <div className='flex items-center justify-center mt-[3rem]'>
+                  No comments yet
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
