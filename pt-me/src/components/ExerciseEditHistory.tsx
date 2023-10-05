@@ -93,7 +93,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
 
   return (
     <div className='flex ml-[2rem] '>
-      <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
+      <div className='w-[450px] max-h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
         <div className='mt-3'>
           {editHistory?.map((editor) => (
             <button
@@ -170,7 +170,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
               </div>
             </div>
           </div>
-          <div className='mt-6 m-5 h-[50%] overflow-y-scroll'>
+          <div className='mt-6 m-5'>
             <div>
               <h2 className='mb-4'>{comments?.length} Comments</h2>
               <div className='flex gap-6'>
@@ -197,10 +197,13 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
                 Comment
               </Button>
             </div>
-            <div className='m-8'>
+            <div className='m-8 h-[250px] overflow-y-scroll shadow-sm shadow-gray-400 rounded-lg p-3'>
               {comments ? (
                 comments.map((elem, i) => (
-                  <div key={i} className='py-3 flex items-center gap-4'>
+                  <div
+                    key={i}
+                    className='py-3 flex items-center gap-4 border-b-[0.5px]'
+                  >
                     <Stack direction='row' spacing={2}>
                       <Avatar
                         {...stringAvatar(elem.clinicName)}
