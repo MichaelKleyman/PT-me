@@ -310,7 +310,12 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
               <div>
                 <div>
                   {events
-                    ?.filter((patient) => !patient?.start || !patient?.end)
+                    ?.filter(
+                      (patient) =>
+                        !patient?.start ||
+                        !patient?.end ||
+                        patient?.start < new Date()
+                    )
                     .map((patient, index) => (
                       <div
                         key={patient?.id}
