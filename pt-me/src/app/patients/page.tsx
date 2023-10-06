@@ -11,36 +11,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import { IoMdAddCircle } from "react-icons/io";
 import { me } from "../../Redux/Features/auth/authSlice";
-
-interface PatientData {
-  id: number;
-  title: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  reasonForVisit: string;
-  age: string;
-  injuryId: number;
-  insurance: string;
-  start?: Date | undefined;
-  end?: Date | undefined;
-}
+import { Patient } from "../../../types";
 
 export default function AllPatients() {
-  const [patients, setPatients] = useState<PatientData[]>();
+  const [patients, setPatients] = useState<Patient[]>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
-    dispatch(me());
-    async function getPatients() {
-      const { payload } = await dispatch(fetchAllPatients(clinic?.id));
-      const arrayToSort = [...(payload as PatientData[])];
-      const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
-      setPatients(sortedPayload as PatientData[]);
+    if (clinic?.id) {
+      // If clinic data is available, fetch the patients
+      async function getPatients() {
+        const { payload } = await dispatch(fetchAllPatients(clinic.id));
+        const arrayToSort = [...(payload as Patient[])];
+        const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
+        setPatients(sortedPayload);
+      }
+      getPatients();
     }
-    getPatients();
-  }, []);
+  }, [clinic]);
 
   function stringToColor(string: string) {
     let hash = 0;

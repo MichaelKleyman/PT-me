@@ -62,8 +62,6 @@ export default function AllExercises() {
     getAllExercises();
   }, []);
 
-  console.log(exercises.sort((a, b) => a.id - b.id));
-
   const filterExercises = async (exerciseType: String) => {
     setSelected(exerciseType);
     setPageNumber(0);

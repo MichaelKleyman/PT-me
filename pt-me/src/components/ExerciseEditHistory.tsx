@@ -200,21 +200,29 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
             <div className='m-8 lg:h-[250px] xl:h-[320px] overflow-y-scroll shadow-sm shadow-gray-400 rounded-lg p-3'>
               {comments ? (
                 comments.map((elem, i) => (
-                  <div
-                    key={i}
-                    className='py-3 flex items-center gap-4 border-b-[0.5px]'
-                  >
-                    <Stack direction='row' spacing={2}>
-                      <Avatar
-                        {...stringAvatar(elem.clinicName)}
-                        sx={{
-                          width: 56,
-                          height: 56,
-                          bgcolor: `${stringToColor(elem.clinicName)}`,
-                        }}
-                      />
-                    </Stack>
-                    <p>{elem.comment}</p>
+                  <div key={i} className='border-b-[0.5px]'>
+                    <div className='py-3 flex items-center gap-4'>
+                      <Stack direction='row' spacing={2}>
+                        <Avatar
+                          {...stringAvatar(elem.clinicName)}
+                          sx={{
+                            width: 56,
+                            height: 56,
+                            bgcolor: `${stringToColor(elem.clinicName)}`,
+                          }}
+                        />
+                      </Stack>
+                      <p>{elem.comment}</p>
+                    </div>
+                    <div className='ml-4 text-gray-400 text-sm'>
+                      {elem.clinicName === clinic.clinicName ? (
+                        "You"
+                      ) : (
+                        <p className='hover:underline cursor-pointer'>
+                          {elem.clinicName}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ))
               ) : (

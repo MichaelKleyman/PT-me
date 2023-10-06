@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './Features/auth/authSlice';
-import patientReducer from './Features/patients/patientSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./Features/auth/authSlice";
+import patientReducer from "./Features/patients/patientSlice";
 
 export const store = configureStore({
   reducer: {

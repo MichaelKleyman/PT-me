@@ -808,7 +808,7 @@ export default function Patient({ params }: Params) {
                 </div>
                 <div className='overflow-y-scroll overflow-x-scroll'>
                   {schedule?.length ? (
-                    <table className='border-collapse m-4 w-full'>
+                    <table className='border-collapse m-4'>
                       <thead>
                         <tr>
                           <th className='text-start px-6 py-5 font-normal text-green-600'>
@@ -838,7 +838,14 @@ export default function Patient({ params }: Params) {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   ref={provided.innerRef}
-                                  className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
+                                  // className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
+                                  //   snapshot.isDragging ? "shadow-gray-600" : ""
+                                  // }`}
+                                  className={`hover:shadow-lg ${
+                                    index % 2 === 0
+                                      ? "bg-white"
+                                      : "bg-[#faffe6]"
+                                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
                                     snapshot.isDragging ? "shadow-gray-600" : ""
                                   }`}
                                 >

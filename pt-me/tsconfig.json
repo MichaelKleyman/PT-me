@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2021",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -35,7 +35,9 @@
     "server/db/models/Users.js",
     "src/app/api/hello/route.ts",
     "src/store/auth.mjs",
-    "src/store/index.mjs"
-, "src/components/Calendarstuff/dates.js", "src/components/Dash2.tsx"  ],
+    "src/store/index.mjs",
+    "src/components/Calendarstuff/dates.js",
+    "src/components/Dash2.tsx"
+  ],
   "exclude": ["node_modules"]
 }
