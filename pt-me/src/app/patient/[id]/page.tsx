@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { GrCalendar } from "react-icons/gr";
+import { BiSolidCheckbox } from "react-icons/bi";
 import { BsDot } from "react-icons/bs";
 import { FiPhone, FiDelete } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
@@ -49,6 +50,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import PDFPreview from "@/components/PDFPreview";
+import { Patient } from "../../../../types";
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -76,21 +78,6 @@ type Obj = {
 type Params = {
   params: Obj;
 };
-
-interface Patient {
-  id: number;
-  title: string;
-  address: string;
-  gender: string;
-  phoneNumber: string;
-  email: string;
-  reasonForVisit: string;
-  age: string;
-  injuryId: number;
-  insurance: string;
-  start?: Date | undefined;
-  end?: Date | undefined;
-}
 
 interface ExerciseData {
   id: number;
@@ -461,7 +448,6 @@ export default function Patient({ params }: Params) {
       ? (injuryDictionary[patient.injuryId] as string)
       : "Unknown",
   };
-  console.log(patient?.start);
   let startAppointmentTime = new Date(patient?.start as Date);
 
   return (
@@ -510,15 +496,19 @@ export default function Patient({ params }: Params) {
               <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
                 <div className='flex items-center'>
                   <GrCalendar className='pr-2' size={25} />
-                  Arrived June 1, 2022
+
+                  <div className='flex gap-3'>
+                    <p>Arrived</p>
+                    {new Date(patient?.createdAt as Date).toDateString()}
+                  </div>
                 </div>
-                <div>
-                  <h2 className='tracking-wide flex items-center'>
+                <div className="flex items-center justify-center">
+                  <h2 className='tracking-wide flex items-center gap-4'>
                     Status{" "}
-                    <span className='flex items-center'>
+                    <span className='flex items-center gap-3'>
                       {" "}
-                      <BsDot
-                        size={50}
+                      <BiSolidCheckbox
+                        size={18}
                         color={`${
                           startAppointmentTime > new Date() ? "green" : "red"
                         }`}

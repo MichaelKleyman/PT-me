@@ -11,6 +11,7 @@ export interface Patient {
   insurance: string;
   start?: Date | undefined;
   end?: Date | undefined;
+  createdAt?: Date | undefined;
 }
 
 export interface ExerciseData {

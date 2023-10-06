@@ -12,6 +12,8 @@ import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import { IoMdAddCircle } from "react-icons/io";
 import { me } from "../../Redux/Features/auth/authSlice";
 import { Patient } from "../../../types";
+import { BiSolidCheckbox } from "react-icons/bi";
+import { Button } from "@mui/material";
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -77,9 +79,10 @@ export default function AllPatients() {
         </Link>
       </div>
       <div className='mt-8'>
-        <div className='grid md:grid-cols-5 gap-6 place-items-center text-sm bg-[#eaece1] p-2'>
+        <div className='grid md:grid-cols-6 gap-6 place-items-center text-sm bg-[#edecec] p-2 uppercase tracking-wide text-[10px] font-medium rounded-lg'>
           <></>
           <h1>Name</h1>
+          <h1>Status</h1>
           <h1>Address</h1>
           <h1>Phone Number</h1>
           <h1>Reason For Visit</h1>
@@ -88,7 +91,7 @@ export default function AllPatients() {
           patients?.map((patient) => (
             <div
               key={patient.id}
-              className='bg-[#fdfff5] grid md:grid-cols-5 gap-6 place-items-center p-6 shadow-xl shadow-gray-400 border-b-[1px] border-[#eaece1]'
+              className='grid md:grid-cols-6 gap-6 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
             >
               <div className='flex items-center gap-5'>
                 <Stack direction='row' spacing={2}>
@@ -101,17 +104,46 @@ export default function AllPatients() {
                     }}
                   />
                 </Stack>
-                <p className='font-bold'>{patient.title}</p>
+                <div>
+                  <p className='font-bold text-[18px]'>{patient.title}</p>
+                  {new Date(patient?.start as Date) > new Date() ? (
+                    <p className='text-gray-500 text-[12px]'>
+                      Next Appointment{" "}
+                      {new Date(patient?.start as Date).toDateString()}
+                    </p>
+                  ) : (
+                    <p className='text-gray-500 text-[12px]'>
+                      Last Appointment{" "}
+                      {new Date(patient?.start as Date).toDateString()}
+                    </p>
+                  )}
+                </div>
               </div>
-              <p>{patient.address}</p>
-              <p>{patient.phoneNumber}</p>
+              <div className='flex items-center gap-3 text-gray-500'>
+                <BiSolidCheckbox
+                  size={18}
+                  color={`${
+                    new Date(patient?.start as Date) > new Date()
+                      ? "green"
+                      : "red"
+                  }`}
+                />{" "}
+                {`${
+                  new Date(patient?.start as Date) > new Date()
+                    ? "Scheduled"
+                    : "No Appointment"
+                }`}
+              </div>
+              <p className='text-gray-500'>{patient.address}</p>
+              <p className='text-gray-500'>{patient.phoneNumber}</p>
               <p>{patient.reasonForVisit}</p>
               <Link
                 href={`/patient/${patient.id}`}
-                className='bg-[#f7fddf] flex items-center justify-center border border-[#3BE13B] p-1 rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 hover:bg-[#3BE13B] hover:text-white'
+                className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
               >
-                View
-                <IoIosArrowForward className='p-2' size={30} />
+                <Button variant='outlined' endIcon={<IoIosArrowForward />}>
+                  View
+                </Button>
               </Link>
             </div>
           ))
