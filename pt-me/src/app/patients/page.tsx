@@ -13,7 +13,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { me } from "../../Redux/Features/auth/authSlice";
 import { Patient } from "../../../types";
 import { BiSolidCheckbox } from "react-icons/bi";
-import { Button } from "@mui/material";
+import { Button, Checkbox } from "@mui/material";
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -61,8 +61,11 @@ export default function AllPatients() {
       children: `${name.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
     };
   }
+
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
   return (
-    <div className='mt-[2rem] ml-[6rem] p-9'>
+    <div className='mt-[2rem] ml-[8rem] p-9'>
       <h1 className='text-xl tracking-widest font-bold uppercase'>
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>
@@ -91,21 +94,39 @@ export default function AllPatients() {
           patients?.map((patient) => (
             <div
               key={patient.id}
-              className='grid md:grid-cols-6 gap-6 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
+              className='grid md:grid-cols-6 gap-8 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
             >
-              <div className='flex items-center gap-5'>
-                <Stack direction='row' spacing={2}>
-                  <Avatar
-                    {...stringAvatar(patient.title)}
-                    sx={{
-                      width: 56,
-                      height: 56,
-                      bgcolor: `${stringToColor(patient.title)}`,
-                    }}
-                  />
-                </Stack>
-                <div>
-                  <p className='font-bold text-[18px]'>{patient.title}</p>
+              <div style={{ whiteSpace: "nowrap" }}>
+                <div className='flex items-center gap-5'>
+                  <Checkbox {...label} />
+                  <Stack direction='row' spacing={2}>
+                    <Avatar
+                      {...stringAvatar(patient.title)}
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        bgcolor: `${stringToColor(patient.title)}`,
+                      }}
+                    />
+                  </Stack>
+                  <div>
+                    <p className='font-bold text-[18px]'>{patient.title}</p>
+                    <div>
+                      {new Date(patient?.start as Date) > new Date() ? (
+                        <div className='flex flex-col text-gray-500 text-[12px]'>
+                          <p>Next Appointment</p>
+                          {new Date(patient?.start as Date).toDateString()}
+                        </div>
+                      ) : (
+                        <div className='flex flex-col text-gray-500 text-[12px]'>
+                          <p>Last Appointment</p>
+                          {new Date(patient?.start as Date).toDateString()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* <div className='flex items-center justify-center ml-[1rem]'>
                   {new Date(patient?.start as Date) > new Date() ? (
                     <p className='text-gray-500 text-[12px]'>
                       Next Appointment{" "}
@@ -117,9 +138,9 @@ export default function AllPatients() {
                       {new Date(patient?.start as Date).toDateString()}
                     </p>
                   )}
-                </div>
+                </div> */}
               </div>
-              <div className='flex items-center gap-3 text-gray-500'>
+              <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
                 <BiSolidCheckbox
                   size={18}
                   color={`${
@@ -134,9 +155,9 @@ export default function AllPatients() {
                     : "No Appointment"
                 }`}
               </div>
-              <p className='text-gray-500'>{patient.address}</p>
-              <p className='text-gray-500'>{patient.phoneNumber}</p>
-              <p>{patient.reasonForVisit}</p>
+              <p className='text-gray-500 text-[14px]'>{patient.address}</p>
+              <p className='text-gray-500 text-[14px]'>{patient.phoneNumber}</p>
+              <p className='text-[14px]'>{patient.reasonForVisit}</p>
               <Link
                 href={`/patient/${patient.id}`}
                 className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
