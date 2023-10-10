@@ -20,6 +20,8 @@ export default function AllPatients() {
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
   const [checked, setChecked] = useState<number[]>([]);
+  const [showSelected, setShowSelected] = useState<boolean>(false);
+  const [selectedPatients, setSelectedPatients] = useState<Patient[]>();
 
   const handleClick = (patientId: number) => () => {
     if (checked.includes(patientId)) {
@@ -31,6 +33,14 @@ export default function AllPatients() {
       const ids = [...checked, patientId];
       setChecked(ids);
     }
+  };
+
+  const handleToggle = (bool: boolean) => {
+    setShowSelected(bool);
+    const newPatientsArr = patients?.filter((patient) =>
+      checked.includes(patient.id)
+    );
+    setSelectedPatients(newPatientsArr);
   };
 
   const selectAllOrNone = () => {
@@ -113,74 +123,149 @@ export default function AllPatients() {
           <h1>Reason For Visit</h1>
         </div>
         {patients?.length ? (
-          patients?.map((patient) => (
-            <div
-              key={patient.id}
-              className='grid md:grid-cols-6 gap-8 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
-            >
-              <div style={{ whiteSpace: "nowrap" }}>
-                <div className='flex items-center gap-5'>
-                  <Checkbox
-                    {...label}
-                    checked={checked.includes(patient.id)}
-                    onClick={handleClick(patient?.id)}
-                  />
-                  <Stack direction='row' spacing={2}>
-                    <Avatar
-                      {...stringAvatar(patient.title)}
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        bgcolor: `${stringToColor(patient.title)}`,
-                      }}
+          !showSelected ? (
+            patients?.map((patient) => (
+              <div
+                key={patient.id}
+                className='grid md:grid-cols-6 gap-8 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
+              >
+                <div style={{ whiteSpace: "nowrap" }}>
+                  <div className='flex items-center gap-5'>
+                    <Checkbox
+                      {...label}
+                      checked={checked.includes(patient.id)}
+                      onClick={handleClick(patient?.id)}
                     />
-                  </Stack>
-                  <div>
-                    <p className='font-bold text-[18px]'>{patient.title}</p>
+                    <Stack direction='row' spacing={2}>
+                      <Avatar
+                        {...stringAvatar(patient.title)}
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          bgcolor: `${stringToColor(patient.title)}`,
+                        }}
+                      />
+                    </Stack>
                     <div>
-                      {new Date(patient?.start as Date) > new Date() ? (
-                        <div className='flex flex-col text-gray-500 text-[12px]'>
-                          <p>Next Appointment</p>
-                          {new Date(patient?.start as Date).toDateString()}
-                        </div>
-                      ) : (
-                        <div className='flex flex-col text-gray-500 text-[12px]'>
-                          <p>Last Appointment</p>
-                          {new Date(patient?.start as Date).toDateString()}
-                        </div>
-                      )}
+                      <p className='font-bold text-[18px]'>{patient.title}</p>
+                      <div>
+                        {new Date(patient?.start as Date) > new Date() ? (
+                          <div className='flex flex-col text-gray-500 text-[12px]'>
+                            <p>Next Appointment</p>
+                            {new Date(patient?.start as Date).toDateString()}
+                          </div>
+                        ) : (
+                          <div className='flex flex-col text-gray-500 text-[12px]'>
+                            <p>Last Appointment</p>
+                            {new Date(patient?.start as Date).toDateString()}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
-                <BiSolidCheckbox
-                  size={18}
-                  color={`${
+                <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
+                  <BiSolidCheckbox
+                    size={18}
+                    color={`${
+                      new Date(patient?.start as Date) > new Date()
+                        ? "green"
+                        : "red"
+                    }`}
+                  />{" "}
+                  {`${
                     new Date(patient?.start as Date) > new Date()
-                      ? "green"
-                      : "red"
+                      ? "Scheduled"
+                      : "No Appointment"
                   }`}
-                />{" "}
-                {`${
-                  new Date(patient?.start as Date) > new Date()
-                    ? "Scheduled"
-                    : "No Appointment"
-                }`}
+                </div>
+                <p className='text-gray-500 text-[14px]'>{patient.address}</p>
+                <p className='text-gray-500 text-[14px]'>
+                  {patient.phoneNumber}
+                </p>
+                <p className='text-[14px]'>{patient.reasonForVisit}</p>
+                <Link
+                  href={`/patient/${patient.id}`}
+                  className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+                >
+                  <Button variant='outlined' endIcon={<IoIosArrowForward />}>
+                    View
+                  </Button>
+                </Link>
               </div>
-              <p className='text-gray-500 text-[14px]'>{patient.address}</p>
-              <p className='text-gray-500 text-[14px]'>{patient.phoneNumber}</p>
-              <p className='text-[14px]'>{patient.reasonForVisit}</p>
-              <Link
-                href={`/patient/${patient.id}`}
-                className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+            ))
+          ) : (
+            selectedPatients?.map((patient) => (
+              <div
+                key={patient.id}
+                className='grid md:grid-cols-6 gap-8 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
               >
-                <Button variant='outlined' endIcon={<IoIosArrowForward />}>
-                  View
-                </Button>
-              </Link>
-            </div>
-          ))
+                <div style={{ whiteSpace: "nowrap" }}>
+                  <div className='flex items-center gap-5'>
+                    <Checkbox
+                      {...label}
+                      checked={checked.includes(patient.id)}
+                      onClick={handleClick(patient?.id)}
+                    />
+                    <Stack direction='row' spacing={2}>
+                      <Avatar
+                        {...stringAvatar(patient.title)}
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          bgcolor: `${stringToColor(patient.title)}`,
+                        }}
+                      />
+                    </Stack>
+                    <div>
+                      <p className='font-bold text-[18px]'>{patient.title}</p>
+                      <div>
+                        {new Date(patient?.start as Date) > new Date() ? (
+                          <div className='flex flex-col text-gray-500 text-[12px]'>
+                            <p>Next Appointment</p>
+                            {new Date(patient?.start as Date).toDateString()}
+                          </div>
+                        ) : (
+                          <div className='flex flex-col text-gray-500 text-[12px]'>
+                            <p>Last Appointment</p>
+                            {new Date(patient?.start as Date).toDateString()}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
+                  <BiSolidCheckbox
+                    size={18}
+                    color={`${
+                      new Date(patient?.start as Date) > new Date()
+                        ? "green"
+                        : "red"
+                    }`}
+                  />{" "}
+                  {`${
+                    new Date(patient?.start as Date) > new Date()
+                      ? "Scheduled"
+                      : "No Appointment"
+                  }`}
+                </div>
+                <p className='text-gray-500 text-[14px]'>{patient.address}</p>
+                <p className='text-gray-500 text-[14px]'>
+                  {patient.phoneNumber}
+                </p>
+                <p className='text-[14px]'>{patient.reasonForVisit}</p>
+                <Link
+                  href={`/patient/${patient.id}`}
+                  className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+                >
+                  <Button variant='outlined' endIcon={<IoIosArrowForward />}>
+                    View
+                  </Button>
+                </Link>
+              </div>
+            ))
+          )
         ) : (
           <div className='bg-[#fdfff5] h-[400px] w-[100%] flex items-center justify-center'>
             No patients in your clinic
@@ -203,7 +288,15 @@ export default function AllPatients() {
             <RiDeleteBinLine size={20} />
           </button>
           <div className='border-l-[2px] border-white h-4 mx-2' />
-          <FormControlLabel control={<Switch />} label='Show selected' />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showSelected}
+                onChange={() => handleToggle(!showSelected)}
+              />
+            }
+            label='Show selected'
+          />
         </div>
       )}
     </div>
