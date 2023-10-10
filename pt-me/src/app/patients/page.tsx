@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactElement, Ref, forwardRef } from "react";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Link from "next/link";
@@ -14,6 +14,24 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { Button, Checkbox } from "@mui/material";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { GoShare } from "react-icons/go";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { TransitionProps } from "@mui/material/transitions";
+import Slide from "@mui/material/Slide";
+import { BASE_URL, CLIENT } from "@/components/api";
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: ReactElement<any, any>;
+  },
+  ref: Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />;
+});
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -22,6 +40,36 @@ export default function AllPatients() {
   const [checked, setChecked] = useState<number[]>([]);
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [selectedPatients, setSelectedPatients] = useState<Patient[]>();
+  const [clickedDelete, setClickedDelete] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (clinic?.id) {
+      // If clinic data is available, fetch the patients
+      async function getPatients() {
+        const { payload } = await dispatch(fetchAllPatients(clinic.id));
+        const arrayToSort = [...(payload as Patient[])];
+        const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
+        setPatients(sortedPayload);
+      }
+      getPatients();
+    }
+  }, [clinic]);
+
+  const handleOpenDelete = () => {
+    setClickedDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setClickedDelete(false);
+  };
+
+  const deletePatients = () => {
+    checked.forEach(async (id) => {
+      await CLIENT.delete(`${BASE_URL}/api/patients/${id}`);
+    });
+    setClickedDelete(false);
+    location.reload();
+  };
 
   const handleClick = (patientId: number) => () => {
     if (checked.includes(patientId)) {
@@ -51,19 +99,6 @@ export default function AllPatients() {
       setChecked([]);
     }
   };
-
-  useEffect(() => {
-    if (clinic?.id) {
-      // If clinic data is available, fetch the patients
-      async function getPatients() {
-        const { payload } = await dispatch(fetchAllPatients(clinic.id));
-        const arrayToSort = [...(payload as Patient[])];
-        const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
-        setPatients(sortedPayload);
-      }
-      getPatients();
-    }
-  }, [clinic]);
 
   function stringToColor(string: string) {
     let hash = 0;
@@ -285,6 +320,12 @@ export default function AllPatients() {
             <BiSolidSelectMultiple size={20} />
           </button>
           <button className='hover:scale-110 duration-300'>
+            <GoShare size={20} />
+          </button>
+          <button
+            onClick={handleOpenDelete}
+            className='hover:scale-110 duration-300'
+          >
             <RiDeleteBinLine size={20} />
           </button>
           <div className='border-l-[2px] border-white h-4 mx-2' />
@@ -299,6 +340,31 @@ export default function AllPatients() {
           />
         </div>
       )}
+      <div>
+        {clickedDelete && (
+          <Dialog
+            open={clickedDelete}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseDelete}
+            aria-describedby='alert-dialog-slide-description'
+          >
+            <DialogTitle className='text-red-600'>
+              {`Warning! You are deleting ${checked.length} patients permanently!`}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-slide-description'>
+                By clicking delete, you will lose all of this patient
+                information.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDelete}>Cancel</Button>
+              <Button onClick={deletePatients}>Delete</Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }
