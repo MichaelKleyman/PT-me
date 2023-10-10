@@ -11,7 +11,7 @@ router.get("/:clinicId", async (req, res, next) => {
     });
     res.send(allPatients);
   } catch (error) {
-    console.log(error);
+    console.log(">>>>", error);
     next(error);
   }
 });
@@ -75,7 +75,7 @@ router.post("/:clinicId", async (req, res, next) => {
       req.body["Phone Number"].slice(6);
     const reasonForVisit = req.body["Reason For Visit"];
     const title = `${firstName} ${lastName}`;
-    const address = `${Address},  ${req.body["City"]} ${req.body["State"]}`;
+    const address = `${Address},  ${req.body["City"]} ${req.body["State"]}, ${req.body.Zipcode}`;
     const patient_info = {
       title,
       gender: Gender,
