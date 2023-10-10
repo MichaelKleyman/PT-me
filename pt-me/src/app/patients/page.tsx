@@ -12,8 +12,6 @@ import { IoMdAddCircle } from "react-icons/io";
 import { Patient } from "../../../types";
 import { BiSolidCheckbox } from "react-icons/bi";
 import { Button, Checkbox } from "@mui/material";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
-import Box from "@mui/material/Box";
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -33,8 +31,6 @@ export default function AllPatients() {
     }
   };
 
-  console.log(checked);
-
   useEffect(() => {
     if (clinic?.id) {
       // If clinic data is available, fetch the patients
@@ -47,14 +43,6 @@ export default function AllPatients() {
       getPatients();
     }
   }, [clinic]);
-
-  // useEffect(() => {
-  //   if (checked.length) {
-  //     setSnackBar({ ...snackBar, open: true });
-  //   } else {
-  //     setSnackBar({ ...snackBar, open: false });
-  //   }
-  // }, [checked]);
 
   function stringToColor(string: string) {
     let hash = 0;
@@ -184,14 +172,11 @@ export default function AllPatients() {
           </div>
         )}
       </div>
-      <Box sx={{ width: 500, backgroundColor: " blue" }}>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          open={checked.length > 0}
-          message='I love snacks'
-          key={"top" + "center"}
-        />
-      </Box>
+      {checked.length > 0 && (
+        <div className='bg-[#3BE13B] rounded-lg shadow-lg shadow-gray-400 text-white p-4 text-center fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[600px]'>
+          Checkbox is checked!
+        </div>
+      )}
     </div>
   );
 }
