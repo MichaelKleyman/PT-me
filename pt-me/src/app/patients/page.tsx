@@ -3,22 +3,37 @@
 import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-// import patients from '@/components/Patients';
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import type { AppDispatch, RootState } from "@/Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import { IoMdAddCircle } from "react-icons/io";
-import { me } from "../../Redux/Features/auth/authSlice";
 import { Patient } from "../../../types";
 import { BiSolidCheckbox } from "react-icons/bi";
 import { Button, Checkbox } from "@mui/material";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import Box from "@mui/material/Box";
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
+  const [checked, setChecked] = useState<number[]>([]);
+
+  const handleClick = (patientId: number) => () => {
+    if (checked.includes(patientId)) {
+      const index = checked.indexOf(patientId);
+      const checkedCopy = [...checked];
+      checkedCopy.splice(index, 1);
+      setChecked(checkedCopy);
+    } else {
+      const ids = [...checked, patientId];
+      setChecked(ids);
+    }
+  };
+
+  console.log(checked);
 
   useEffect(() => {
     if (clinic?.id) {
@@ -32,6 +47,14 @@ export default function AllPatients() {
       getPatients();
     }
   }, [clinic]);
+
+  // useEffect(() => {
+  //   if (checked.length) {
+  //     setSnackBar({ ...snackBar, open: true });
+  //   } else {
+  //     setSnackBar({ ...snackBar, open: false });
+  //   }
+  // }, [checked]);
 
   function stringToColor(string: string) {
     let hash = 0;
@@ -98,7 +121,7 @@ export default function AllPatients() {
             >
               <div style={{ whiteSpace: "nowrap" }}>
                 <div className='flex items-center gap-5'>
-                  <Checkbox {...label} />
+                  <Checkbox {...label} onClick={handleClick(patient?.id)} />
                   <Stack direction='row' spacing={2}>
                     <Avatar
                       {...stringAvatar(patient.title)}
@@ -126,19 +149,6 @@ export default function AllPatients() {
                     </div>
                   </div>
                 </div>
-                {/* <div className='flex items-center justify-center ml-[1rem]'>
-                  {new Date(patient?.start as Date) > new Date() ? (
-                    <p className='text-gray-500 text-[12px]'>
-                      Next Appointment{" "}
-                      {new Date(patient?.start as Date).toDateString()}
-                    </p>
-                  ) : (
-                    <p className='text-gray-500 text-[12px]'>
-                      Last Appointment{" "}
-                      {new Date(patient?.start as Date).toDateString()}
-                    </p>
-                  )}
-                </div> */}
               </div>
               <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
                 <BiSolidCheckbox
@@ -174,6 +184,14 @@ export default function AllPatients() {
           </div>
         )}
       </div>
+      <Box sx={{ width: 500, backgroundColor: " blue" }}>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={checked.length > 0}
+          message='I love snacks'
+          key={"top" + "center"}
+        />
+      </Box>
     </div>
   );
 }
