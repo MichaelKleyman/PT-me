@@ -15,6 +15,7 @@ import {
   AiOutlineFileSearch,
   AiOutlineLink,
   AiOutlineEye,
+  AiOutlineClose,
 } from "react-icons/ai";
 import { BsFileMedical, BsPrinter, BsSend } from "react-icons/bs";
 import Link from "next/link";
@@ -51,6 +52,10 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import PDFPreview from "@/components/PDFPreview";
 import { Patient } from "../../../../types";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -128,6 +133,7 @@ export default function Patient({ params }: Params) {
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
   const [clickPrint, setClickPrint] = useState<boolean>(false);
+  const [clickExpand, setClickExpand] = useState<boolean>(false);
   const [clickedRemove, setClickedRemove] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
     sets: 0,
@@ -197,6 +203,14 @@ export default function Patient({ params }: Params) {
 
   const handleUpdate = () => {
     setUpdate(!update);
+  };
+
+  const handleClickExpand = () => {
+    setClickExpand(true);
+  };
+
+  const handleCloseExpand = () => {
+    setClickExpand(false);
   };
 
   const handleSetsChange = async (
@@ -388,8 +402,6 @@ export default function Patient({ params }: Params) {
       `${BASE_URL}/api/exercises//patient/add-exercise/${patient?.id}/${exerciseId}`
     );
 
-    console.log(res);
-
     const { payload } = await dispatch(fetchPatientsExercises(params.id));
     setExercises(payload as ExerciseData[]);
     setSearchInput("");
@@ -502,7 +514,7 @@ export default function Patient({ params }: Params) {
                     {new Date(patient?.createdAt as Date).toDateString()}
                   </div>
                 </div>
-                <div className="flex items-center justify-center">
+                <div className='flex items-center justify-center'>
                   <h2 className='tracking-wide flex items-center gap-4'>
                     Status{" "}
                     <span className='flex items-center gap-3'>
@@ -773,7 +785,10 @@ export default function Patient({ params }: Params) {
                     Flow Sheet
                   </h1>
                   <div className='flex justify-between items-center gap-2'>
-                    <button className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'>
+                    <button
+                      onClick={handleClickExpand}
+                      className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                    >
                       <FaExpand className='p-2' size={35} />
                       Expand
                     </button>
@@ -812,92 +827,83 @@ export default function Patient({ params }: Params) {
                           </th>
                         </tr>
                       </thead>
-                      {/* <Droppable droppableId='patient-flowsheet'> */}
-                      {/* {(provided, snapshot) => ( */}
                       <tbody>
-                        {schedule
-                          // ?.sort((a, b) => a.id - b.id) // Sort exercises by id (ascending order)
-                          .map((exerciseObj, index) => (
-                            <Draggable
-                              key={exerciseObj.id}
-                              draggableId={exerciseObj.exercise?.name.toString()}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <tr
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
-                                  // className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
-                                  //   snapshot.isDragging ? "shadow-gray-600" : ""
-                                  // }`}
-                                  className={`hover:shadow-lg ${
-                                    index % 2 === 0
-                                      ? "bg-white"
-                                      : "bg-[#faffe6]"
-                                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
-                                    snapshot.isDragging ? "shadow-gray-600" : ""
-                                  }`}
-                                >
-                                  <td className=' px-6'>
-                                    <h1 className='p-8'>
-                                      {exerciseObj.exercise?.name}
-                                    </h1>
-                                  </td>
-                                  <td className=' px-6 py-5'>
-                                    <div className='flex gap-3'>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.sets}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleSetsChange(
-                                                exerciseObj.id,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.sets}`}
-                                          />
-                                        )}
-                                      </div>
-                                      <p>x</p>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.reps}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleRepsChange(
-                                                exerciseObj.id,
-                                                exerciseObj.reps,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.reps}`}
-                                          />
-                                        )}
-                                      </div>
+                        {schedule.map((exerciseObj, index) => (
+                          <Draggable
+                            key={exerciseObj.id}
+                            draggableId={exerciseObj.exercise?.name.toString()}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <tr
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                ref={provided.innerRef}
+                                // className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
+                                //   snapshot.isDragging ? "shadow-gray-600" : ""
+                                // }`}
+                                className={`hover:shadow-lg ${
+                                  index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
+                                } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
+                                  snapshot.isDragging ? "shadow-gray-600" : ""
+                                }`}
+                              >
+                                <td className=' px-6'>
+                                  <h1 className='p-8'>
+                                    {exerciseObj.exercise?.name}
+                                  </h1>
+                                </td>
+                                <td className=' px-6 py-5'>
+                                  <div className='flex gap-3'>
+                                    <div>
+                                      {!update ? (
+                                        `${exerciseObj.sets}`
+                                      ) : (
+                                        <input
+                                          onChange={(e) =>
+                                            handleSetsChange(exerciseObj.id, e)
+                                          }
+                                          type='text'
+                                          className='border border-green-500 w-6 rounded-sm text-center'
+                                          value={`${exerciseObj.sets}`}
+                                        />
+                                      )}
                                     </div>
-                                  </td>
-                                  <td className='text-[15px] text-blue-600'>
-                                    <div className='flex items-center justify-center gap-5'>
-                                      <FaRegCalendarCheck />
-                                      <p>
-                                        {new Date(
-                                          exerciseObj.createdAt
-                                        ).toDateString()}
-                                      </p>
+                                    <p>x</p>
+                                    <div>
+                                      {!update ? (
+                                        `${exerciseObj.reps}`
+                                      ) : (
+                                        <input
+                                          onChange={(e) =>
+                                            handleRepsChange(
+                                              exerciseObj.id,
+                                              exerciseObj.reps,
+                                              e
+                                            )
+                                          }
+                                          type='text'
+                                          className='border border-green-500 w-6 rounded-sm text-center'
+                                          value={`${exerciseObj.reps}`}
+                                        />
+                                      )}
                                     </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </Draggable>
-                          ))}
+                                  </div>
+                                </td>
+                                <td className='text-[15px] text-blue-600'>
+                                  <div className='flex items-center justify-center gap-5'>
+                                    <FaRegCalendarCheck />
+                                    <p>
+                                      {new Date(
+                                        exerciseObj.createdAt
+                                      ).toDateString()}
+                                    </p>
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </Draggable>
+                        ))}
                       </tbody>
                       {/* </Droppable> */}
                     </table>
@@ -913,6 +919,105 @@ export default function Patient({ params }: Params) {
           </Droppable>
         </div>
       </DragDropContext>
+      <Dialog
+        fullScreen
+        open={clickExpand}
+        onClose={handleCloseExpand}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "relative", backgroundColor: "#3BE13B" }}>
+          <Toolbar>
+            <IconButton
+              edge='start'
+              color='inherit'
+              onClick={handleCloseExpand}
+              aria-label='close'
+            >
+              <AiOutlineClose />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
+              {patient?.title.split(" ")[0]}'s Flowsheet
+            </Typography>
+            <Button autoFocus color='inherit' onClick={handleCloseExpand}>
+              save
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <DialogContent>
+          <table className='border-collapse m-4 w-full'>
+            <thead>
+              <tr>
+                <th className='text-start px-6 py-5 font-normal text-green-600'>
+                  Exercise Name
+                </th>
+                <th className='text-start px-6 py-5 font-normal text-green-600'>
+                  Repetitions
+                </th>
+                <th className='text-start px-6 py-5 font-normal text-green-600'>
+                  Assigned On
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map((exerciseObj, index) => (
+                <tr
+                  key={exerciseObj.id}
+                  className={`hover:shadow-lg ${
+                    index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
+                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 `}
+                >
+                  <td className=' px-6'>
+                    <h1 className='p-8'>{exerciseObj.exercise?.name}</h1>
+                  </td>
+                  <td className=' px-6 py-5'>
+                    <div className='flex gap-3'>
+                      <div>
+                        {!update ? (
+                          `${exerciseObj.sets}`
+                        ) : (
+                          <input
+                            onChange={(e) =>
+                              handleSetsChange(exerciseObj.id, e)
+                            }
+                            type='text'
+                            className='border border-green-500 w-6 rounded-sm text-center'
+                            value={`${exerciseObj.sets}`}
+                          />
+                        )}
+                      </div>
+                      <p>x</p>
+                      <div>
+                        {!update ? (
+                          `${exerciseObj.reps}`
+                        ) : (
+                          <input
+                            onChange={(e) =>
+                              handleRepsChange(
+                                exerciseObj.id,
+                                exerciseObj.reps,
+                                e
+                              )
+                            }
+                            type='text'
+                            className='border border-green-500 w-6 rounded-sm text-center'
+                            value={`${exerciseObj.reps}`}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className='text-[15px] text-blue-600'>
+                    <div className='flex items-center justify-center gap-5'>
+                      <FaRegCalendarCheck />
+                      <p>{new Date(exerciseObj.createdAt).toDateString()}</p>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
