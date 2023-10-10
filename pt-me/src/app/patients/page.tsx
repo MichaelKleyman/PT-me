@@ -3,15 +3,17 @@
 import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import type { AppDispatch, RootState } from "@/Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
-import { IoMdAddCircle } from "react-icons/io";
+import { IoMdAddCircle, IoIosArrowForward } from "react-icons/io";
 import { Patient } from "../../../types";
-import { BiSolidCheckbox } from "react-icons/bi";
+import { BiSolidCheckbox, BiSolidSelectMultiple } from "react-icons/bi";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { Button, Checkbox } from "@mui/material";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 export default function AllPatients() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -28,6 +30,15 @@ export default function AllPatients() {
     } else {
       const ids = [...checked, patientId];
       setChecked(ids);
+    }
+  };
+
+  const selectAllOrNone = () => {
+    if (checked.length !== patients?.length) {
+      const allChecked = patients?.map((patient) => patient.id);
+      setChecked(allChecked as number[]);
+    } else {
+      setChecked([]);
     }
   };
 
@@ -109,7 +120,11 @@ export default function AllPatients() {
             >
               <div style={{ whiteSpace: "nowrap" }}>
                 <div className='flex items-center gap-5'>
-                  <Checkbox {...label} onClick={handleClick(patient?.id)} />
+                  <Checkbox
+                    {...label}
+                    checked={checked.includes(patient.id)}
+                    onClick={handleClick(patient?.id)}
+                  />
                   <Stack direction='row' spacing={2}>
                     <Avatar
                       {...stringAvatar(patient.title)}
@@ -173,8 +188,22 @@ export default function AllPatients() {
         )}
       </div>
       {checked.length > 0 && (
-        <div className='bg-[#3BE13B] rounded-lg shadow-lg shadow-gray-400 text-white p-4 text-center fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[600px]'>
-          Checkbox is checked!
+        <div className='flex items-center justify-center gap-5 bg-[#3BE13B] rounded-lg shadow-lg shadow-gray-400 text-white p-4 text-center fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[35%]'>
+          <p className='uppercase tracking-wider text-[13px]'>
+            {checked.length} selected
+          </p>
+          <div className='border-l-[2px] border-white h-4 mx-2' />
+          <button
+            onClick={selectAllOrNone}
+            className='hover:scale-110 duration-300'
+          >
+            <BiSolidSelectMultiple size={20} />
+          </button>
+          <button className='hover:scale-110 duration-300'>
+            <RiDeleteBinLine size={20} />
+          </button>
+          <div className='border-l-[2px] border-white h-4 mx-2' />
+          <FormControlLabel control={<Switch />} label='Show selected' />
         </div>
       )}
     </div>
