@@ -21,11 +21,11 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import { RxDashboard } from "react-icons/rx";
 import { GiMuscleUp } from "react-icons/gi";
 import { IoMdPeople } from "react-icons/io";
-import { FiSettings } from "react-icons/fi";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
+import { AiOutlineSchedule } from "react-icons/ai";
 
 interface NavItem {
   label: string;
@@ -185,7 +185,7 @@ const Navbar = ({ children }: any) => {
                   }`}
                 >
                   <div>
-                    <FiSettings size={20} />
+                    <RxDashboard size={20} />
                   </div>
                   {open && <p className='duration-300'>Account</p>}
                 </Link>{" "}
@@ -198,7 +198,7 @@ const Navbar = ({ children }: any) => {
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div className='text-[#3BE13B]'>
-                    <RxDashboard size={20} />
+                    <AiOutlineSchedule size={20} />
                   </div>
                   {open && <p className='duration-300'>Dashboard</p>}
                 </Link>

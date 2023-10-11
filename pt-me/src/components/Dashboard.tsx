@@ -195,7 +195,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   );
 
   const schedulePatient = async (patient: Patient) => {
-    console.log(appointmentTime);
     const newEvent = {
       id: patient.id,
       title: patient.title,

@@ -570,12 +570,6 @@ export default function Patient({ params }: Params) {
               <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
                 <AiOutlineLink className='p-2' size={35} /> Share Link
               </p>
-              <button
-                onClick={handleOpenPrint}
-                className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-              >
-                <BsPrinter className='p-2' size={35} /> Print
-              </button>
               <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
               <Link
                 href={{
@@ -608,32 +602,6 @@ export default function Patient({ params }: Params) {
                   <DialogActions>
                     <Button onClick={handleCloseDeletePatient}>Cancel</Button>
                     <Button onClick={deletePatient}>Delete</Button>
-                  </DialogActions>
-                </Dialog>
-              )}
-            </div>
-            <div>
-              {clickPrint && (
-                <Dialog
-                  open={clickPrint}
-                  TransitionComponent={Transition}
-                  keepMounted
-                  fullWidth={true}
-                  maxWidth='md'
-                  onClose={handleClosePrint}
-                  aria-describedby='alert-dialog-slide-description'
-                >
-                  <DialogTitle className='text-center'>
-                    Preview the PDF
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id='alert-dialog-slide-description'>
-                      <PDFPreview patientFormData={printReadyPatientData} />
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClosePrint}>Cancel</Button>
-                    <Button onClick={handlePrint}>Print</Button>
                   </DialogActions>
                 </Dialog>
               )}
@@ -839,9 +807,6 @@ export default function Patient({ params }: Params) {
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 ref={provided.innerRef}
-                                // className={`hover:bg-[#fdfff5] w-full my-4 shadow-lg shadow-gray-300 rounded-lg cursor-pointer tracking-normal duration-300 hover:scale-105 ${
-                                //   snapshot.isDragging ? "shadow-gray-600" : ""
-                                // }`}
                                 className={`hover:shadow-lg ${
                                   index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
                                 } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
@@ -938,8 +903,8 @@ export default function Patient({ params }: Params) {
             <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
               {patient?.title.split(" ")[0]}'s Flowsheet
             </Typography>
-            <Button autoFocus color='inherit' onClick={handleCloseExpand}>
-              save
+            <Button onClick={handlePrint} autoFocus color='inherit'>
+              <BsPrinter className='p-2' size={35} /> Print
             </Button>
           </Toolbar>
         </AppBar>
