@@ -66,13 +66,29 @@ interface Patient extends Event {
   reasonForVisit: string;
   age: string;
   injuryId: number;
+  clinicId: number;
   insurance: string;
+  appointments: {
+    id: number;
+    clinicId: number;
+    patientId: number;
+    start?: Date | undefined;
+    end?: Date | undefined;
+  }[];
   start?: Date | undefined;
   end?: Date | undefined;
 }
 
-interface Payload {
-  payload: Patient[];
+interface Appointments {
+  id: number;
+  clinicId: number;
+  patientId: number;
+  start?: Date | undefined;
+  end?: Date | undefined;
+  patient: {
+    id: number;
+    title: string;
+  };
 }
 
 interface DashboardProps {
@@ -82,12 +98,13 @@ interface DashboardProps {
 const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
-  const [events, setEvents] = useState<Patient[]>([]);
+  const [events, setEvents] = useState<Appointments[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [makeAppointment, setMakeAppointment] = useState<boolean>(false);
   const [scheduled, setScheduled] = useState({ clicked: false, id: -1 });
-  const [patientId, setAppointmentToDelete] = useState<number>();
+  const [appointmentId, setAppointmentToDelete] = useState<number>();
   const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
@@ -96,15 +113,17 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     dispatch(me());
     async function getPatients() {
       const { payload } = await dispatch(fetchAllPatients(clinic.id));
-      console.log(payload);
-      const convertedDatabaseData = (payload as Patient[]).map(
-        (item: Patient) => ({
-          ...item,
-          start: item.start ? new Date(item.start) : undefined,
-          end: item.end ? new Date(item.end) : undefined,
-        })
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/appointments/${clinic.id}`
       );
-      setEvents(convertedDatabaseData as Patient[]);
+      setPatients(payload as Patient[]);
+      const convertedDatabaseData = data?.map((item: Appointments) => ({
+        ...item,
+        start: item.start ? new Date(item.start) : undefined,
+        end: item.end ? new Date(item.end) : undefined,
+        title: item.patient.title,
+      }));
+      setEvents(convertedDatabaseData);
     }
     getPatients();
   }, []);
@@ -114,8 +133,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   };
 
   const onEventResize: withDragAndDropProps["onEventResize"] = (data) => {
-    console.log(data);
-
     setEvents((currentEvents) => {
       const updatedEvents = currentEvents?.map((event) => {
         if (event.id === (data.event as Patient).id) {
@@ -127,13 +144,18 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         }
         return event;
       });
+      updatedEvents?.forEach((event) => {
+        if (event.id === (data.event as Patient).id) {
+          updateAppointment(event);
+        }
+      });
       return updatedEvents;
     });
   };
 
-  const updateAppointment = async (event: Patient) => {
+  const updateAppointment = async (event: Appointments) => {
     await CLIENT.put(
-      `${BASE_URL}/api/patients/update-appointment/${event.id}`,
+      `${BASE_URL}/api/appointments/update-appointment/${event.id}`,
       event
     );
   };
@@ -148,10 +170,8 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
             end: new Date(data.end),
           };
         }
-        // updateAppointment(event);
         return event;
       });
-      console.log(updatedEvents);
       updatedEvents?.forEach((event) => {
         if (event.id === (data.event as Patient).id) {
           updateAppointment(event);
@@ -172,13 +192,11 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   }
 
   const cancelAppointment = async () => {
-    const { data } = await CLIENT.put(
-      `${BASE_URL}/api/patients/delete-appointment/${patientId}`
+    await CLIENT.delete(
+      `${BASE_URL}/api/appointments/delete-appointment/${appointmentId}`
     );
-    const newEventsArray = events?.map((event) => {
-      if (event.id === data.id) {
-        return data;
-      } else {
+    const newEventsArray = events?.filter((event) => {
+      if (event.id !== appointmentId) {
         return event;
       }
     });
@@ -195,23 +213,23 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   );
 
   const schedulePatient = async (patient: Patient) => {
+    const { data } = await CLIENT.post(
+      `${BASE_URL}/api/appointments/create-appointment/${patient.id}`,
+      {
+        start: appointmentTime?.start,
+        end: appointmentTime?.end,
+        clinicId: clinic.id,
+      }
+    );
     const newEvent = {
-      id: patient.id,
+      id: data.id,
+      clinicId: patient.clinicId,
+      patientId: patient.id,
       title: patient.title,
-      address: patient.address,
-      phoneNumber: patient.phoneNumber,
-      email: patient.email,
-      reasonForVisit: patient.reasonForVisit,
-      age: patient.age,
-      injuryId: patient.injuryId,
-      insurance: patient.insurance,
       start: appointmentTime?.start,
       end: appointmentTime?.end,
+      patient: { id: patient.id, title: patient.title },
     };
-    await CLIENT.put(
-      `${BASE_URL}/api/patients/update-appointment/${patient.id}`,
-      { start: appointmentTime?.start, end: appointmentTime?.end }
-    );
     setEvents((prev) => [...prev, newEvent]);
     setScheduled({ clicked: true, id: patient.id });
     setTimeout(() => {
@@ -308,42 +326,35 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
               </div>
               <div>
                 <div>
-                  {events
-                    ?.filter(
-                      (patient) =>
-                        !patient?.start ||
-                        !patient?.end ||
-                        patient?.start < new Date()
-                    )
-                    .map((patient, index) => (
-                      <div
-                        key={patient?.id}
-                        className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
-                      >
-                        <div className='flex justify-between'>
-                          <h1 className='text-lg'>{patient?.title}</h1>
-                          {scheduled.id === patient.id ? (
-                            <Alert severity='success'>Scheduled</Alert>
-                          ) : (
-                            <Button
-                              onClick={() => schedulePatient(patient)}
-                              className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
-                            >
-                              Schedule
-                            </Button>
-                          )}
-                        </div>
-                        <div className='flex items-center gap-4'>
-                          <p className='text-sm text-gray-400'>
-                            {patient.reasonForVisit}
-                          </p>
-                          <div className='h-3 w-[1px] bg-gray-400'></div>
-                          <p className='text-sm text-gray-400'>
-                            {injuryTypes[patient.injuryId - 1]}
-                          </p>
-                        </div>
+                  {patients?.map((patient, index) => (
+                    <div
+                      key={patient?.id}
+                      className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
+                    >
+                      <div className='flex justify-between'>
+                        <h1 className='text-lg'>{patient?.title}</h1>
+                        {scheduled.id === patient.id ? (
+                          <Alert severity='success'>Scheduled</Alert>
+                        ) : (
+                          <Button
+                            onClick={() => schedulePatient(patient)}
+                            className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
+                          >
+                            Schedule
+                          </Button>
+                        )}
                       </div>
-                    ))}
+                      <div className='flex items-center gap-4'>
+                        <p className='text-sm text-gray-400'>
+                          {patient.reasonForVisit}
+                        </p>
+                        <div className='h-3 w-[1px] bg-gray-400'></div>
+                        <p className='text-sm text-gray-400'>
+                          {injuryTypes[patient.injuryId - 1]}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </DialogContentText>

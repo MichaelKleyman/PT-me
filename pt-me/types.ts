@@ -8,9 +8,15 @@ export interface Patient {
   reasonForVisit: string;
   age: string;
   injuryId: number;
+  clinicId: number;
   insurance: string;
-  start?: Date | undefined;
-  end?: Date | undefined;
+  appointments: {
+    id: number;
+    clinicId: number;
+    patientId: number;
+    start?: Date | undefined;
+    end?: Date | undefined;
+  }[];
   createdAt?: Date | undefined;
 }
 
