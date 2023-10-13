@@ -1,9 +1,9 @@
-'use strict';
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-require('dotenv').config();
+"use strict";
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
-const { Model } = require('sequelize');
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Appointments, {
+        foreignKey: "clinicId",
+        as: "appointments",
+      });
     }
   }
   User.init(
@@ -40,8 +44,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'User',
-      tableName: 'Users',
+      modelName: "User",
+      tableName: "Users",
     }
   );
   (User.prototype.generateToken = function () {
@@ -55,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     (User.authenticate = async function ({ email, password }) {
       const user = await this.findOne({ where: { email } });
       if (!user || !(await user.correctPassword(password))) {
-        const error = Error('Incorrect email or password.');
+        const error = Error("Incorrect email or password.");
         error.status = 401;
         throw error;
       }
@@ -66,22 +70,22 @@ module.exports = (sequelize, DataTypes) => {
         const { id } = await jwt.verify(token, `${process.env.JWT}`);
         const user = User.findByPk(id);
         if (!user) {
-          throw 'ERROR';
+          throw "ERROR";
         }
         return user;
       } catch (ex) {
-        const error = Error('bad token');
+        const error = Error("bad token");
         error.status = 401;
         throw error;
       }
     }),
-    User.addHook('beforeCreate', async (user) => {
-      if (user.changed('password')) {
+    User.addHook("beforeCreate", async (user) => {
+      if (user.changed("password")) {
         user.password = await bcrypt.hash(user.password, 3);
       }
     }),
-    User.addHook('beforeUpdate', async (user) => {
-      if (user.changed('password')) {
+    User.addHook("beforeUpdate", async (user) => {
+      if (user.changed("password")) {
         user.password = await bcrypt.hash(user.password, 3);
       }
     }),

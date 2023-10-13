@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Patients, Schedule } = require("../models");
+const { Patients, Schedule, Appointments } = require("../models");
 
 //GET all patients with specific clinic ID
 router.get("/:clinicId", async (req, res, next) => {
@@ -8,6 +8,7 @@ router.get("/:clinicId", async (req, res, next) => {
       where: {
         clinicId: req.params.clinicId,
       },
+      include: { model: Appointments, as: "appointments" },
     });
     res.send(allPatients);
   } catch (error) {
@@ -116,53 +117,6 @@ router.delete("/:patientId", async (req, res, next) => {
         id: req.params.patientId,
       },
     });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
-
-//DELETE a patients appointment completely
-router.put("/delete-appointment/:patientId", async (req, res, next) => {
-  try {
-    const [, [canceledPatientAppointment]] = await Patients.update(
-      { start: null, end: null },
-      {
-        returning: true,
-        where: {
-          id: req.params.patientId,
-        },
-      }
-    );
-    if (canceledPatientAppointment) {
-      res.send(canceledPatientAppointment);
-    } else {
-      res.status(404).send({ message: "Patient not found" });
-    }
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
-
-//UPDATE a patients appointment start and end
-router.put("/update-appointment/:patientId", async (req, res, next) => {
-  try {
-    console.log(req.body);
-    const [, [updatedAppointment]] = await Patients.update(
-      { start: req.body.start, end: req.body.end },
-      {
-        returning: true,
-        where: {
-          id: req.params.patientId,
-        },
-      }
-    );
-    if (updatedAppointment) {
-      res.send(updatedAppointment);
-    } else {
-      res.status(404).send({ message: "Patient not found" });
-    }
   } catch (error) {
     console.log(error);
     next(error);
