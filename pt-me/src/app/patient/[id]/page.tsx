@@ -126,6 +126,7 @@ const Transition = forwardRef(function Transition(
 
 export default function Patient({ params }: Params) {
   const [results, setResults] = useState<ExerciseData[]>([]);
+  const [status, setStatus] = useState<string>();
   const [patient, setPatient] = useState<Patient | undefined>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [patientsExercises, setExercises] = useState<ExerciseData[]>([]);
@@ -145,13 +146,22 @@ export default function Patient({ params }: Params) {
   useEffect(() => {
     async function getPatient() {
       const { payload } = await dispatch(fetchPatient(params.id));
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/appointments/latest-appointment/${
+          (payload as Patient).id
+        }`
+      );
+      if (new Date(data[data.length - 1].start) > new Date()) {
+        setStatus("Scheduled");
+      } else {
+        setStatus("No Appointment");
+      }
       setPatient(payload as Patient);
     }
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
       setExercises(payload as ExerciseData[]);
     }
-
     getPatient();
     getPatientExercises();
   }, [setExercises]);
@@ -460,7 +470,9 @@ export default function Patient({ params }: Params) {
       ? (injuryDictionary[patient.injuryId] as string)
       : "Unknown",
   };
-  let startAppointmentTime = new Date(patient?.start as Date);
+  let startAppointmentTime = new Date(
+    patient?.appointments?.[patient?.appointments?.length - 1]?.start as Date
+  );
 
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
@@ -521,15 +533,9 @@ export default function Patient({ params }: Params) {
                       {" "}
                       <BiSolidCheckbox
                         size={18}
-                        color={`${
-                          startAppointmentTime > new Date() ? "green" : "red"
-                        }`}
+                        color={status === "Scheduled" ? "green" : "red"}
                       />{" "}
-                      {`${
-                        startAppointmentTime > new Date()
-                          ? "Scheduled"
-                          : "No Appointment"
-                      }`}
+                      {status}
                     </span>
                   </h2>
                 </div>
