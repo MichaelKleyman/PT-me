@@ -298,6 +298,8 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
     setMakeAppointment(false);
   };
 
+  const today = new Date();
+
   return (
     <div>
       <div>
@@ -316,6 +318,12 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           onEventResize={onEventResize}
           resizable
           selectable
+          min={
+            new Date(today.getFullYear(), today.getMonth(), today.getDate(), 7)
+          }
+          max={
+            new Date(today.getFullYear(), today.getMonth(), today.getDate(), 22)
+          }
           style={{ height: "100%" }}
         />
       </div>
