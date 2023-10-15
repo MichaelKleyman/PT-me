@@ -187,7 +187,7 @@ const Navbar = ({ children }: any) => {
                   <div>
                     <RxDashboard size={20} />
                   </div>
-                  {open && <p className='duration-300'>Account</p>}
+                  {open && <p className='duration-300'>Dashboard</p>}
                 </Link>{" "}
                 <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
@@ -200,7 +200,7 @@ const Navbar = ({ children }: any) => {
                   <div className='text-[#3BE13B]'>
                     <AiOutlineSchedule size={20} />
                   </div>
-                  {open && <p className='duration-300'>Dashboard</p>}
+                  {open && <p className='duration-300'>Schedule</p>}
                 </Link>
                 <Link
                   href='/exercises'

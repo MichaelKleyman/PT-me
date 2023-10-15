@@ -16,7 +16,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import { AppDispatch, RootState } from "@/Redux/store";
-import { BsSearch } from "react-icons/bs";
+import { BsChevronDown, BsSearch } from "react-icons/bs";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
@@ -31,6 +31,53 @@ import { CLIENT, BASE_URL } from "./api";
 import { SlotInfo } from "react-big-calendar";
 import Alert from "@mui/material/Alert";
 import { me } from "@/Redux/Features/auth/authSlice";
+import Menu, { MenuProps } from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { styled, alpha } from "@mui/material/styles";
+import SetRecurringAppointment from "./SetRecurringAppointment";
+
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -108,6 +155,15 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openRecurring = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseRecurring = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     dispatch(me());
@@ -336,12 +392,43 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                         {scheduled.id === patient.id ? (
                           <Alert severity='success'>Scheduled</Alert>
                         ) : (
-                          <Button
-                            onClick={() => schedulePatient(patient)}
-                            className='text-sm rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
-                          >
-                            Schedule
-                          </Button>
+                          <div className='flex items-center gap-4'>
+                            <Button
+                              onClick={() => schedulePatient(patient)}
+                              className='text-[12px] rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
+                            >
+                              Schedule
+                            </Button>
+                            <Button
+                              aria-controls={
+                                open ? "demo-customized-menu" : undefined
+                              }
+                              aria-haspopup='true'
+                              aria-expanded={openRecurring ? "true" : undefined}
+                              disableElevation
+                              endIcon={<BsChevronDown size={15} />}
+                              onClick={handleClick}
+                              className='text-[12px] rounded-lg p-2 bg-[#868f77cd] text-white duration-300 hover:scale-110'
+                            >
+                              Set Recurring
+                            </Button>
+                            <StyledMenu
+                              id='demo-customized-menu'
+                              MenuListProps={{
+                                "aria-labelledby": "demo-customized-button",
+                              }}
+                              anchorEl={anchorEl}
+                              open={openRecurring}
+                              onClose={handleCloseRecurring}
+                            >
+                              <SetRecurringAppointment
+                                handleCloseRecurring={handleCloseRecurring}
+                                setMakeAppointment={setMakeAppointment}
+                                clinicId={clinic.id}
+                                patientId={patient.id}
+                              />
+                            </StyledMenu>
+                          </div>
                         )}
                       </div>
                       <div className='flex items-center gap-4'>

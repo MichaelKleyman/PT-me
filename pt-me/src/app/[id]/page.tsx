@@ -88,7 +88,10 @@ export default function Account({ params }: Params) {
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
         const todaysPatients = (payload as Patient[]).filter((patient) => {
-          const appointmentDate = new Date(patient?.start as Date).getDate();
+          const appointmentDate = new Date(
+            patient?.appointments[patient?.appointments.length - 1]
+              ?.start as Date
+          ).getDate();
           const todaysDate = new Date().getDate();
           if (appointmentDate === todaysDate) {
             return patient;
