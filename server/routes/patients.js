@@ -10,6 +10,11 @@ router.get("/:clinicId", async (req, res, next) => {
       },
       include: { model: Appointments, as: "appointments" },
     });
+    allPatients.forEach((patient) => {
+      if (patient.appointments) {
+        patient.appointments.sort((a, b) => a.start - b.start);
+      }
+    });
     res.send(allPatients);
   } catch (error) {
     console.log(">>>>", error);
