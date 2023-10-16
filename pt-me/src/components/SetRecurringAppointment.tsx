@@ -25,6 +25,7 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import React from "react";
 import { BASE_URL, CLIENT } from "./api";
+import { Patient } from "../../types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -74,6 +75,8 @@ export default function SetRecurringAppointment({
   setMakeAppointment,
   clinicId,
   patientId,
+  setEvents,
+  patientName,
 }: any) {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
@@ -129,17 +132,28 @@ export default function SetRecurringAppointment({
   };
 
   const handleFinish = async () => {
-    console.log(recurring);
-    await CLIENT.post(
-      `${BASE_URL}/api/appointments/recurring-appointments/${patientId}/${clinicId}`,
-      { appointments: recurring, frequency: numberOfWeeks }
-    );
     setComplete(true);
     setTimeout(() => {
       setComplete(false);
       handleCloseRecurring();
       setMakeAppointment(false);
-    }, 3000);
+    }, 2000);
+    const { data } = await CLIENT.post(
+      `${BASE_URL}/api/appointments/recurring-appointments/${patientId}/${clinicId}`,
+      { appointments: recurring, frequency: numberOfWeeks }
+    );
+    for (let i = 0; i < data.appointments.length; i++) {
+      const newEvent = {
+        id: data.appointments[i].id,
+        clinicId: data.appointments[i].clinicId,
+        patientId: data.appointments[i].patientId,
+        title: patientName,
+        start: new Date(data.appointments[i].start),
+        end: new Date(data.appointments[i].end),
+        patient: { id: data.appointments[i].patientId, title: patientName },
+      };
+      setEvents((prev: any) => [...prev, newEvent]);
+    }
   };
 
   const handleBack = () => {
@@ -182,7 +196,10 @@ export default function SetRecurringAppointment({
 
   return (
     <React.Fragment>
-      <MenuItem className='w-[590px] h-[350px] z-[50] flex items-start'>
+      <MenuItem
+        onKeyDown={(e) => e.stopPropagation()}
+        className='w-[590px] h-[350px] z-[50] flex items-start'
+      >
         <div>
           <Box sx={{ maxWidth: 500 }}>
             <Stepper activeStep={activeStep} orientation='vertical'>

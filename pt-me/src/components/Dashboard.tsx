@@ -147,6 +147,7 @@ const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [events, setEvents] = useState<Appointments[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [patientRecurring, setPatientRecurring] = useState<Patient>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [makeAppointment, setMakeAppointment] = useState<boolean>(false);
@@ -158,8 +159,10 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openRecurring = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>, obj: Patient) => {
+    console.log(obj);
     setAnchorEl(event.currentTarget);
+    setPatientRecurring(obj);
   };
   const handleCloseRecurring = () => {
     setAnchorEl(null);
@@ -390,19 +393,19 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
               </div>
               <div>
                 <div>
-                  {patients?.map((patient, index) => (
+                  {patients?.map((obj, index) => (
                     <div
-                      key={patient?.id}
+                      key={obj?.id}
                       className='bg-gradient-to-tr from-green-100 via-green-200 to-green-300 mt-4 m-3 p-7 rounded-lg shadow-lg shadow-green-300'
                     >
                       <div className='flex justify-between'>
-                        <h1 className='text-lg'>{patient?.title}</h1>
-                        {scheduled.id === patient.id ? (
+                        <h1 className='text-lg'>{obj?.title}</h1>
+                        {scheduled.id === obj.id ? (
                           <Alert severity='success'>Scheduled</Alert>
                         ) : (
                           <div className='flex items-center gap-4'>
                             <Button
-                              onClick={() => schedulePatient(patient)}
+                              onClick={() => schedulePatient(obj)}
                               className='text-[12px] rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'
                             >
                               Schedule
@@ -415,7 +418,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                               aria-expanded={openRecurring ? "true" : undefined}
                               disableElevation
                               endIcon={<BsChevronDown size={15} />}
-                              onClick={handleClick}
+                              onClick={(e) => handleClick(e, obj)}
                               className='text-[12px] rounded-lg p-2 bg-[#868f77cd] text-white duration-300 hover:scale-110'
                             >
                               Set Recurring
@@ -429,11 +432,14 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                               open={openRecurring}
                               onClose={handleCloseRecurring}
                             >
+                              {patientRecurring?.title}
                               <SetRecurringAppointment
                                 handleCloseRecurring={handleCloseRecurring}
                                 setMakeAppointment={setMakeAppointment}
-                                clinicId={clinic.id}
-                                patientId={patient.id}
+                                clinicId={patientRecurring?.clinicId}
+                                patientId={patientRecurring?.id}
+                                patientName={patientRecurring?.title}
+                                setEvents={setEvents}
                               />
                             </StyledMenu>
                           </div>
@@ -441,11 +447,11 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                       </div>
                       <div className='flex items-center gap-4'>
                         <p className='text-sm text-gray-400'>
-                          {patient.reasonForVisit}
+                          {obj.reasonForVisit}
                         </p>
                         <div className='h-3 w-[1px] bg-gray-400'></div>
                         <p className='text-sm text-gray-400'>
-                          {injuryTypes[patient.injuryId - 1]}
+                          {injuryTypes[obj.injuryId - 1]}
                         </p>
                       </div>
                     </div>
