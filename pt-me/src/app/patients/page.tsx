@@ -23,6 +23,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { TransitionProps } from "@mui/material/transitions";
 import Slide from "@mui/material/Slide";
 import { BASE_URL, CLIENT } from "@/components/api";
+import { useRouter } from "next/navigation";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -41,6 +42,7 @@ export default function AllPatients() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [selectedPatients, setSelectedPatients] = useState<Patient[]>();
   const [clickedDelete, setClickedDelete] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (clinic?.id) {
@@ -131,7 +133,9 @@ export default function AllPatients() {
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-  console.log(patients);
+  const showAppointment = () => {
+    router.push("/");
+  };
 
   return (
     <div className='mt-[2rem] ml-[8rem] p-9'>
@@ -185,18 +189,17 @@ export default function AllPatients() {
                     </Stack>
                     <div>
                       <p className='font-bold text-[18px]'>{patient.title}</p>
-                      <div>
-                        {new Date(
-                          patient?.appointments[
-                            patient?.appointments.length - 1
-                          ]?.start as Date
-                        ) > new Date() ? (
+                      <div
+                        typeof='button'
+                        className='hover:underline cursor-pointer'
+                        onClick={showAppointment}
+                      >
+                        {new Date(patient?.appointments[0]?.start as Date) >
+                        new Date() ? (
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Next Appointment</p>
                             {new Date(
-                              patient?.appointments[
-                                patient?.appointments.length - 1
-                              ]?.start as Date
+                              patient?.appointments[0]?.start as Date
                             ).toDateString()}
                           </div>
                         ) : !patient?.appointments.length ? (
@@ -207,9 +210,7 @@ export default function AllPatients() {
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Last Appointment</p>
                             {new Date(
-                              patient?.appointments[
-                                patient?.appointments.length - 1
-                              ]?.start as Date
+                              patient?.appointments[0]?.start as Date
                             ).toDateString()}
                           </div>
                         )}
@@ -220,20 +221,20 @@ export default function AllPatients() {
                 <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
                   <BiSolidCheckbox
                     size={18}
-                    color={`${
-                      new Date(
-                        patient?.appointments[patient?.appointments.length - 1]
-                          ?.start as Date
-                      ) > new Date()
+                    color={
+                      patient?.appointments.some(
+                        (appointment) =>
+                          new Date(appointment.start as Date) >= new Date()
+                      )
                         ? "green"
                         : "red"
-                    }`}
+                    }
                   />{" "}
                   {`${
-                    new Date(
-                      patient?.appointments[patient?.appointments.length - 1]
-                        ?.start as Date
-                    ) > new Date()
+                    patient?.appointments.some(
+                      (appointment) =>
+                        new Date(appointment.start as Date) >= new Date()
+                    )
                       ? "Scheduled"
                       : "No Appointment"
                   }`}
@@ -279,26 +280,19 @@ export default function AllPatients() {
                     <div>
                       <p className='font-bold text-[18px]'>{patient.title}</p>
                       <div>
-                        {new Date(
-                          patient?.appointments[
-                            patient?.appointments.length - 1
-                          ].start as Date
-                        ) > new Date() ? (
+                        {new Date(patient?.appointments[0].start as Date) >
+                        new Date() ? (
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Next Appointment</p>
                             {new Date(
-                              patient?.appointments[
-                                patient?.appointments.length - 1
-                              ].start as Date
+                              patient?.appointments[0].start as Date
                             ).toDateString()}
                           </div>
                         ) : (
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Last Appointment</p>
                             {new Date(
-                              patient?.appointments[
-                                patient?.appointments.length - 1
-                              ].start as Date
+                              patient?.appointments[0].start as Date
                             ).toDateString()}
                           </div>
                         )}
@@ -309,20 +303,20 @@ export default function AllPatients() {
                 <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
                   <BiSolidCheckbox
                     size={18}
-                    color={`${
-                      new Date(
-                        patient?.appointments[patient?.appointments.length - 1]
-                          ?.start as Date
-                      ) > new Date()
+                    color={
+                      patient?.appointments.some(
+                        (appointment) =>
+                          new Date(appointment.start as Date) >= new Date()
+                      )
                         ? "green"
                         : "red"
-                    }`}
+                    }
                   />{" "}
                   {`${
-                    new Date(
-                      patient?.appointments[patient?.appointments.length - 1]
-                        .start as Date
-                    ) > new Date()
+                    patient?.appointments.some(
+                      (appointment) =>
+                        new Date(appointment.start as Date) >= new Date()
+                    )
                       ? "Scheduled"
                       : "No Appointment"
                   }`}
@@ -333,20 +327,7 @@ export default function AllPatients() {
                 </p>
                 <p className='text-[14px]'>{patient.reasonForVisit}</p>
                 <Link
-                  href={{
-                    pathname: `/patient/${patient.id}`,
-                    query: {
-                      name: `${
-                        new Date(
-                          patient?.appointments[
-                            patient?.appointments.length - 1
-                          ].start as Date
-                        ) > new Date()
-                          ? "Scheduled"
-                          : "No Appointment"
-                      }`,
-                    },
-                  }}
+                  href={`/patient/${patient.id}`}
                   className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
                 >
                   <Button variant='outlined' endIcon={<IoIosArrowForward />}>

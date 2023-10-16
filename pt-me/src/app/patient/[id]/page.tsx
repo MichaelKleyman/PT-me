@@ -151,7 +151,12 @@ export default function Patient({ params }: Params) {
           (payload as Patient).id
         }`
       );
-      if (new Date(data[data.length - 1].start) > new Date()) {
+      if (
+        data?.some(
+          (appointment: any) =>
+            new Date(appointment.start as Date) >= new Date()
+        )
+      ) {
         setStatus("Scheduled");
       } else {
         setStatus("No Appointment");
@@ -302,8 +307,6 @@ export default function Patient({ params }: Params) {
       );
     }
   };
-
-  console.log("Flow sheet Exercises: ", schedule);
 
   const onDragEnd = async (result: DropResult) => {
     console.log(result);
@@ -470,9 +473,10 @@ export default function Patient({ params }: Params) {
       ? (injuryDictionary[patient.injuryId] as string)
       : "Unknown",
   };
-  let startAppointmentTime = new Date(
-    patient?.appointments?.[patient?.appointments?.length - 1]?.start as Date
-  );
+
+  const showAppointment = () => {
+    router.push("/");
+  };
 
   return (
     <div className='mt-[1rem] ml-[6rem] p-4'>
@@ -529,7 +533,11 @@ export default function Patient({ params }: Params) {
                 <div className='flex items-center justify-center'>
                   <h2 className='tracking-wide flex items-center gap-4'>
                     Status{" "}
-                    <span className='flex items-center gap-3'>
+                    <span
+                      onClick={showAppointment}
+                      typeof='button'
+                      className='flex items-center gap-3 hover:underline cursor-pointer'
+                    >
                       {" "}
                       <BiSolidCheckbox
                         size={18}

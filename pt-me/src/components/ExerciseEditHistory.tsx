@@ -87,9 +87,12 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       `${BASE_URL}/api/exEditCredentials/comment/${selectEditor?.id}`,
       { comment: newComment, clinicName: clinic?.clinicName }
     );
+    console.log(data);
     setComments(data.comments);
     setNewComment("");
   };
+
+  console.log(comments);
 
   return (
     <div className='flex ml-[2rem]'>
