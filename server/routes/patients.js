@@ -10,9 +10,14 @@ router.get("/:clinicId", async (req, res, next) => {
       },
       include: { model: Appointments, as: "appointments" },
     });
+    const currentDate = new Date();
     allPatients.forEach((patient) => {
       if (patient.appointments) {
-        patient.appointments.sort((a, b) => a.start - b.start);
+        patient.appointments.sort((a, b) => {
+          const timeDifferenceA = Math.abs(new Date(a.start) - currentDate);
+          const timeDifferenceB = Math.abs(new Date(b.start) - currentDate);
+          return timeDifferenceA - timeDifferenceB;
+        });
       }
     });
     res.send(allPatients);

@@ -31,7 +31,12 @@ router.get("/latest-appointment/:patientId", async (req, res, next) => {
         patientId: req.params.patientId,
       },
     });
-    appointments.sort((a, b) => a.start - b.start);
+    const currentDate = new Date();
+    appointments.sort((a, b) => {
+      const timeDifferenceA = Math.abs(new Date(a.start) - currentDate);
+      const timeDifferenceB = Math.abs(new Date(b.start) - currentDate);
+      return timeDifferenceA - timeDifferenceB;
+    });
     res.send(appointments);
     // if (!appointments) {
     //   return res.sendStatus(400).send({ message: "No appointments found" });
@@ -119,6 +124,7 @@ router.post(
     try {
       console.log(req.body);
       const { appointments } = req.body;
+      const arr = [];
       for (let i = 0; i < req.body.frequency; i++) {
         const currentDate = new Date(); // This should be the start date of the first week
         currentDate.setUTCDate(currentDate.getUTCDate() + 7 * i);
@@ -157,22 +163,21 @@ router.post(
           appointmentEnd.setUTCFullYear(nextDate.getUTCFullYear());
           appointmentEnd.setUTCMonth(nextDate.getUTCMonth());
           appointmentEnd.setUTCDate(nextDate.getUTCDate());
-
-          console.log("Appointment start:", appointmentStart.toISOString());
-          console.log("Appointment end:", appointmentEnd.toISOString());
-          const res = await Appointments.create({
+          const result = await Appointments.create({
             patientId: req.params.patientId,
             clinicId: req.params.clinicId,
             start: appointmentStart,
             end: appointmentEnd,
           });
-          if (!res) {
+          if (!result) {
             return res
               .sendStatus(400)
               .send({ message: "Error creating the appointment" });
           }
+          arr.push(result);
         }
       }
+      return res.send({ appointments: arr });
     } catch (error) {
       console.error(error);
       next(error);
