@@ -87,12 +87,12 @@ type Params = {
 interface ExerciseData {
   id: number;
   map: any;
-  name: String;
-  injuryId: Number;
+  name: string;
+  injuryId: number;
   videoLink: string;
   Patients: Patient[];
-  tips: String;
-  description: String;
+  tips: string;
+  description: string;
   musclesWorked: String;
   length: number | null;
 }
@@ -454,7 +454,13 @@ export default function Patient({ params }: Params) {
     2: "Back",
     3: "Knee",
     4: "Hip",
+    5: "Neck",
+    6: "Wrist/Hand",
+    7: "Ankle/Foot",
+    8: "Abdominal",
+    9: "Gluteal",
   };
+
   const parts = patient?.address.split(",").map((part) => part.trim());
   const printReadyPatientData = {
     "Last Name": patient?.title.split(" ")[1] as string,
@@ -513,11 +519,11 @@ export default function Patient({ params }: Params) {
               <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
                 <p>Age: {patient?.age}</p>
                 <div className='hidden md:block'>
-                  <BsDot size={30} />
+                  <BsDot size={30} color='green' />
                 </div>
-                <p>Lorem Ipsum</p>
+                <p>{injuryDictionary[patient?.injuryId as number]}</p>
                 <div className='hidden md:block'>
-                  <BsDot size={30} />
+                  <BsDot size={30} color='green' />
                 </div>
                 <p>{patient?.reasonForVisit}</p>
               </div>

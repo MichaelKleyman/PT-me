@@ -23,9 +23,9 @@ const genderOptions = [
 ];
 
 const injuryTypeOptions = [
-  { value: "Knee", label: "Knee" },
   { value: "Shoulders", label: "Shoulders" },
   { value: "Back", label: "Back" },
+  { value: "Knee", label: "Knee" },
   { value: "Hip", label: "Hip" },
   { value: "Neck", label: "Neck" },
   { value: "Wrist/Hand", label: "Wrist/Hand" },
@@ -89,7 +89,7 @@ export default function EditPatient({ patientId }: Props) {
           injuryTypeOptions[i].value ===
           injuryTypeOptions[payload?.injuryId].value
         ) {
-          setInjuryIndex(i);
+          setInjuryIndex(i - 1);
           break;
         }
       }
@@ -97,6 +97,8 @@ export default function EditPatient({ patientId }: Props) {
     }
     getPatient();
   }, []);
+
+  console.log(injuryTypeOptions[injuryOptionIndex as number]);
 
   const genderController = useController({
     name: "Gender",
