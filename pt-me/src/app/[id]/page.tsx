@@ -14,6 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import { Patient } from "../../../types";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
+import Badge from "@mui/material/Badge";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 type Obj = {
   id: Number;
@@ -70,6 +72,7 @@ export default function Account({ params }: Params) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [patients, setPatients] = useState<Patient[]>();
   const [todaysPatients, setTodaysPatients] = useState<Patient[]>();
+  const [appointmentsInHour, setAppointments] = useState<any[]>();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -83,11 +86,46 @@ export default function Account({ params }: Params) {
   const clinic = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
 
+  const appointmentsInOneHour = (patients: Patient[]) => {
+    const todaysAppointments: any[] = [];
+    patients.forEach((patient) => {
+      todaysAppointments.push(patient.appointments);
+    });
+    const currentTimestamp = new Date().getTime(); // Get current timestamp in milliseconds
+    const oneHourInMilliseconds = 60 * 60 * 1000; // One hour in milliseconds
+    const appointmentsInAnHour = [];
+    for (const nestedArray of todaysAppointments) {
+      for (const appointment of nestedArray) {
+        const appointmentStartTimestamp = new Date(appointment.start).getTime();
+        const appointmentDate = new Date(
+          appointment.start
+        ).toLocaleDateString();
+
+        const isSameDay =
+          appointmentDate === new Date(currentTimestamp).toLocaleDateString();
+        const isFuture = appointmentStartTimestamp > currentTimestamp;
+
+        if (
+          appointmentStartTimestamp - currentTimestamp <=
+            oneHourInMilliseconds &&
+          isSameDay &&
+          isFuture
+        ) {
+          // If the appointment is an hour away or less and on the same day, add it to the filteredAppointments array
+          
+          appointmentsInAnHour.push(appointment);
+        }
+      }
+    }
+    setAppointments(appointmentsInAnHour);
+  };
+
   useEffect(() => {
     if (clinic?.id) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
+        appointmentsInOneHour(payload as Patient[]);
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
             patient?.appointments[0]?.start as Date
@@ -132,72 +170,83 @@ export default function Account({ params }: Params) {
           <h1 className='text-[20px]'>Hi, {clinic?.clinicName}</h1>
           <div className='flex items-center gap-5'>
             <p className='text-[15px] mt-2 flex items-center gap-2'>
-              <FcCalendar /> <span className='text-gray-400'>{todaysDate}</span>
+              <FcCalendar size={20} />{" "}
+              <span className='text-gray-400'>{todaysDate}</span>
             </p>
             <p className='text-[15px] mt-2 flex items-center gap-2'>
-              <FcClock />
+              <FcClock size={20} />
               <span className='text-gray-400'>{formattedTime}</span>
             </p>
           </div>
         </div>
-        <Button
-          aria-controls={open ? "demo-customized-menu" : undefined}
-          aria-haspopup='true'
-          aria-expanded={open ? "true" : undefined}
-          disableElevation
-          endIcon={<BsChevronDown size={15} />}
-          onClick={handleClick}
-          className='bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center'
-        >
-          <FiSettings size={20} />
-        </Button>
-        <StyledMenu
-          id='demo-customized-menu'
-          MenuListProps={{
-            "aria-labelledby": "demo-customized-button",
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleLogout} disableRipple className='flex gap-6'>
-            <FiLogOut />
-            Log Out
-          </MenuItem>
-        </StyledMenu>
-      </div>
-      <div className='p-4 text-[14px]'>
-        <p className='mt-2'>Clinic Address: {clinic?.address}</p>
-        <p className='mt-2'>Clinic Email: {clinic?.email}</p>
-      </div>
-      <div className='flex items-center justify-center mt-8'>
-        <div className='grid lg:grid-cols-3 gap-8'>
-          <div className='shadow-lg shadow-gray-400 rounded-lg p-4 w-[250px] h-[250px]'>
-            <h1 className='text-[45px] flex items-center gap-1'>
-              {todaysPatients?.length}
-              <span className='text-[20px] text-gray-400'>
-                / {patients?.length}
-              </span>
-            </h1>
-            <h2 className='text-[14px] text-gray-400'>Todays appointments</h2>
-          </div>
-          <div className='shadow-lg shadow-gray-400 rounded-lg p-4 w-[250px] h-[250px]'>
-            <h1 className='text-[45px]'>{patients?.length}</h1>
-            <h2 className='text-[14px] text-gray-400'>Total Patients</h2>
-          </div>
-          <div className='shadow-lg shadow-gray-400 rounded-lg p-4'></div>
+        <div className='flex items-center gap-8'>
+          {/* <Badge badgeContent={4} color='success'>
+            <div className='rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
+              <IoMdNotificationsOutline color='action' size={30} />
+            </div>
+          </Badge> */}
+          <Button
+            aria-controls={open ? "demo-customized-menu" : undefined}
+            aria-haspopup='true'
+            aria-expanded={open ? "true" : undefined}
+            disableElevation
+            endIcon={<BsChevronDown size={15} />}
+            onClick={handleClick}
+            className='bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center'
+          >
+            <FiSettings size={20} />
+          </Button>
+          <StyledMenu
+            id='demo-customized-menu'
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={handleLogout}
+              disableRipple
+              className='flex gap-6'
+            >
+              <FiLogOut />
+              Log Out
+            </MenuItem>
+          </StyledMenu>
         </div>
       </div>
-      {/* <p>Clinic ID: {params.id.toString()}</p>
-      <p>Clinic Name: {clinic?.clinicName}</p>
-      <p>Clinic Address: {clinic?.address}</p>
-      <p>Clinic Email: {clinic?.email}</p>
-      <button
-        onClick={handleLogout}
-        className='duration-300 hover:scale-110 cursor-pointer hover:bg-slate-200 p-2 rounded-lg bg-[#3BE13B] my-2'
-      >
-        Log out
-      </button> */}
+      {/* <div className='p-4 text-[14px]'>
+        <p className='mt-2'>Clinic Address: {clinic?.address}</p>
+        <p className='mt-2'>Clinic Email: {clinic?.email}</p>
+      </div> */}
+      <div className='grid grid-cols-2'>
+        <div className='flex items-center justify-center mt-8 m-[2rem]'>
+          <div className='grid lg:grid-cols-2 gap-8'>
+            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 w-[220px] h-[200px]'>
+              <h1 className='text-[45px] flex items-center gap-1'>
+                {todaysPatients?.length}
+                <span className='text-[20px] text-gray-400'>
+                  / {patients?.length}
+                </span>
+              </h1>
+              <h2 className='text-[14px] text-gray-400'>Todays appointments</h2>
+            </div>
+            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 w-[220px] h-[200px]'>
+              <h1 className='text-[45px]'>{patients?.length}</h1>
+              <h2 className='text-[14px] text-gray-400'>Total Patients</h2>
+            </div>
+          </div>
+        </div>
+        <div className='m-[2rem] shadow-lg shadow-gray-400 rounded-lg'>
+          <h1 className='font-bold text-lg shadow-lg shadow-gray-400 p-3'>
+            Appointment Reminders
+          </h1>
+          {appointmentsInHour?.map((appointment) => (
+            <div key={appointment.id}></div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

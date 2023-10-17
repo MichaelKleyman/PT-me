@@ -20,6 +20,26 @@ export interface Patient {
   createdAt?: Date | undefined;
 }
 
+export interface Appointment {
+  id: number;
+  clinicId: number;
+  patientId: number;
+  start?: Date | undefined;
+  end?: Date | undefined;
+}
+
+export interface Appointments {
+  id: number;
+  clinicId: number;
+  patientId: number;
+  start?: Date | undefined;
+  end?: Date | undefined;
+  patient: {
+    id: number;
+    title: string;
+  };
+}
+
 export interface ExerciseData {
   id: number;
   map: any;

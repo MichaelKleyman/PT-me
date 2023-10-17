@@ -35,6 +35,7 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import SetRecurringAppointment from "./SetRecurringAppointment";
+import { Appointments } from "../../types";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -124,18 +125,6 @@ interface Patient extends Event {
   }[];
   start?: Date | undefined;
   end?: Date | undefined;
-}
-
-interface Appointments {
-  id: number;
-  clinicId: number;
-  patientId: number;
-  start?: Date | undefined;
-  end?: Date | undefined;
-  patient: {
-    id: number;
-    title: string;
-  };
 }
 
 interface DashboardProps {
