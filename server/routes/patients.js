@@ -173,7 +173,7 @@ router.put("/update/:patientId", async (req, res, next) => {
         insurance: req.body.Insurance,
         injuryId:
           typeOfInjuryId === "string"
-            ? injuryOptions.indexOf(req.body["Injury Type"])
+            ? injuryOptions.indexOf(req.body["Injury Type"]) + 1
             : req.body["Injury Type"],
       },
       {
