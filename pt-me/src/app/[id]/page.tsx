@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "../../Redux/store";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import { Button } from "@mui/material";
 import { BsChevronDown } from "react-icons/bs";
+import { FcClock, FcCalendar } from "react-icons/fc";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
@@ -89,8 +90,7 @@ export default function Account({ params }: Params) {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
-            patient?.appointments[patient?.appointments.length - 1]
-              ?.start as Date
+            patient?.appointments[0]?.start as Date
           ).getDate();
           const todaysDate = new Date().getDate();
           if (appointmentDate === todaysDate) {
@@ -114,13 +114,31 @@ export default function Account({ params }: Params) {
   };
 
   const todaysDate = new Date().toDateString();
+  const options: {
+    hour: "2-digit" | "numeric" | undefined;
+    minute: "2-digit" | "numeric" | undefined;
+    hour12: boolean;
+  } = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+  const formattedTime = new Date().toLocaleTimeString(undefined, options);
 
   return (
     <div className='ml-[5rem]'>
       <div className='flex items-center justify-between shadow-lg shadow-gray-400 p-6'>
         <div>
           <h1 className='text-[20px]'>Hi, {clinic?.clinicName}</h1>
-          <p className='text-gray-400 text-[15px] italic mt-2'>{todaysDate}</p>
+          <div className='flex items-center gap-5'>
+            <p className='text-[15px] mt-2 flex items-center gap-2'>
+              <FcCalendar /> <span className='text-gray-400'>{todaysDate}</span>
+            </p>
+            <p className='text-[15px] mt-2 flex items-center gap-2'>
+              <FcClock />
+              <span className='text-gray-400'>{formattedTime}</span>
+            </p>
+          </div>
         </div>
         <Button
           aria-controls={open ? "demo-customized-menu" : undefined}
@@ -154,8 +172,8 @@ export default function Account({ params }: Params) {
       </div>
       <div className='flex items-center justify-center mt-8'>
         <div className='grid lg:grid-cols-3 gap-8'>
-          <div className='shadow-lg shadow-gray-400 rounded-lg p-4'>
-            <h1 className='text-[35px] flex items-center gap-1'>
+          <div className='shadow-lg shadow-gray-400 rounded-lg p-4 w-[250px] h-[250px]'>
+            <h1 className='text-[45px] flex items-center gap-1'>
               {todaysPatients?.length}
               <span className='text-[20px] text-gray-400'>
                 / {patients?.length}
@@ -163,9 +181,9 @@ export default function Account({ params }: Params) {
             </h1>
             <h2 className='text-[14px] text-gray-400'>Todays appointments</h2>
           </div>
-          <div className='shadow-lg shadow-gray-400 rounded-lg p-4'>
-            <h1 className='text-[35px]'>{patients?.length}</h1>
-            <h2>Total Patients</h2>
+          <div className='shadow-lg shadow-gray-400 rounded-lg p-4 w-[250px] h-[250px]'>
+            <h1 className='text-[45px]'>{patients?.length}</h1>
+            <h2 className='text-[14px] text-gray-400'>Total Patients</h2>
           </div>
           <div className='shadow-lg shadow-gray-400 rounded-lg p-4'></div>
         </div>
