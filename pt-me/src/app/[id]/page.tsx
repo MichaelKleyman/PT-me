@@ -103,11 +103,25 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
+const injuryDictionary = [
+  "Shoulders",
+  "Back",
+  "Knee",
+  "Hip",
+  "Neck",
+  "Wrist/Hand",
+  "Ankle/Foot",
+  "Abdominal",
+  "Gluteal",
+];
+
 export default function Account({ params }: Params) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [patients, setPatients] = useState<Patient[]>();
   const [todaysPatients, setTodaysPatients] = useState<Patient[]>();
   const [appointmentsInHour, setAppointments] = useState<Patient[]>([]);
+  const [commonInjury, setCommonInjury] = useState<string>();
+  const [percentageInjury, setPercentageInjury] = useState<string>();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -143,6 +157,26 @@ export default function Account({ params }: Params) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
+        const injuryCount: any = {};
+        (payload as Patient[]).forEach((patient) => {
+          const injuryId = patient.injuryId;
+          injuryCount[injuryId] = (injuryCount[injuryId] || 0) + 1;
+        });
+        let mostCommonInjuryId!: number;
+        let maxCount = 0;
+
+        for (const id in injuryCount) {
+          if (injuryCount[id] > maxCount) {
+            maxCount = injuryCount[id];
+            mostCommonInjuryId = parseInt(id);
+          }
+        }
+
+        // Calculate the percentage
+        const percentage = (maxCount / (payload as Patient[]).length) * 100;
+        setCommonInjury(injuryDictionary[mostCommonInjuryId - 1]);
+        setPercentageInjury(percentage + "%");
+
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
             patient?.appointments[0]?.start as Date
@@ -201,11 +235,6 @@ export default function Account({ params }: Params) {
           </div>
         </div>
         <div className='flex items-center gap-8'>
-          {/* <Badge badgeContent={4} color='success'>
-            <div className='rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
-              <IoMdNotificationsOutline color='action' size={30} />
-            </div>
-          </Badge> */}
           <Button
             aria-controls={open ? "demo-customized-menu" : undefined}
             aria-haspopup='true'
@@ -241,24 +270,36 @@ export default function Account({ params }: Params) {
         <p className='mt-2'>Clinic Address: {clinic?.address}</p>
         <p className='mt-2'>Clinic Email: {clinic?.email}</p>
       </div> */}
-      <div className='grid grid-cols-2'>
-        <div className='flex items-center justify-center mt-8 m-[2rem]'>
-          <div className='grid lg:grid-cols-2 gap-8'>
-            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 w-[220px] h-[200px]'>
-              <h1 className='text-[45px] flex items-center gap-1'>
+      <div className='grid grid-cols-2 gap-8'>
+        <div className='flex items-center justify-center mt-8 m-[2rem] w-full'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
+              <h1 className='text-[40px] flex items-center gap-1'>
                 {todaysPatients?.length}
                 <span className='text-[20px] text-gray-400'>
                   / {patients?.length}
                 </span>
               </h1>
-              <h2 className='text-[14px] text-gray-400'>Todays appointments</h2>
+              <h2 className='text-[18px] text-gray-400'>Todays appointments</h2>
             </div>
-            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 w-[220px] h-[200px]'>
-              <h1 className='text-[45px]'>{patients?.length}</h1>
-              <h2 className='text-[14px] text-gray-400'>Total Patients</h2>
+            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
+              <h1 className='text-[40px]'>{patients?.length}</h1>
+              <h2 className='text-[16px] text-gray-400'>Total Patients</h2>
+            </div>
+            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
+              <div className='flex items-center justify-between'>
+                <h1 className='text-[30px]'>{commonInjury}</h1>
+                <h2 className='rounded shadow-lg shadow-gray-500 p-2 z-50 bg-white'>
+                  {percentageInjury}
+                </h2>
+              </div>
+              <h2 className='text-[16px] text-gray-400'>
+                Most Common Injuries
+              </h2>
             </div>
           </div>
         </div>
+
         <div className='relative m-[2rem] shadow-lg shadow-gray-400 rounded-lg'>
           {appointmentsInHour?.length > 0 && (
             <div className='z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
@@ -275,7 +316,11 @@ export default function Account({ params }: Params) {
               (In an hour)
             </span>
           </h1>
-          <div className='h-[200px] overflow-y-scroll'>
+          <div
+            className={`h-[200px] ${
+              appointmentsInHour?.length > 0 && "overflow-y-scroll"
+            }`}
+          >
             {appointmentsInHour.length > 0 ? (
               appointmentsInHour
                 ?.sort(

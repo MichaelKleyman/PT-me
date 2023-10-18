@@ -421,7 +421,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                               open={openRecurring}
                               onClose={handleCloseRecurring}
                             >
-                              {patientRecurring?.title}
                               <SetRecurringAppointment
                                 handleCloseRecurring={handleCloseRecurring}
                                 setMakeAppointment={setMakeAppointment}
