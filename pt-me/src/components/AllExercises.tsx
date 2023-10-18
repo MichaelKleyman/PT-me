@@ -13,6 +13,8 @@ import { IoMdAddCircle } from "react-icons/io";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import Image from "next/legacy/image";
+import emptyImage from "../images/empty.jpg";
 
 interface Exercise {
   id: number;
@@ -134,153 +136,165 @@ export default function AllExercises() {
   const pagesVisited = pageNumber * exercisesPerPage;
   const pagesVisited2 = pageNumber2 * exercisesPerPage;
 
-  const displaySpecificExercise = specificExercise
-    .sort((a, b) => a.id - b.id)
-    .filter((ex) => ex.name.toLowerCase().includes(searchInput))
-    .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
-    .map((exercise, i) => {
-      return (
-        <div key={i} className='p-2'>
-          <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
-            <div className='p-3 text-xl flex items-center justify-between'>
-              <div className='flex items-center justify-between gap-4'>
-                <PopupState variant='popover' popupId='demo-popup-popover'>
-                  {(popupState) => (
-                    <div>
-                      <button
-                        {...bindTrigger(popupState)}
-                        className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
-                      >
-                        <BsThreeDotsVertical color='#B2BEB5' size={15} />
-                      </button>
-                      <Popover
-                        {...bindPopover(popupState)}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "center",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "center",
-                        }}
-                      >
-                        <Typography sx={{ p: 2 }}>
-                          <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
-                            <Link
-                              href={`/exercises/edit-exercise/${exercise.id}`}
-                            >
-                              Edit
-                            </Link>
-                          </div>
-                          <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
-                            Remove
-                          </button>
-                        </Typography>
-                      </Popover>
-                    </div>
-                  )}
-                </PopupState>
-                <p
-                  className={`tracking-wide ${
-                    exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
-                  }`}
+  const displaySpecificExercise = specificExercise.length ? (
+    specificExercise
+      .sort((a, b) => a.id - b.id)
+      .filter((ex) => ex.name.toLowerCase().includes(searchInput))
+      .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
+      .map((exercise, i) => {
+        return (
+          <div key={i} className='p-2'>
+            <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+              <div className='p-3 text-xl flex items-center justify-between'>
+                <div className='flex items-center justify-between gap-4'>
+                  <PopupState variant='popover' popupId='demo-popup-popover'>
+                    {(popupState) => (
+                      <div>
+                        <button
+                          {...bindTrigger(popupState)}
+                          className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                        >
+                          <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                        </button>
+                        <Popover
+                          {...bindPopover(popupState)}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }}
+                        >
+                          <Typography sx={{ p: 2 }}>
+                            <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                              <Link
+                                href={`/exercises/edit-exercise/${exercise.id}`}
+                              >
+                                Edit
+                              </Link>
+                            </div>
+                            <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                              Remove
+                            </button>
+                          </Typography>
+                        </Popover>
+                      </div>
+                    )}
+                  </PopupState>
+                  <p
+                    className={`tracking-wide ${
+                      exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
+                    }`}
+                  >
+                    {exercise.name}
+                  </p>
+                </div>
+                <Link
+                  href={`/exercises/${exercise.id}`}
+                  className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
                 >
-                  {exercise.name}
-                </p>
+                  View Exercise
+                </Link>
               </div>
-              <Link
-                href={`/exercises/${exercise.id}`}
-                className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
-              >
-                View Exercise
-              </Link>
-            </div>
-            <div className='ratio ratio-1x1 p-6'>
-              <Iframe
-                url={exercise.videoLink}
-                width='360'
-                height='315'
-                allowFullScreen
-              />
+              <div className='ratio ratio-1x1 p-6'>
+                <Iframe
+                  url={exercise.videoLink}
+                  width='360'
+                  height='315'
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
-        </div>
-      );
-    });
+        );
+      })
+  ) : (
+    <div className='flex items-center justify-center'>
+      <Image src={emptyImage} alt='nothing-found' height={500} width={500} />
+    </div>
+  );
 
-  const displayAllExercises = exercises
-    .sort((a, b) => a.id - b.id)
-    .filter((ex) => ex.name.toLowerCase().includes(searchInput))
-    .slice(pagesVisited, pagesVisited + exercisesPerPage)
-    .map((exercise, i) => {
-      return (
-        <div key={i} className='p-2'>
-          <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
-            <div className='p-3 text-xl flex justify-between items-center'>
-              <div className='flex items-center justify-between gap-4'>
-                <PopupState variant='popover' popupId='demo-popup-popover'>
-                  {(popupState) => (
-                    <div>
-                      <button
-                        {...bindTrigger(popupState)}
-                        className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
-                      >
-                        <BsThreeDotsVertical color='#B2BEB5' size={15} />
-                      </button>
-                      <Popover
-                        {...bindPopover(popupState)}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "center",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "center",
-                        }}
-                      >
-                        <Typography sx={{ p: 2 }}>
-                          <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
-                            <Link
-                              href={`/exercises/edit-exercise/${exercise.id}`}
-                            >
-                              Edit
-                            </Link>
-                          </div>
-                          <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
-                            Remove
-                          </button>
-                        </Typography>
-                      </Popover>
-                    </div>
-                  )}
-                </PopupState>
-                <p
-                  className={`tracking-wide ${
-                    exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
-                  }`}
+  const displayAllExercises = exercises.length ? (
+    exercises
+      .sort((a, b) => a.id - b.id)
+      .filter((ex) => ex.name.toLowerCase().includes(searchInput))
+      .slice(pagesVisited, pagesVisited + exercisesPerPage)
+      .map((exercise, i) => {
+        return (
+          <div key={i} className='p-2'>
+            <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
+              <div className='p-3 text-xl flex justify-between items-center'>
+                <div className='flex items-center justify-between gap-4'>
+                  <PopupState variant='popover' popupId='demo-popup-popover'>
+                    {(popupState) => (
+                      <div>
+                        <button
+                          {...bindTrigger(popupState)}
+                          className='rounded-full p-2 bg-slate-100 shadow-lg shadow-gray-300 duration-300 hover:scale-110 hover:bg-slate-200 hover:shadow-gray-400'
+                        >
+                          <BsThreeDotsVertical color='#B2BEB5' size={15} />
+                        </button>
+                        <Popover
+                          {...bindPopover(popupState)}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }}
+                        >
+                          <Typography sx={{ p: 2 }}>
+                            <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                              <Link
+                                href={`/exercises/edit-exercise/${exercise.id}`}
+                              >
+                                Edit
+                              </Link>
+                            </div>
+                            <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                              Remove
+                            </button>
+                          </Typography>
+                        </Popover>
+                      </div>
+                    )}
+                  </PopupState>
+                  <p
+                    className={`tracking-wide ${
+                      exercise.name.length > 21 ? "text-[14px]" : "text-[18px]"
+                    }`}
+                  >
+                    {exercise.name}
+                  </p>
+                </div>
+                <Link
+                  href={`/exercises/${exercise.id}`}
+                  className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
                 >
-                  {exercise.name}
-                </p>
+                  View Exercise
+                </Link>
               </div>
-              <Link
-                href={`/exercises/${exercise.id}`}
-                className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
-              >
-                View Exercise
-              </Link>
-            </div>
-            <div className='ratio ratio-1x1 flex items-center justify-center'>
-              <Iframe
-                url={exercise.videoLink}
-                width='360'
-                height='315'
-                allowFullScreen
-              />
+              <div className='ratio ratio-1x1 flex items-center justify-center'>
+                <Iframe
+                  url={exercise.videoLink}
+                  width='360'
+                  height='315'
+                  allowFullScreen
+                />
+              </div>
             </div>
           </div>
-        </div>
-      );
-    });
+        );
+      })
+  ) : (
+    <div className='flex items-center justify-center'>
+      <Image src={emptyImage} alt='nothing-found' height={500} width={500} />
+    </div>
+  );
 
   const searchAllExercisesResults = exercises.filter((ex: Exercise) =>
     ex.name.toLowerCase().includes(searchInput)
@@ -371,7 +385,11 @@ export default function AllExercises() {
       <div className='mt-3 w-[100%] p-3 grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
         {selected === "All" && displayAllExercises}
       </div>
-      <div className='mt-3 w-[100%] p-3 grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+      <div
+        className={`mt-3 w-[100%] p-3 ${
+          specificExercise.length ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" : ""
+        }`}
+      >
         {selected !== "All" && displaySpecificExercise}
       </div>
       {selected === "All" ? (

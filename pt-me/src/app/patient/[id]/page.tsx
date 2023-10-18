@@ -25,10 +25,7 @@ import {
 } from "@/Redux/Features/patients/patientSlice";
 import type { AppDispatch } from "@/Redux/store";
 import { useDispatch } from "react-redux";
-import {
-  MdOutlineTipsAndUpdates,
-  MdOutlineAddCircleOutline,
-} from "react-icons/md";
+import { MdOutlineTipsAndUpdates } from "react-icons/md";
 import { FaExpand, FaRegCalendarCheck } from "react-icons/fa";
 import { CLIENT, BASE_URL } from "../../../components/api";
 import {
@@ -56,6 +53,8 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import Image from "next/legacy/image";
+import emptyImage from "../../../images/empty.jpg";
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -558,19 +557,19 @@ export default function Patient({ params }: Params) {
           </div>
           <div className='relative'>
             <div className='flex justify-center w-full gap-5'>
-              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
                 <FiPhone />
                 <p className='hidden sm:block md:hidden lg:block'>
                   {patient?.phoneNumber}
                 </p>
               </div>
-              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
+              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
                 <AiOutlineMail />
                 <p className='hidden sm:block md:hidden lg:block'>
                   {patient?.email}
                 </p>
               </div>
-              <div className='cursor-pointer duration-300 hover:scale-110 hover:bg-green-500 hover:border-none hover:text-white border border-green-300 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
                 <BsFileMedical />
                 <p className='hidden sm:block md:hidden lg:block'>
                   {patient?.insurance}
@@ -743,8 +742,14 @@ export default function Patient({ params }: Params) {
                       </Draggable>
                     ))
                   ) : (
-                    <div className='m-3 p-7 tracking-widest text-center'>
-                      <p>No exercises for this patient.</p>
+                    <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
+                      {/* <p>No exercises for this patient.</p> */}
+                      <Image
+                        src={emptyImage}
+                        alt='nothing-found'
+                        height={200}
+                        width={200}
+                      />
                       <Link
                         href='/exercises'
                         className='text-blue-600 hover:underline'
@@ -929,78 +934,89 @@ export default function Patient({ params }: Params) {
           </Toolbar>
         </AppBar>
         <DialogContent>
-          <table className='border-collapse m-4 w-full'>
-            <thead>
-              <tr>
-                <th className='text-start px-6 py-5 font-normal text-green-600'>
-                  Exercise Name
-                </th>
-                <th className='text-start px-6 py-5 font-normal text-green-600'>
-                  Repetitions
-                </th>
-                <th className='text-start px-6 py-5 font-normal text-green-600'>
-                  Assigned On
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {schedule.map((exerciseObj, index) => (
-                <tr
-                  key={exerciseObj.id}
-                  className={`hover:shadow-lg ${
-                    index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
-                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 `}
-                >
-                  <td className=' px-6'>
-                    <h1 className='p-8'>{exerciseObj.exercise?.name}</h1>
-                  </td>
-                  <td className=' px-6 py-5'>
-                    <div className='flex gap-3'>
-                      <div>
-                        {!update ? (
-                          `${exerciseObj.sets}`
-                        ) : (
-                          <input
-                            onChange={(e) =>
-                              handleSetsChange(exerciseObj.id, e)
-                            }
-                            type='text'
-                            className='border border-green-500 w-6 rounded-sm text-center'
-                            value={`${exerciseObj.sets}`}
-                          />
-                        )}
-                      </div>
-                      <p>x</p>
-                      <div>
-                        {!update ? (
-                          `${exerciseObj.reps}`
-                        ) : (
-                          <input
-                            onChange={(e) =>
-                              handleRepsChange(
-                                exerciseObj.id,
-                                exerciseObj.reps,
-                                e
-                              )
-                            }
-                            type='text'
-                            className='border border-green-500 w-6 rounded-sm text-center'
-                            value={`${exerciseObj.reps}`}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className='text-[15px] text-blue-600'>
-                    <div className='flex items-center justify-center gap-5'>
-                      <FaRegCalendarCheck />
-                      <p>{new Date(exerciseObj.createdAt).toDateString()}</p>
-                    </div>
-                  </td>
+          {schedule.length ? (
+            <table className='border-collapse m-4 w-full'>
+              <thead>
+                <tr>
+                  <th className='text-start px-6 py-5 font-normal text-green-600'>
+                    Exercise Name
+                  </th>
+                  <th className='text-start px-6 py-5 font-normal text-green-600'>
+                    Repetitions
+                  </th>
+                  <th className='text-start px-6 py-5 font-normal text-green-600'>
+                    Assigned On
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {schedule.map((exerciseObj, index) => (
+                  <tr
+                    key={exerciseObj.id}
+                    className={`hover:shadow-lg ${
+                      index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
+                    } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 `}
+                  >
+                    <td className=' px-6'>
+                      <h1 className='p-8'>{exerciseObj.exercise?.name}</h1>
+                    </td>
+                    <td className=' px-6 py-5'>
+                      <div className='flex gap-3'>
+                        <div>
+                          {!update ? (
+                            `${exerciseObj.sets}`
+                          ) : (
+                            <input
+                              onChange={(e) =>
+                                handleSetsChange(exerciseObj.id, e)
+                              }
+                              type='text'
+                              className='border border-green-500 w-6 rounded-sm text-center'
+                              value={`${exerciseObj.sets}`}
+                            />
+                          )}
+                        </div>
+                        <p>x</p>
+                        <div>
+                          {!update ? (
+                            `${exerciseObj.reps}`
+                          ) : (
+                            <input
+                              onChange={(e) =>
+                                handleRepsChange(
+                                  exerciseObj.id,
+                                  exerciseObj.reps,
+                                  e
+                                )
+                              }
+                              type='text'
+                              className='border border-green-500 w-6 rounded-sm text-center'
+                              value={`${exerciseObj.reps}`}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className='text-[15px] text-blue-600'>
+                      <div className='flex items-center justify-center gap-5'>
+                        <FaRegCalendarCheck />
+                        <p>{new Date(exerciseObj.createdAt).toDateString()}</p>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className='flex items-center justify-center h-screen'>
+              <Image
+                src={emptyImage}
+                alt='nothing-found'
+                height={500}
+                width={500}
+              />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

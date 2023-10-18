@@ -98,8 +98,6 @@ export default function EditPatient({ patientId }: Props) {
     getPatient();
   }, []);
 
-  console.log(injuryTypeOptions[injuryOptionIndex as number]);
-
   const genderController = useController({
     name: "Gender",
     control,

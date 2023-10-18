@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { logout, me } from "@/Redux/Features/auth/authSlice";
 import { AppDispatch, RootState } from "../../Redux/store";
 import { FiSettings, FiLogOut } from "react-icons/fi";
-import { Button } from "@mui/material";
+import { Avatar, Button, Stack } from "@mui/material";
 import { BsChevronDown } from "react-icons/bs";
 import { FcClock, FcCalendar } from "react-icons/fc";
 import Menu, { MenuProps } from "@mui/material/Menu";
@@ -15,7 +15,42 @@ import { styled, alpha } from "@mui/material/styles";
 import { Patient } from "../../../types";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import Badge from "@mui/material/Badge";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoIosArrowForward, IoMdNotificationsOutline } from "react-icons/io";
+import Link from "next/link";
+import Image from "next/legacy/image";
+import noAppointmentsImage from "../../images/none.jpg";
+
+function stringToColor(string: string) {
+  if (!string) return "";
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name: string) {
+  const sanitizedName = name || "";
+
+  return {
+    sx: {
+      bgcolor: stringToColor(sanitizedName),
+    },
+    children: `${sanitizedName.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
+  };
+}
 
 type Obj = {
   id: Number;
@@ -72,7 +107,7 @@ export default function Account({ params }: Params) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [patients, setPatients] = useState<Patient[]>();
   const [todaysPatients, setTodaysPatients] = useState<Patient[]>();
-  const [appointmentsInHour, setAppointments] = useState<any[]>();
+  const [appointmentsInHour, setAppointments] = useState<Patient[]>([]);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -87,37 +122,20 @@ export default function Account({ params }: Params) {
   const router = useRouter();
 
   const appointmentsInOneHour = (patients: Patient[]) => {
-    const todaysAppointments: any[] = [];
-    patients.forEach((patient) => {
-      todaysAppointments.push(patient.appointments);
-    });
-    const currentTimestamp = new Date().getTime(); // Get current timestamp in milliseconds
-    const oneHourInMilliseconds = 60 * 60 * 1000; // One hour in milliseconds
-    const appointmentsInAnHour = [];
-    for (const nestedArray of todaysAppointments) {
-      for (const appointment of nestedArray) {
-        const appointmentStartTimestamp = new Date(appointment.start).getTime();
-        const appointmentDate = new Date(
-          appointment.start
-        ).toLocaleDateString();
-
-        const isSameDay =
-          appointmentDate === new Date(currentTimestamp).toLocaleDateString();
-        const isFuture = appointmentStartTimestamp > currentTimestamp;
-
-        if (
-          appointmentStartTimestamp - currentTimestamp <=
-            oneHourInMilliseconds &&
-          isSameDay &&
-          isFuture
-        ) {
-          // If the appointment is an hour away or less and on the same day, add it to the filteredAppointments array
-          
-          appointmentsInAnHour.push(appointment);
+    const currentTime = new Date();
+    const oneHourFromNow = new Date(currentTime.getTime() + 60 * 60 * 1000);
+    const patientsWithAppointmentsInNextHour = patients.filter((patient) => {
+      const hasAppointmentInNextHour = patient.appointments.some(
+        (appointment) => {
+          const appointmentStart = new Date(appointment.start as Date);
+          return (
+            appointmentStart > currentTime && appointmentStart <= oneHourFromNow
+          );
         }
-      }
-    }
-    setAppointments(appointmentsInAnHour);
+      );
+      return hasAppointmentInNextHour;
+    });
+    return patientsWithAppointmentsInNextHour;
   };
 
   useEffect(() => {
@@ -125,7 +143,6 @@ export default function Account({ params }: Params) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
-        appointmentsInOneHour(payload as Patient[]);
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
             patient?.appointments[0]?.start as Date
@@ -135,6 +152,8 @@ export default function Account({ params }: Params) {
             return patient;
           }
         });
+        const apts = appointmentsInOneHour(todaysPatients as Patient[]);
+        setAppointments(apts);
         setTodaysPatients(todaysPatients);
         setPatients(payload as Patient[]);
       }
@@ -162,6 +181,8 @@ export default function Account({ params }: Params) {
     hour12: true,
   };
   const formattedTime = new Date().toLocaleTimeString(undefined, options);
+
+  console.log(appointmentsInHour);
 
   return (
     <div className='ml-[5rem]'>
@@ -238,13 +259,91 @@ export default function Account({ params }: Params) {
             </div>
           </div>
         </div>
-        <div className='m-[2rem] shadow-lg shadow-gray-400 rounded-lg'>
-          <h1 className='font-bold text-lg shadow-lg shadow-gray-400 p-3'>
-            Appointment Reminders
+        <div className='relative m-[2rem] shadow-lg shadow-gray-400 rounded-lg'>
+          {appointmentsInHour?.length > 0 && (
+            <div className='z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
+              <Badge badgeContent={appointmentsInHour?.length} color='success'>
+                <div className='z-50 rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
+                  <IoMdNotificationsOutline color='action' size={30} />
+                </div>
+              </Badge>
+            </div>
+          )}
+          <h1 className='font-bold text-lg shadow-md shadow-gray-400 p-3'>
+            Appointment Reminders{" "}
+            <span className='text-gray-400 text-[14px] font-normal ml-2'>
+              (In an hour)
+            </span>
           </h1>
-          {appointmentsInHour?.map((appointment) => (
-            <div key={appointment.id}></div>
-          ))}
+          <div className='h-[200px] overflow-y-scroll'>
+            {appointmentsInHour.length > 0 ? (
+              appointmentsInHour
+                ?.sort(
+                  (a, b) =>
+                    new Date(a?.appointments[0].start as Date).getTime() -
+                    new Date(b?.appointments[0].start as Date).getTime()
+                )
+                .map((appointment) => (
+                  <div
+                    key={appointment.id}
+                    className='p-3 border-b grid grid-cols-3'
+                  >
+                    <div className='flex items-center gap-3'>
+                      <Stack direction='row' spacing={2}>
+                        <Avatar
+                          {...stringAvatar(appointment?.title || "")}
+                          sx={{
+                            width: 36,
+                            height: 36,
+                            bgcolor: `${stringToColor(
+                              appointment?.title || ""
+                            )}`,
+                            fontSize: "12px",
+                          }}
+                        />
+                      </Stack>
+                      <div>
+                        <h1>{appointment.title}</h1>
+                        <p className='text-gray-400 text-[12px]'>
+                          {appointment.gender}, {appointment.age} Years
+                        </p>
+                      </div>
+                    </div>
+                    <div className='flex items-center justify-center text-sm'>
+                      {new Date(
+                        appointment?.appointments?.[0]?.start as Date
+                      ).toLocaleTimeString(undefined, options)}{" "}
+                      -{" "}
+                      {new Date(
+                        appointment?.appointments?.[0]?.end as Date
+                      ).toLocaleTimeString(undefined, options)}
+                    </div>
+                    <div className='flex items-center justify-center text-sm'>
+                      <Link
+                        href={`/patient/${appointment.id}`}
+                        className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+                      >
+                        <Button
+                          variant='outlined'
+                          endIcon={<IoIosArrowForward />}
+                        >
+                          View
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))
+            ) : (
+              <div className='flex items-center justify-center m-3 mt-3'>
+                <Image
+                  src={noAppointmentsImage}
+                  alt='nothing-found'
+                  height={200}
+                  width={200}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
