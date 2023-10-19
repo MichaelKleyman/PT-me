@@ -19,6 +19,7 @@ import { IoIosArrowForward, IoMdNotificationsOutline } from "react-icons/io";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import noAppointmentsImage from "../../images/none.jpg";
+import DoughnutChart from "@/components/DoughnutChart";
 
 function stringToColor(string: string) {
   if (!string) return "";
@@ -103,23 +104,12 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-const injuryDictionary = [
-  "Shoulders",
-  "Back",
-  "Knee",
-  "Hip",
-  "Neck",
-  "Wrist/Hand",
-  "Ankle/Foot",
-  "Abdominal",
-  "Gluteal",
-];
-
 export default function Account({ params }: Params) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [patients, setPatients] = useState<Patient[]>();
   const [todaysPatients, setTodaysPatients] = useState<Patient[]>();
   const [appointmentsInHour, setAppointments] = useState<Patient[]>([]);
+
   const [commonInjury, setCommonInjury] = useState<string>();
   const [percentageInjury, setPercentageInjury] = useState<string>();
   const open = Boolean(anchorEl);
@@ -157,25 +147,21 @@ export default function Account({ params }: Params) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
-        const injuryCount: any = {};
-        (payload as Patient[]).forEach((patient) => {
-          const injuryId = patient.injuryId;
-          injuryCount[injuryId] = (injuryCount[injuryId] || 0) + 1;
-        });
-        let mostCommonInjuryId!: number;
-        let maxCount = 0;
 
-        for (const id in injuryCount) {
-          if (injuryCount[id] > maxCount) {
-            maxCount = injuryCount[id];
-            mostCommonInjuryId = parseInt(id);
-          }
-        }
+        // let mostCommonInjuryId!: number;
+        // let maxCount = 0;
+        // for (const id in injuryCount) {
+        //   if (injuryCount[id] > maxCount) {
+        //     maxCount = injuryCount[id];
+        //     mostCommonInjuryId = parseInt(id);
+        //   }
+        // }
 
         // Calculate the percentage
-        const percentage = (maxCount / (payload as Patient[]).length) * 100;
-        setCommonInjury(injuryDictionary[mostCommonInjuryId - 1]);
-        setPercentageInjury(percentage + "%");
+        // const percentage = (maxCount / (payload as Patient[]).length) * 100;
+        // console.log(percentage);
+        // setCommonInjury(injuryDictionary[mostCommonInjuryId - 1]);
+        // setPercentageInjury(percentage + "%");
 
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
@@ -215,8 +201,6 @@ export default function Account({ params }: Params) {
     hour12: true,
   };
   const formattedTime = new Date().toLocaleTimeString(undefined, options);
-
-  console.log(appointmentsInHour);
 
   return (
     <div className='ml-[5rem]'>
@@ -272,21 +256,8 @@ export default function Account({ params }: Params) {
       </div> */}
       <div className='grid grid-cols-2 gap-8'>
         <div className='flex items-center justify-center mt-8 m-[2rem] w-full'>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
-              <h1 className='text-[40px] flex items-center gap-1'>
-                {todaysPatients?.length}
-                <span className='text-[20px] text-gray-400'>
-                  / {patients?.length}
-                </span>
-              </h1>
-              <h2 className='text-[18px] text-gray-400'>Todays appointments</h2>
-            </div>
-            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
-              <h1 className='text-[40px]'>{patients?.length}</h1>
-              <h2 className='text-[16px] text-gray-400'>Total Patients</h2>
-            </div>
-            <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+            {/* <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
               <div className='flex items-center justify-between'>
                 <h1 className='text-[30px]'>{commonInjury}</h1>
                 <h2 className='rounded shadow-lg shadow-gray-500 p-2 z-50 bg-white'>
@@ -296,98 +267,121 @@ export default function Account({ params }: Params) {
               <h2 className='text-[16px] text-gray-400'>
                 Most Common Injuries
               </h2>
+            </div> */}
+            <div>
+              <DoughnutChart patients={patients} />
             </div>
           </div>
         </div>
 
-        <div className='relative m-[2rem] shadow-lg shadow-gray-400 rounded-lg'>
-          {appointmentsInHour?.length > 0 && (
-            <div className='z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
-              <Badge badgeContent={appointmentsInHour?.length} color='success'>
-                <div className='z-50 rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
-                  <IoMdNotificationsOutline color='action' size={30} />
-                </div>
-              </Badge>
+        <div className='mt-1'>
+          <div className='grid grid-cols-2 gap-4 m-[1.5rem]'>
+            <div className='shadow-lg shadow-gray-400 rounded-lg p-4 card'>
+              <h1 className='text-[40px] flex items-center gap-1'>
+                {todaysPatients?.length}
+                <span className='text-[20px] text-gray-400'>
+                  / {patients?.length}
+                </span>
+              </h1>
+              <h2 className='text-[18px] text-gray-400'>Todays appointments</h2>
             </div>
-          )}
-          <h1 className='font-bold text-lg shadow-md shadow-gray-400 p-3'>
-            Appointment Reminders{" "}
-            <span className='text-gray-400 text-[14px] font-normal ml-2'>
-              (In an hour)
-            </span>
-          </h1>
-          <div
-            className={`h-[200px] ${
-              appointmentsInHour?.length > 0 && "overflow-y-scroll"
-            }`}
-          >
-            {appointmentsInHour.length > 0 ? (
-              appointmentsInHour
-                ?.sort(
-                  (a, b) =>
-                    new Date(a?.appointments[0].start as Date).getTime() -
-                    new Date(b?.appointments[0].start as Date).getTime()
-                )
-                .map((appointment) => (
-                  <div
-                    key={appointment.id}
-                    className='p-3 border-b grid grid-cols-3'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <Stack direction='row' spacing={2}>
-                        <Avatar
-                          {...stringAvatar(appointment?.title || "")}
-                          sx={{
-                            width: 36,
-                            height: 36,
-                            bgcolor: `${stringToColor(
-                              appointment?.title || ""
-                            )}`,
-                            fontSize: "12px",
-                          }}
-                        />
-                      </Stack>
-                      <div>
-                        <h1>{appointment.title}</h1>
-                        <p className='text-gray-400 text-[12px]'>
-                          {appointment.gender}, {appointment.age} Years
-                        </p>
-                      </div>
-                    </div>
-                    <div className='flex items-center justify-center text-sm'>
-                      {new Date(
-                        appointment?.appointments?.[0]?.start as Date
-                      ).toLocaleTimeString(undefined, options)}{" "}
-                      -{" "}
-                      {new Date(
-                        appointment?.appointments?.[0]?.end as Date
-                      ).toLocaleTimeString(undefined, options)}
-                    </div>
-                    <div className='flex items-center justify-center text-sm'>
-                      <Link
-                        href={`/patient/${appointment.id}`}
-                        className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
-                      >
-                        <Button
-                          variant='outlined'
-                          endIcon={<IoIosArrowForward />}
-                        >
-                          View
-                        </Button>
-                      </Link>
-                    </div>
+            <div className='shadow-lg shadow-gray-400 rounded-lg p-4 card'>
+              <h1 className='text-[40px]'>{patients?.length}</h1>
+              <h2 className='text-[16px] text-gray-400'>Total Patients</h2>
+            </div>
+          </div>
+          <div className='relative m-[1.5rem] shadow-lg shadow-gray-400 rounded-lg'>
+            {appointmentsInHour?.length > 0 && (
+              <div className='z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
+                <Badge
+                  badgeContent={appointmentsInHour?.length}
+                  color='success'
+                >
+                  <div className='z-50 rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
+                    <IoMdNotificationsOutline color='action' size={30} />
                   </div>
-                ))
-            ) : (
-              <div className='flex items-center justify-center m-3 mt-3'>
-                <Image
-                  src={noAppointmentsImage}
-                  alt='nothing-found'
-                  height={200}
-                  width={200}
-                />
+                </Badge>
               </div>
             )}
+            <h1 className='font-bold text-lg shadow-md shadow-gray-400 p-3'>
+              Appointment Reminders{" "}
+              <span className='text-gray-400 text-[14px] font-normal ml-2'>
+                (In an hour)
+              </span>
+            </h1>
+            <div
+              className={`h-[200px] ${
+                appointmentsInHour?.length > 0 && "overflow-y-scroll"
+              }`}
+            >
+              {appointmentsInHour.length > 0 ? (
+                appointmentsInHour
+                  ?.sort(
+                    (a, b) =>
+                      new Date(a?.appointments[0].start as Date).getTime() -
+                      new Date(b?.appointments[0].start as Date).getTime()
+                  )
+                  .map((appointment) => (
+                    <div
+                      key={appointment.id}
+                      className='p-3 border-b grid grid-cols-3'
+                    >
+                      <div className='flex items-center gap-3'>
+                        <Stack direction='row' spacing={2}>
+                          <Avatar
+                            {...stringAvatar(appointment?.title || "")}
+                            sx={{
+                              width: 36,
+                              height: 36,
+                              bgcolor: `${stringToColor(
+                                appointment?.title || ""
+                              )}`,
+                              fontSize: "12px",
+                            }}
+                          />
+                        </Stack>
+                        <div>
+                          <h1>{appointment.title}</h1>
+                          <p className='text-gray-400 text-[12px]'>
+                            {appointment.gender}, {appointment.age} Years
+                          </p>
+                        </div>
+                      </div>
+                      <div className='flex items-center justify-center text-sm'>
+                        {new Date(
+                          appointment?.appointments?.[0]?.start as Date
+                        ).toLocaleTimeString(undefined, options)}{" "}
+                        -{" "}
+                        {new Date(
+                          appointment?.appointments?.[0]?.end as Date
+                        ).toLocaleTimeString(undefined, options)}
+                      </div>
+                      <div className='flex items-center justify-center text-sm'>
+                        <Link
+                          href={`/patient/${appointment.id}`}
+                          className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+                        >
+                          <Button
+                            variant='outlined'
+                            endIcon={<IoIosArrowForward />}
+                          >
+                            View
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div className='flex items-center justify-center m-3 mt-3'>
+                  <Image
+                    src={noAppointmentsImage}
+                    alt='nothing-found'
+                    height={200}
+                    width={200}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
