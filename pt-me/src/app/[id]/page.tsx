@@ -257,17 +257,6 @@ export default function Account({ params }: Params) {
       <div className='grid grid-cols-2 gap-8'>
         <div className='flex items-center justify-center mt-8 m-[2rem] w-full'>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-            {/* <div className='card shadow-lg shadow-gray-400 rounded-lg p-4 max-w-[320px] max-h-[280px]'>
-              <div className='flex items-center justify-between'>
-                <h1 className='text-[30px]'>{commonInjury}</h1>
-                <h2 className='rounded shadow-lg shadow-gray-500 p-2 z-50 bg-white'>
-                  {percentageInjury}
-                </h2>
-              </div>
-              <h2 className='text-[16px] text-gray-400'>
-                Most Common Injuries
-              </h2>
-            </div> */}
             <div>
               <DoughnutChart patients={patients} />
             </div>
@@ -292,7 +281,7 @@ export default function Account({ params }: Params) {
           </div>
           <div className='relative m-[1.5rem] shadow-lg shadow-gray-400 rounded-lg'>
             {appointmentsInHour?.length > 0 && (
-              <div className='z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
+              <div className='animate-bounce z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
                 <Badge
                   badgeContent={appointmentsInHour?.length}
                   color='success'
@@ -384,6 +373,10 @@ export default function Account({ params }: Params) {
             </div>
           </div>
         </div>
+      </div>
+      <div className='grid lg:grid-cols-2 gap-8'>
+        <div className='m-[2rem]'>1</div>
+        <div className='m-[2rem]'>2</div>
       </div>
     </div>
   );

@@ -112,7 +112,9 @@ export default function DoughnutChart({ patients }: Props) {
   const innerRadius = radius / 2;
 
   const pie = useMemo(() => {
-    const pieGenerator = d3.pie<any, DataItem>().value((d) => d.value);
+    const pieGenerator = d3
+      .pie<any, DataItem>()
+      .value((d) => (d.value === 0 ? d.value + 7 : d.value));
     return pieGenerator(injuryPercentage);
   }, [injuryPercentage]);
 
@@ -141,7 +143,10 @@ export default function DoughnutChart({ patients }: Props) {
     const isRightLabel = inflexionPoint[0] > 0;
     const labelPosX = inflexionPoint[0] + 50 * (isRightLabel ? 1 : -1);
     const textAnchor = isRightLabel ? "start" : "end";
-    const label = grp.data.name + " (" + grp.value + "%)";
+    const label =
+      grp.value === 7
+        ? grp.data.name + " (" + "0" + "%)"
+        : grp.data.name + " (" + grp.value + "%)";
 
     shapes.push(
       <g
