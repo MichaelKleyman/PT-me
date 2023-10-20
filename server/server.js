@@ -25,11 +25,19 @@ app.get("/", (req, res) => {
 app.use("/auth", require("./auth"));
 app.use("/api", require("./routes"));
 
-// this matches all routes and all methods i.e a centralized error handler
 app.use((req, res, next) => {
-  res.status(404).send({
-    status: 404,
-    error: "Not found",
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
+});
+
+// error handler middleware
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).send({
+    error: {
+      status: error.status || 500,
+      message: error.message || "Internal Server Error",
+    },
   });
 });
 

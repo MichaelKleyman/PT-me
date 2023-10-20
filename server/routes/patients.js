@@ -149,6 +149,7 @@ router.put("/update/:patientId", async (req, res, next) => {
       "Abdominal",
       "Gluteal",
     ];
+    console.log(req.body);
     const newPatientData = await Patients.update(
       {
         title: req.body["First Name"] + " " + req.body["Last Name"],

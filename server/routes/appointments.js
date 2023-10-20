@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { Patients, Appointments } = require("../models");
+const { Op } = require("sequelize");
 
 //GET all appointments in the clinic
 router.get("/:clinicId", async (req, res, next) => {
@@ -17,6 +18,69 @@ router.get("/:clinicId", async (req, res, next) => {
       ],
     });
     res.send(allAppointments);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//GET appointments for the current week
+router.get("/filter-appointments/:filter/:clinicId", async (req, res, next) => {
+  try {
+    // if (req.params.filter === "Current Week") {
+    //   const today = new Date();
+    //   const startOfWeek = new Date(today);
+    //   startOfWeek.setHours(0, 0, 0, 0); // Set to the beginning of the current day
+
+    //   const endOfWeek = new Date(today);
+    //   endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the current day
+
+    //   const dayOfWeek = today.getDay();
+    //   startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek); // Set to Monday of the current week
+    //   endOfWeek.setDate(endOfWeek.getDate() + (6 - dayOfWeek)); // Set to Sunday of the current week
+
+    //   const appointments = await Appointments.findAll({
+    //     where: {
+    //       clinicId: req.params.clinicId,
+    //       start: {
+    //         [Op.gte]: startOfWeek, // Start time greater than or equal to Monday
+    //         [Op.lte]: endOfWeek, // Start time less than or equal to Sunday
+    //       },
+    //     },
+    //   });
+    //   res.send(appointments);
+    // }
+    let start, end;
+    if (req.params.filter === "Current Week") {
+      // Calculate start and end dates for the current week
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+      const dayOfWeek = start.getDay();
+      start.setDate(start.getDate() - dayOfWeek);
+      end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+    } else if (req.params.filter === "Last 30 Days") {
+      // Calculate start and end dates for the last 30 days
+      start = new Date();
+      start.setDate(start.getDate() - 30);
+      start.setHours(0, 0, 0, 0);
+      end = new Date();
+      end.setHours(23, 59, 59, 999);
+    } else {
+      // Handle other filter options here
+      // You can add more conditions for different filters
+    }
+    const appointments = await Appointments.findAll({
+      where: {
+        clinicId: req.params.clinicId,
+        start: {
+          [Op.gte]: start,
+          [Op.lte]: end,
+        },
+      },
+    });
+    res.send(appointments);
   } catch (error) {
     console.error(error);
     next(error);
