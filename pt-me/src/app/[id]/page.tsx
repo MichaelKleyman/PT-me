@@ -20,6 +20,8 @@ import Link from "next/link";
 import Image from "next/legacy/image";
 import noAppointmentsImage from "../../images/none.jpg";
 import DoughnutChart from "@/components/DoughnutChart";
+import AppointmentsChart from "@/components/AppointmentsChart";
+import PatientsChart from "@/components/PatientsChart";
 
 function stringToColor(string: string) {
   if (!string) return "";
@@ -109,9 +111,6 @@ export default function Account({ params }: Params) {
   const [patients, setPatients] = useState<Patient[]>();
   const [todaysPatients, setTodaysPatients] = useState<Patient[]>();
   const [appointmentsInHour, setAppointments] = useState<Patient[]>([]);
-
-  const [commonInjury, setCommonInjury] = useState<string>();
-  const [percentageInjury, setPercentageInjury] = useState<string>();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -147,21 +146,6 @@ export default function Account({ params }: Params) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
-
-        // let mostCommonInjuryId!: number;
-        // let maxCount = 0;
-        // for (const id in injuryCount) {
-        //   if (injuryCount[id] > maxCount) {
-        //     maxCount = injuryCount[id];
-        //     mostCommonInjuryId = parseInt(id);
-        //   }
-        // }
-
-        // Calculate the percentage
-        // const percentage = (maxCount / (payload as Patient[]).length) * 100;
-        // console.log(percentage);
-        // setCommonInjury(injuryDictionary[mostCommonInjuryId - 1]);
-        // setPercentageInjury(percentage + "%");
 
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
@@ -374,9 +358,13 @@ export default function Account({ params }: Params) {
           </div>
         </div>
       </div>
-      <div className='grid lg:grid-cols-2 gap-8'>
-        <div className='m-[2rem]'>1</div>
-        <div className='m-[2rem]'>2</div>
+      <div className='grid lg:grid-cols-2 gap-3'>
+        <div className='m-[2rem]'>
+          <AppointmentsChart clinicId={clinic?.id} />
+        </div>
+        <div className='m-[2rem]'>
+          <PatientsChart />
+        </div>
       </div>
     </div>
   );
