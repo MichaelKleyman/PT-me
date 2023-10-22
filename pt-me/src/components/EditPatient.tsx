@@ -86,10 +86,13 @@ export default function EditPatient({ patientId }: Props) {
       }
       for (let i = 0; i < injuryTypeOptions.length; i++) {
         if (
-          injuryTypeOptions[i].value ===
-          injuryTypeOptions[payload?.injuryId].value
+          injuryTypeOptions[i]?.value ===
+          injuryTypeOptions[payload?.injuryId - 1]?.value
         ) {
-          setInjuryIndex(i - 1);
+          console.log(payload?.injuryId);
+          console.log(injuryTypeOptions[payload?.injuryId - 1]?.value);
+          console.log(injuryTypeOptions[i]?.value);
+          setInjuryIndex(i);
           break;
         }
       }

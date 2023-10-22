@@ -35,7 +35,8 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
 import SetRecurringAppointment from "./SetRecurringAppointment";
-import { Appointments } from "../../types";
+import { Appointment, Appointments } from "../../types";
+import { useRouter } from "next/navigation";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -141,12 +142,13 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [makeAppointment, setMakeAppointment] = useState<boolean>(false);
   const [scheduled, setScheduled] = useState({ clicked: false, id: -1 });
-  const [appointmentId, setAppointmentToDelete] = useState<number>();
+  const [appointment, setAppointmentToDelete] = useState<Appointment>();
   const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openRecurring = Boolean(anchorEl);
+  const router = useRouter();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, obj: Patient) => {
     console.log(obj);
@@ -232,19 +234,23 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   function clickEvent(data: any) {
     console.log(data);
     setOpen(true);
-    setAppointmentToDelete(data.id);
+    setAppointmentToDelete(data);
   }
 
   function handleClose() {
     setOpen(false);
   }
 
+  const handleView = () => {
+    router.push(`/patient/${appointment?.patientId}`);
+  };
+
   const cancelAppointment = async () => {
     await CLIENT.delete(
-      `${BASE_URL}/api/appointments/delete-appointment/${appointmentId}`
+      `${BASE_URL}/api/appointments/delete-appointment/${appointment?.id}`
     );
     const newEventsArray = events?.filter((event) => {
-      if (event.id !== appointmentId) {
+      if (event.id !== appointment?.id) {
         return event;
       }
     });
@@ -341,6 +347,9 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           <DialogActions>
             <Button autoFocus onClick={handleClose}>
               Exit
+            </Button>
+            <Button autoFocus onClick={handleView}>
+              View
             </Button>
             <Button className='text-red-600' onClick={cancelAppointment}>
               Cancel

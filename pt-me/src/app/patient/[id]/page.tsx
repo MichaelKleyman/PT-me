@@ -1,7 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useState, useEffect, forwardRef, ReactElement, Ref } from "react";
+import {
+  useState,
+  useEffect,
+  forwardRef,
+  ReactElement,
+  Ref,
+  ChangeEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
@@ -17,7 +24,7 @@ import {
   AiOutlineEye,
   AiOutlineClose,
 } from "react-icons/ai";
-import { BsFileMedical, BsPrinter, BsSend } from "react-icons/bs";
+import { BsFileMedical, BsDownload, BsSend } from "react-icons/bs";
 import Link from "next/link";
 import {
   fetchPatient,
@@ -55,6 +62,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Image from "next/legacy/image";
 import emptyImage from "../../../images/empty.jpg";
+import ExpandedView from "@/components/ExpandedView";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -124,6 +134,7 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function Patient({ params }: Params) {
+  const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [status, setStatus] = useState<string>();
   const [patient, setPatient] = useState<Patient | undefined>();
@@ -169,6 +180,25 @@ export default function Patient({ params }: Params) {
     getPatient();
     getPatientExercises();
   }, [setExercises]);
+
+  const downloadPDF = () => {
+    const capture = document.querySelector(".content");
+    setLoading(true);
+    html2canvas(capture as HTMLElement).then((canvas) => {
+      const imgData = canvas.toDataURL("img/png");
+      //p is portrait, mm is millimeters, a4 is page size
+      const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: [8, 14],
+      });
+      const componentWidth = doc.internal.pageSize.getWidth();
+      const componentHeight = doc.internal.pageSize.getHeight();
+      doc.addImage(imgData, "PNG", 0, 0, componentWidth, componentHeight);
+      setLoading(false);
+      doc.save("patient-flowsheet.pdf");
+    });
+  };
 
   function stringToColor(string: string) {
     if (!string) return "";
@@ -442,7 +472,14 @@ export default function Patient({ params }: Params) {
   };
 
   const handlePrint = () => {
-    window.print();
+    // window.print();
+    const pdfUrl = "Sample.pdf";
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = "document.pdf"; // specify the filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   interface InjuryDictionary {
@@ -928,95 +965,24 @@ export default function Patient({ params }: Params) {
             <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
               {patient?.title.split(" ")[0]}'s Flowsheet
             </Typography>
-            <Button onClick={handlePrint} autoFocus color='inherit'>
-              <BsPrinter className='p-2' size={35} /> Print
+            <Button
+              // disabled={loading === true}
+              onClick={downloadPDF}
+              autoFocus
+              color='inherit'
+            >
+              <BsDownload className='p-2' size={35} />{" "}
+              {loading ? "Downloading..." : "Download PDF"}
             </Button>
           </Toolbar>
         </AppBar>
-        <DialogContent>
-          {schedule.length ? (
-            <table className='border-collapse m-4 w-full'>
-              <thead>
-                <tr>
-                  <th className='text-start px-6 py-5 font-normal text-green-600'>
-                    Exercise Name
-                  </th>
-                  <th className='text-start px-6 py-5 font-normal text-green-600'>
-                    Repetitions
-                  </th>
-                  <th className='text-start px-6 py-5 font-normal text-green-600'>
-                    Assigned On
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {schedule.map((exerciseObj, index) => (
-                  <tr
-                    key={exerciseObj.id}
-                    className={`hover:shadow-lg ${
-                      index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
-                    } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 `}
-                  >
-                    <td className=' px-6'>
-                      <h1 className='p-8'>{exerciseObj.exercise?.name}</h1>
-                    </td>
-                    <td className=' px-6 py-5'>
-                      <div className='flex gap-3'>
-                        <div>
-                          {!update ? (
-                            `${exerciseObj.sets}`
-                          ) : (
-                            <input
-                              onChange={(e) =>
-                                handleSetsChange(exerciseObj.id, e)
-                              }
-                              type='text'
-                              className='border border-green-500 w-6 rounded-sm text-center'
-                              value={`${exerciseObj.sets}`}
-                            />
-                          )}
-                        </div>
-                        <p>x</p>
-                        <div>
-                          {!update ? (
-                            `${exerciseObj.reps}`
-                          ) : (
-                            <input
-                              onChange={(e) =>
-                                handleRepsChange(
-                                  exerciseObj.id,
-                                  exerciseObj.reps,
-                                  e
-                                )
-                              }
-                              type='text'
-                              className='border border-green-500 w-6 rounded-sm text-center'
-                              value={`${exerciseObj.reps}`}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className='text-[15px] text-blue-600'>
-                      <div className='flex items-center justify-center gap-5'>
-                        <FaRegCalendarCheck />
-                        <p>{new Date(exerciseObj.createdAt).toDateString()}</p>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className='flex items-center justify-center h-screen'>
-              <Image
-                src={emptyImage}
-                alt='nothing-found'
-                height={500}
-                width={500}
-              />
-            </div>
-          )}
+        <DialogContent className='content'>
+          <ExpandedView
+            schedule={schedule}
+            update={update}
+            handleSetsChange={handleSetsChange}
+            handleRepsChange={handleRepsChange}
+          />
         </DialogContent>
       </Dialog>
     </div>

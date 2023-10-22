@@ -80,6 +80,7 @@ export default function AppointmentsChart({ clinicId }: Props) {
     ],
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -98,7 +99,6 @@ export default function AppointmentsChart({ clinicId }: Props) {
         const { data } = await CLIENT.get(
           `${BASE_URL}/api/appointments/filter-appointments/${filter}/${clinicId}`
         );
-
         const sortedData = data.sort(
           (a: Appointment, b: Appointment) =>
             new Date(a.start as Date).getTime() -
@@ -128,7 +128,6 @@ export default function AppointmentsChart({ clinicId }: Props) {
           }
         });
         setQuantity(max + 3);
-
         // Get an array of unique dates and their counts
         const uniqueDates = Object.keys(appointmentData);
         const appointmentCounts = uniqueDates.map(
@@ -148,7 +147,7 @@ export default function AppointmentsChart({ clinicId }: Props) {
       };
       getAppointments();
     }
-  }, [filter]);
+  }, [filter, clinicId]);
 
   const options: any = {
     plugins: {

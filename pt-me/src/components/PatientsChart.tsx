@@ -31,9 +31,9 @@ const options: any = {
   },
   scales: {
     x: {
-      //   grid: {
-      display: false,
-      //   },
+      grid: {
+        display: false,
+      },
     },
     y: {
       min: 2,
