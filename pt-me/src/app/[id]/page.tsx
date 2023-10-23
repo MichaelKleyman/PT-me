@@ -63,7 +63,7 @@ type Params = {
   params: Obj;
 };
 
-export const StyledMenu = styled((props: MenuProps) => (
+const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
