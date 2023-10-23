@@ -63,7 +63,7 @@ type Params = {
   params: Obj;
 };
 
-const StyledMenu = styled((props: MenuProps) => (
+export const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
@@ -80,7 +80,7 @@ const StyledMenu = styled((props: MenuProps) => (
   "& .MuiPaper-root": {
     borderRadius: 6,
     marginTop: theme.spacing(1),
-    minWidth: 180,
+    minWidth: 200,
     color:
       theme.palette.mode === "light"
         ? "rgb(55, 65, 81)"
@@ -265,12 +265,12 @@ export default function Account({ params }: Params) {
           </div>
           <div className='relative m-[1.5rem] shadow-lg shadow-gray-400 rounded-lg'>
             {appointmentsInHour?.length > 0 && (
-              <div className='animate-bounce z-50 absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
+              <div className='animate-bounce absolute -top-1 -left-5 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold'>
                 <Badge
                   badgeContent={appointmentsInHour?.length}
                   color='success'
                 >
-                  <div className='z-50 rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer'>
+                  <div className='z-50 rounded-lg shadow-lg shadow-gray-400 p-2 hover:scale-110 duration-300 cursor-pointer '>
                     <IoMdNotificationsOutline color='action' size={30} />
                   </div>
                 </Badge>
@@ -338,7 +338,7 @@ export default function Account({ params }: Params) {
                             variant='outlined'
                             endIcon={<IoIosArrowForward />}
                           >
-                            View
+                            Remind
                           </Button>
                         </Link>
                       </div>
@@ -358,14 +358,14 @@ export default function Account({ params }: Params) {
           </div>
         </div>
       </div>
-      <div className='grid lg:grid-cols-2 gap-3'>
-        <div className='m-[2rem]'>
-          <AppointmentsChart clinicId={clinic?.id} />
-        </div>
-        <div className='m-[2rem]'>
-          <PatientsChart />
-        </div>
+      {/* <div className='grid lg:grid-cols-2 gap-3'> */}
+      <div className='m-[2rem] flex items-center justify-center'>
+        <AppointmentsChart clinicId={clinic?.id} />
       </div>
+      {/* <div className='m-[2rem]'>
+          <PatientsChart />
+        </div> */}
+      {/* </div> */}
     </div>
   );
 }

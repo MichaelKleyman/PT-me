@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import {
+import React, {
   useState,
   useEffect,
   forwardRef,
@@ -14,7 +14,14 @@ import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { GrCalendar } from "react-icons/gr";
 import { BiSolidCheckbox } from "react-icons/bi";
-import { BsDot } from "react-icons/bs";
+import {
+  BsDot,
+  BsFillBellFill,
+  BsFileMedical,
+  BsDownload,
+  BsSend,
+  BsChevronDown,
+} from "react-icons/bs";
 import { FiPhone, FiDelete } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
 import {
@@ -23,15 +30,15 @@ import {
   AiOutlineLink,
   AiOutlineEye,
   AiOutlineClose,
+  AiOutlineEdit,
 } from "react-icons/ai";
-import { BsFileMedical, BsDownload, BsSend } from "react-icons/bs";
 import Link from "next/link";
 import {
   fetchPatient,
   fetchPatientsExercises,
 } from "@/Redux/Features/patients/patientSlice";
-import type { AppDispatch } from "@/Redux/store";
-import { useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "@/Redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineTipsAndUpdates } from "react-icons/md";
 import { FaExpand, FaRegCalendarCheck } from "react-icons/fa";
 import { CLIENT, BASE_URL } from "../../../components/api";
@@ -65,6 +72,53 @@ import emptyImage from "../../../images/empty.jpg";
 import ExpandedView from "@/components/ExpandedView";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { MenuItem } from "@mui/material";
+import { styled, alpha } from "@mui/material/styles";
+import Menu, { MenuProps } from "@mui/material/Menu";
+import ListItemText from "@mui/material/ListItemText";
+
+export const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 600,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 
 const dm_sans = DM_Sans({
   weight: ["400", "500", "700"],
@@ -124,6 +178,12 @@ interface Repetitions {
   id: number;
 }
 
+interface EmailConfig {
+  type: string;
+  subject: string;
+  message: string;
+}
+
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: ReactElement<any, any>;
@@ -134,6 +194,8 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function Patient({ params }: Params) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [status, setStatus] = useState<string>();
@@ -143,7 +205,6 @@ export default function Patient({ params }: Params) {
   const dispatch = useDispatch<AppDispatch>();
   const [schedule, setSchedule] = useState<Exercise[]>([]);
   const [update, setUpdate] = useState<boolean>(false);
-  const [clickPrint, setClickPrint] = useState<boolean>(false);
   const [clickExpand, setClickExpand] = useState<boolean>(false);
   const [clickedRemove, setClickedRemove] = useState<boolean>(false);
   const [newRepetitions, setNewRepetitions] = useState<Repetitions>({
@@ -151,7 +212,75 @@ export default function Patient({ params }: Params) {
     reps: 0,
     id: 0,
   });
+  const [emailConfig, setEmailConfig] = useState<EmailConfig>({
+    type: "Appointment Reminder",
+    subject: "",
+    message: "",
+  });
   const router = useRouter();
+  const open = Boolean(anchorEl);
+  const clinic = useSelector((state: RootState) => state.auth.user);
+
+  const handleClickEmail = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseEmail = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSendEmail = async (e: {
+    target: any;
+    preventDefault: () => void;
+  }) => {
+    e.preventDefault();
+    setAnchorEl(null);
+    console.log(emailConfig);
+    try {
+      await fetch("/api/email", {
+        method: "POST",
+        body: JSON.stringify({
+          name: patient?.title,
+          clinicName: clinic.clinicName,
+          type: emailConfig.type,
+          subject: emailConfig.subject,
+          message: emailConfig.message,
+          toEmail: patient?.email,
+          clinicEmail: clinic.email,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to send Message");
+        } else {
+          return res.json(); //returns the response body parsed
+        }
+      });
+    } catch (error) {
+      console.log(">>>>>", error);
+    }
+    setEmailConfig({ type: "", subject: "", message: "" });
+  };
+
+  const handleSubject = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const obj = {
+      type: emailConfig?.type,
+      message: emailConfig?.message,
+      subject: e.target.value,
+    };
+    setEmailConfig(obj as EmailConfig);
+  };
+
+  const handleMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const obj = {
+      type: emailConfig?.type,
+      subject: emailConfig?.subject,
+      message: e.target.value,
+    };
+    setEmailConfig(obj as EmailConfig);
+  };
 
   useEffect(() => {
     async function getPatient() {
@@ -181,9 +310,28 @@ export default function Patient({ params }: Params) {
     getPatientExercises();
   }, [setExercises]);
 
-  const downloadPDF = () => {
-    const capture = document.querySelector(".content");
+  const downloadFullPDF = () => {
+    const capture = document.querySelector(".patient-page");
     setLoading(true);
+    html2canvas(capture as HTMLElement).then((canvas) => {
+      const imgData = canvas.toDataURL("img/png");
+      //p is portrait, mm is millimeters, a4 is page size
+      const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "in",
+        format: [12, 8],
+      });
+      const componentWidth = doc.internal.pageSize.getWidth();
+      const componentHeight = doc.internal.pageSize.getHeight();
+      doc.addImage(imgData, "PNG", 0, 0, componentWidth, componentHeight);
+      setLoading(false);
+      doc.save(`${patient?.title} profile.pdf`);
+    });
+  };
+
+  const downloadExpandedPDF = () => {
+    const capture = document.querySelector(".content");
+    setExpandedLoading(true);
     html2canvas(capture as HTMLElement).then((canvas) => {
       const imgData = canvas.toDataURL("img/png");
       //p is portrait, mm is millimeters, a4 is page size
@@ -195,8 +343,8 @@ export default function Patient({ params }: Params) {
       const componentWidth = doc.internal.pageSize.getWidth();
       const componentHeight = doc.internal.pageSize.getHeight();
       doc.addImage(imgData, "PNG", 0, 0, componentWidth, componentHeight);
-      setLoading(false);
-      doc.save("patient-flowsheet.pdf");
+      setExpandedLoading(false);
+      doc.save(`${patient?.title} Flowsheet.pdf`);
     });
   };
 
@@ -463,25 +611,6 @@ export default function Patient({ params }: Params) {
     setClickedRemove(false);
   };
 
-  const handleOpenPrint = () => {
-    setClickPrint(true);
-  };
-
-  const handleClosePrint = () => {
-    setClickPrint(false);
-  };
-
-  const handlePrint = () => {
-    // window.print();
-    const pdfUrl = "Sample.pdf";
-    const link = document.createElement("a");
-    link.href = pdfUrl;
-    link.download = "document.pdf"; // specify the filename
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   interface InjuryDictionary {
     [key: number]: string;
   }
@@ -534,418 +663,490 @@ export default function Patient({ params }: Params) {
         <div className='mb-5 text-sm'>{patient?.title}</div>
       </div>
 
-      <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
-        <div className='grid lg:grid-cols-2'>
-          <div className='flex gap-6 w-full'>
-            <Stack direction='row' spacing={2}>
-              <Avatar
-                {...stringAvatar(patient?.title || "")}
-                sx={{
-                  width: 86,
-                  height: 86,
-                  bgcolor: `${stringToColor(patient?.title || "")}`,
-                  fontSize: "2rem",
-                }}
-              />
-            </Stack>
-            <div>
-              <h1 className='font-medium text-[1.6rem] tracking-wider'>
-                {patient?.title}
-              </h1>
-              <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
-                <p>Age: {patient?.age}</p>
-                <div className='hidden md:block'>
-                  <BsDot size={30} color='green' />
+      <div className='patient-page'>
+        <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
+          <div className='grid lg:grid-cols-2'>
+            <div className='flex gap-6 w-full'>
+              <Stack direction='row' spacing={2}>
+                <Avatar
+                  {...stringAvatar(patient?.title || "")}
+                  sx={{
+                    width: 86,
+                    height: 86,
+                    bgcolor: `${stringToColor(patient?.title || "")}`,
+                    fontSize: "2rem",
+                  }}
+                />
+              </Stack>
+              <div>
+                <h1 className='font-medium text-[1.6rem] tracking-wider'>
+                  {patient?.title}
+                </h1>
+                <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
+                  <p>Age: {patient?.age}</p>
+                  <div className='hidden md:block'>
+                    <BsDot size={30} color='green' />
+                  </div>
+                  <p>{injuryDictionary[patient?.injuryId as number]}</p>
+                  <div className='hidden md:block'>
+                    <BsDot size={30} color='green' />
+                  </div>
+                  <p>{patient?.reasonForVisit}</p>
                 </div>
-                <p>{injuryDictionary[patient?.injuryId as number]}</p>
-                <div className='hidden md:block'>
-                  <BsDot size={30} color='green' />
-                </div>
-                <p>{patient?.reasonForVisit}</p>
-              </div>
-              <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
-                <div className='flex items-center'>
-                  <GrCalendar className='pr-2' size={25} />
+                <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
+                  <div className='flex items-center'>
+                    <GrCalendar className='pr-2' size={25} />
 
-                  <div className='flex gap-3'>
-                    <p>Arrived</p>
-                    {new Date(patient?.createdAt as Date).toDateString()}
+                    <div className='flex gap-3'>
+                      <p>Arrived</p>
+                      {new Date(patient?.createdAt as Date).toDateString()}
+                    </div>
+                  </div>
+                  <div className='flex items-center justify-center'>
+                    <h2 className='tracking-wide flex items-center gap-4'>
+                      Status{" "}
+                      <span
+                        onClick={showAppointment}
+                        typeof='button'
+                        className='flex items-center gap-3 hover:underline cursor-pointer'
+                      >
+                        {" "}
+                        <BiSolidCheckbox
+                          size={18}
+                          color={status === "Scheduled" ? "green" : "red"}
+                        />{" "}
+                        {status}
+                      </span>
+                    </h2>
                   </div>
                 </div>
-                <div className='flex items-center justify-center'>
-                  <h2 className='tracking-wide flex items-center gap-4'>
-                    Status{" "}
-                    <span
-                      onClick={showAppointment}
-                      typeof='button'
-                      className='flex items-center gap-3 hover:underline cursor-pointer'
+              </div>
+            </div>
+            <div className='relative'>
+              <div className='flex justify-center w-full gap-5'>
+                <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                  <FiPhone />
+                  <p className='hidden sm:block md:hidden lg:block'>
+                    {patient?.phoneNumber}
+                  </p>
+                </div>
+                <button
+                  onClick={handleClickEmail}
+                  className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
+                >
+                  <AiOutlineMail />
+                  <p className='hidden sm:block md:hidden lg:block'>
+                    {patient?.email}
+                  </p>
+                  <BsChevronDown />
+                </button>
+                <StyledMenu
+                  id='demo-customized-menu'
+                  MenuListProps={{
+                    "aria-labelledby": "demo-customized-button",
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleCloseEmail}
+                >
+                  <div className='flex items-center shadow-lg shadow-gray-300'>
+                    <button className='ml-5 flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg'>
+                      <BsFillBellFill />
+                      Appointment Reminder
+                    </button>
+                    <button className=' flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg'>
+                      <AiOutlineEdit />
+                      Email
+                    </button>
+                  </div>
+                  <ListItemText className='ml-4 mt-5'>Subject</ListItemText>
+                  <input
+                    type='text'
+                    name='subject'
+                    className='w-[90%] border-b border-green-300 p-1 text-sm focus:border-blue-500 focus:outline-none m-4'
+                    placeholder='Type subject here...'
+                    value={emailConfig?.subject}
+                    onChange={handleSubject}
+                  />
+                  <ListItemText className='ml-4 mt-2'>Message</ListItemText>
+                  <textarea
+                    rows={5}
+                    cols={33}
+                    name='message'
+                    className='w-[90%] p-2 text-sm focus:border-blue-500 focus:outline-none m-4 rounded-lg shadow-lg shadow-green-300'
+                    placeholder='Type email here...'
+                    value={emailConfig?.message}
+                    onChange={handleMessage}
+                  />
+                  <div className='flex items-center gap-3 m-4'>
+                    <button
+                      onClick={handleSendEmail}
+                      className='ml-2 p-2 shadow-lg shadow-gray-400 bg-green-500 rounded-lg text-white duration-300 hover:scale-110 w-[30%]'
                     >
-                      {" "}
-                      <BiSolidCheckbox
-                        size={18}
-                        color={status === "Scheduled" ? "green" : "red"}
-                      />{" "}
-                      {status}
-                    </span>
-                  </h2>
+                      Send
+                    </button>
+                    <button
+                      onClick={handleCloseEmail}
+                      className='p-2 shadow-lg shadow-gray-400 rounded-lg duration-300 hover:scale-110 w-[30%]'
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </StyledMenu>
+                <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                  <BsFileMedical />
+                  <p className='hidden sm:block md:hidden lg:block'>
+                    {patient?.insurance}
+                  </p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className='relative'>
-            <div className='flex justify-center w-full gap-5'>
-              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                <FiPhone />
-                <p className='hidden sm:block md:hidden lg:block'>
-                  {patient?.phoneNumber}
-                </p>
-              </div>
-              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[50%] flex items-center justify-evenly'>
-                <AiOutlineMail />
-                <p className='hidden sm:block md:hidden lg:block'>
-                  {patient?.email}
-                </p>
-              </div>
-              <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                <BsFileMedical />
-                <p className='hidden sm:block md:hidden lg:block'>
-                  {patient?.insurance}
-                </p>
-              </div>
-            </div>
-            <div className='absolute bottom-0 right-0 flex items-center'>
-              <button
-                onClick={handleOpenDeletePatient}
-                className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-              >
-                <FiDelete className='p-2' size={35} /> Remove Patient
-              </button>
-              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
-                <BsSend className='p-2' size={35} /> Send
-              </p>
-              <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
-                <AiOutlineLink className='p-2' size={35} /> Share Link
-              </p>
-              <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
-              <Link
-                href={{
-                  pathname: `/patient/edit-profile/${params.id}`,
-                  query: { name: patient?.title },
-                }}
-                className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
-              >
-                <MdOutlineEdit className='p-2' size={35} /> Edit
-              </Link>
-            </div>
-            <div>
-              {clickedRemove && (
-                <Dialog
-                  open={clickedRemove}
-                  TransitionComponent={Transition}
-                  keepMounted
-                  onClose={handleCloseDeletePatient}
-                  aria-describedby='alert-dialog-slide-description'
+              <div className='absolute bottom-0 right-0 flex items-center'>
+                <button
+                  onClick={handleOpenDeletePatient}
+                  className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                 >
-                  <DialogTitle className='text-red-600'>
-                    {"Warning! You are deleting a patient permanently!"}
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id='alert-dialog-slide-description'>
-                      By clicking delete, you will lose all of this patients
-                      information.
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleCloseDeletePatient}>Cancel</Button>
-                    <Button onClick={deletePatient}>Delete</Button>
-                  </DialogActions>
-                </Dialog>
-              )}
+                  <FiDelete className='p-2' size={35} /> Remove Patient
+                </button>
+                <button
+                  onClick={downloadFullPDF}
+                  className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                >
+                  <BsDownload className='p-2' size={35} />{" "}
+                  {loading ? "Downloading..." : "Download"}
+                </button>
+                {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <AiOutlineLink className='p-2' size={35} /> Share Link
+              </p> */}
+                <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
+                <Link
+                  href={{
+                    pathname: `/patient/edit-profile/${params.id}`,
+                    query: { name: patient?.title },
+                  }}
+                  className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
+                >
+                  <MdOutlineEdit className='p-2' size={35} /> Edit
+                </Link>
+              </div>
+              <div>
+                {clickedRemove && (
+                  <Dialog
+                    open={clickedRemove}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleCloseDeletePatient}
+                    aria-describedby='alert-dialog-slide-description'
+                  >
+                    <DialogTitle className='text-red-600'>
+                      {"Warning! You are deleting a patient permanently!"}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id='alert-dialog-slide-description'>
+                        By clicking delete, you will lose all of this patients
+                        information.
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDeletePatient}>Cancel</Button>
+                      <Button onClick={deletePatient}>Delete</Button>
+                    </DialogActions>
+                  </Dialog>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className='md:flex mt-[1rem] gap-5'>
-          <Droppable droppableId='exercise-list'>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] max-h-[900px] overflow-y-scroll ${
-                  snapshot.isDraggingOver
-                    ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
-                    : ""
-                }`}
-              >
-                <h1
-                  className={`${dm_sans.className} text-lg font-bold text-[15px]`}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className='md:flex mt-[1rem] gap-5'>
+            <Droppable droppableId='exercise-list'>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`bg-[#fdfff5] relative p-7 shadow-lg shadow-gray-200 rounded-md md:w-[30%] max-h-[900px] overflow-y-scroll ${
+                    snapshot.isDraggingOver
+                      ? "bg-[#fffffe] border-[5px] border-[#fdfff5] shadow-lg shadow-gray-500"
+                      : ""
+                  }`}
                 >
-                  Exercise List
-                </h1>
-                <div>
-                  <h1 className='text-sm mt-3 mb-2 text-blue-500 flex items-center gap-3'>
-                    <MdAddBox />
-                    Add To {patient?.title.split(" ")[0]}'s Exercise List
-                  </h1>
-                  <div className='flex items-center justify-center'>
-                    <TextField
-                      id='outlined-search'
-                      value={searchInput}
-                      onChange={handleSearch}
-                      type='search'
-                      focused
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <BsSearch color='#3BE13B' />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={style}
-                      placeholder='Search Exercises'
-                    />
-                  </div>
-
-                  <div
-                    className='w-[90%] bg-white flex flex-col shadow-[#ddd] shadow-lg rounded-lg mt-[1rem] max-h-[200px] overflow-y-scroll'
-                    style={{
-                      zIndex: 2,
-                      position: "absolute",
-                    }}
+                  <h1
+                    className={`${dm_sans.className} text-lg font-bold text-[15px]`}
                   >
-                    {searchInput.length > 0 &&
-                      results.map((result) => (
-                        <div
-                          key={result.id}
-                          className='p-4 hover:bg-[#efefef] cursor-pointer border-b-1'
-                        >
-                          <h1>{result.name}</h1>
-                          <div className='flex items-center gap-3 text-[12px] text-blue-500 mt-2'>
-                            {/* <button>View</button> */}
-                            <Link
-                              href={`/exercises/${result.id}`}
-                              className='hover:bg-green-300 cursor-pointer bg-green-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
-                            >
-                              View
-                            </Link>
-                            <button
-                              onClick={() => assignExercise(result.id)}
-                              className='hover:bg-blue-300 cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
-                            >
-                              Assign
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                <div className='mt-[1rem]'>
-                  {patientsExercises?.length ? (
-                    patientsExercises?.map((exercise: ExerciseData, index) => (
-                      <Draggable
-                        key={exercise.id}
-                        draggableId={exercise.name.toString()}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
+                    Exercise List
+                  </h1>
+                  <div>
+                    <h1 className='text-sm mt-3 mb-2 text-blue-500 flex items-center gap-3'>
+                      <MdAddBox />
+                      Add To {patient?.title.split(" ")[0]}'s Exercise List
+                    </h1>
+                    <div className='flex items-center justify-center'>
+                      <TextField
+                        id='outlined-search'
+                        value={searchInput}
+                        onChange={handleSearch}
+                        type='search'
+                        focused
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <BsSearch color='#3BE13B' />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={style}
+                        placeholder='Search Exercises'
+                      />
+                    </div>
+
+                    <div
+                      className='w-[90%] bg-white flex flex-col shadow-[#ddd] shadow-lg rounded-lg mt-[1rem] max-h-[200px] overflow-y-scroll'
+                      style={{
+                        zIndex: 2,
+                        position: "absolute",
+                      }}
+                    >
+                      {searchInput.length > 0 &&
+                        results.map((result) => (
                           <div
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            ref={provided.innerRef}
-                            className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
-                              snapshot.isDragging ? "shadow-gray-500" : ""
-                            }`}
+                            key={result.id}
+                            className='p-4 hover:bg-[#efefef] cursor-pointer border-b-1'
                           >
-                            <h1 className='font-semibold'>{exercise.name}</h1>
-                            <div className='relative top-3 flex justify-evenly'>
+                            <h1>{result.name}</h1>
+                            <div className='flex items-center gap-3 text-[12px] text-blue-500 mt-2'>
+                              {/* <button>View</button> */}
                               <Link
-                                href={`/exercises/${exercise.id}`}
-                                className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                                href={`/exercises/${result.id}`}
+                                className='hover:bg-green-300 cursor-pointer bg-green-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
                               >
-                                <AiOutlineEye className='p-2' size={35} />
                                 View
                               </Link>
                               <button
-                                onClick={() => removeExercise(exercise.id)}
-                                className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                                onClick={() => assignExercise(result.id)}
+                                className='hover:bg-blue-300 cursor-pointer bg-blue-500 text-white p-1 text-center duration-300 hover:scale-110 rounded-lg w-[20%]'
                               >
-                                <FiDelete className='p-2' size={30} />
-                                Remove
+                                Assign
                               </button>
                             </div>
                           </div>
-                        )}
-                      </Draggable>
-                    ))
-                  ) : (
-                    <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
-                      {/* <p>No exercises for this patient.</p> */}
-                      <Image
-                        src={emptyImage}
-                        alt='nothing-found'
-                        height={200}
-                        width={200}
-                      />
-                      <Link
-                        href='/exercises'
-                        className='text-blue-600 hover:underline'
-                      >
-                        View Exercises
-                      </Link>
+                        ))}
                     </div>
-                  )}
-                  {provided.placeholder}
-                </div>
-              </div>
-            )}
-          </Droppable>
-
-          <Droppable droppableId='patient-flowsheet'>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className='bg-[#fdfff5] max-h-[900px] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
-              >
-                <div className='flex items-center justify-between'>
-                  <h1
-                    className={`${dm_sans.className} text-lg font-bold text-[15px] normal-case tracking-normal`}
-                  >
-                    Flow Sheet
-                  </h1>
-                  <div className='flex justify-between items-center gap-2'>
-                    <button
-                      onClick={handleClickExpand}
-                      className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                    >
-                      <FaExpand className='p-2' size={35} />
-                      Expand
-                    </button>
-                    {!update ? (
-                      <button
-                        onClick={handleUpdate}
-                        className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                      >
-                        <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                        Update
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleSubmitUpdate}
-                        className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
-                      >
-                        <MdOutlineTipsAndUpdates className='p-2' size={35} />
-                        Save
-                      </button>
-                    )}
                   </div>
-                </div>
-                <div className='overflow-y-scroll overflow-x-scroll'>
-                  {schedule?.length ? (
-                    <table className='border-collapse m-4'>
-                      <thead>
-                        <tr>
-                          <th className='text-start px-6 py-5 font-normal text-green-600'>
-                            Exercise Name
-                          </th>
-                          <th className='text-start px-6 py-5 font-normal text-green-600'>
-                            Repetitions
-                          </th>
-                          <th className='text-start px-6 py-5 font-normal text-green-600'>
-                            Assigned On
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {schedule.map((exerciseObj, index) => (
+                  <div className='mt-[1rem]'>
+                    {patientsExercises?.length ? (
+                      patientsExercises?.map(
+                        (exercise: ExerciseData, index) => (
                           <Draggable
-                            key={exerciseObj.id}
-                            draggableId={exerciseObj.exercise?.name.toString()}
+                            key={exercise.id}
+                            draggableId={exercise.name.toString()}
                             index={index}
                           >
                             {(provided, snapshot) => (
-                              <tr
+                              <div
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                                 ref={provided.innerRef}
-                                className={`hover:shadow-lg ${
-                                  index % 2 === 0 ? "bg-white" : "bg-[#faffe6]"
-                                } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
-                                  snapshot.isDragging ? "shadow-gray-600" : ""
+                                className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
+                                  snapshot.isDragging ? "shadow-gray-500" : ""
                                 }`}
                               >
-                                <td className=' px-6'>
-                                  <h1 className='p-8'>
-                                    {exerciseObj.exercise?.name}
-                                  </h1>
-                                </td>
-                                <td className=' px-6 py-5'>
-                                  <div className='flex gap-3'>
-                                    <div>
-                                      {!update ? (
-                                        `${exerciseObj.sets}`
-                                      ) : (
-                                        <input
-                                          onChange={(e) =>
-                                            handleSetsChange(exerciseObj.id, e)
-                                          }
-                                          type='text'
-                                          className='border border-green-500 w-6 rounded-sm text-center'
-                                          value={`${exerciseObj.sets}`}
-                                        />
-                                      )}
-                                    </div>
-                                    <p>x</p>
-                                    <div>
-                                      {!update ? (
-                                        `${exerciseObj.reps}`
-                                      ) : (
-                                        <input
-                                          onChange={(e) =>
-                                            handleRepsChange(
-                                              exerciseObj.id,
-                                              exerciseObj.reps,
-                                              e
-                                            )
-                                          }
-                                          type='text'
-                                          className='border border-green-500 w-6 rounded-sm text-center'
-                                          value={`${exerciseObj.reps}`}
-                                        />
-                                      )}
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className='text-[15px] text-blue-600'>
-                                  <div className='flex items-center justify-center gap-5'>
-                                    <FaRegCalendarCheck />
-                                    <p>
-                                      {new Date(
-                                        exerciseObj.createdAt
-                                      ).toDateString()}
-                                    </p>
-                                  </div>
-                                </td>
-                              </tr>
+                                <h1 className='font-semibold'>
+                                  {exercise.name}
+                                </h1>
+                                <div className='relative top-3 flex justify-evenly'>
+                                  <Link
+                                    href={`/exercises/${exercise.id}`}
+                                    className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                                  >
+                                    <AiOutlineEye className='p-2' size={35} />
+                                    View
+                                  </Link>
+                                  <button
+                                    onClick={() => removeExercise(exercise.id)}
+                                    className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                                  >
+                                    <FiDelete className='p-2' size={30} />
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
                             )}
                           </Draggable>
-                        ))}
-                      </tbody>
-                      {/* </Droppable> */}
-                    </table>
-                  ) : (
-                    <div className='mt-4 normal-case'>
-                      Make a schedule for patient.
-                    </div>
-                  )}
-                  {provided.placeholder}
+                        )
+                      )
+                    ) : (
+                      <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
+                        {/* <p>No exercises for this patient.</p> */}
+                        <Image
+                          src={emptyImage}
+                          alt='nothing-found'
+                          height={200}
+                          width={200}
+                        />
+                        <Link
+                          href='/exercises'
+                          className='text-blue-600 hover:underline'
+                        >
+                          View Exercises
+                        </Link>
+                      </div>
+                    )}
+                    {provided.placeholder}
+                  </div>
                 </div>
-              </div>
-            )}
-          </Droppable>
-        </div>
-      </DragDropContext>
+              )}
+            </Droppable>
+
+            <Droppable droppableId='patient-flowsheet'>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className='bg-[#fdfff5] max-h-[900px] p-7 shadow-lg shadow-gray-200 rounded-md md:w-[70%] text-lg tracking-widest'
+                >
+                  <div className='flex items-center justify-between'>
+                    <h1
+                      className={`${dm_sans.className} text-lg font-bold text-[15px] normal-case tracking-normal`}
+                    >
+                      Flow Sheet
+                    </h1>
+                    <div className='flex justify-between items-center gap-2'>
+                      <button
+                        onClick={handleClickExpand}
+                        className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                      >
+                        <FaExpand className='p-2' size={35} />
+                        Expand
+                      </button>
+                      {!update ? (
+                        <button
+                          onClick={handleUpdate}
+                          className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                        >
+                          <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                          Update
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleSubmitUpdate}
+                          className='animate-bounce text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
+                        >
+                          <MdOutlineTipsAndUpdates className='p-2' size={35} />
+                          Save
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className='overflow-y-scroll overflow-x-scroll'>
+                    {schedule?.length ? (
+                      <table className='border-collapse m-4'>
+                        <thead>
+                          <tr>
+                            <th className='text-start px-6 py-5 font-normal text-green-600'>
+                              Exercise Name
+                            </th>
+                            <th className='text-start px-6 py-5 font-normal text-green-600'>
+                              Repetitions
+                            </th>
+                            <th className='text-start px-6 py-5 font-normal text-green-600'>
+                              Assigned On
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {schedule.map((exerciseObj, index) => (
+                            <Draggable
+                              key={exerciseObj.id}
+                              draggableId={exerciseObj.exercise?.name.toString()}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <tr
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                  className={`hover:shadow-lg ${
+                                    index % 2 === 0
+                                      ? "bg-white"
+                                      : "bg-[#faffe6]"
+                                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
+                                    snapshot.isDragging ? "shadow-gray-600" : ""
+                                  }`}
+                                >
+                                  <td className=' px-6'>
+                                    <h1 className='p-8'>
+                                      {exerciseObj.exercise?.name}
+                                    </h1>
+                                  </td>
+                                  <td className=' px-6 py-5'>
+                                    <div className='flex gap-3'>
+                                      <div>
+                                        {!update ? (
+                                          `${exerciseObj.sets}`
+                                        ) : (
+                                          <input
+                                            onChange={(e) =>
+                                              handleSetsChange(
+                                                exerciseObj.id,
+                                                e
+                                              )
+                                            }
+                                            type='text'
+                                            className='border border-green-500 w-6 rounded-sm text-center'
+                                            value={`${exerciseObj.sets}`}
+                                          />
+                                        )}
+                                      </div>
+                                      <p>x</p>
+                                      <div>
+                                        {!update ? (
+                                          `${exerciseObj.reps}`
+                                        ) : (
+                                          <input
+                                            onChange={(e) =>
+                                              handleRepsChange(
+                                                exerciseObj.id,
+                                                exerciseObj.reps,
+                                                e
+                                              )
+                                            }
+                                            type='text'
+                                            className='border border-green-500 w-6 rounded-sm text-center'
+                                            value={`${exerciseObj.reps}`}
+                                          />
+                                        )}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className='text-[15px] text-blue-600'>
+                                    <div className='flex items-center justify-center gap-5'>
+                                      <FaRegCalendarCheck />
+                                      <p>
+                                        {new Date(
+                                          exerciseObj.createdAt
+                                        ).toDateString()}
+                                      </p>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </Draggable>
+                          ))}
+                        </tbody>
+                        {/* </Droppable> */}
+                      </table>
+                    ) : (
+                      <div className='mt-4 normal-case'>
+                        Make a schedule for patient.
+                      </div>
+                    )}
+                    {provided.placeholder}
+                  </div>
+                </div>
+              )}
+            </Droppable>
+          </div>
+        </DragDropContext>
+      </div>
       <Dialog
         fullScreen
         open={clickExpand}
@@ -966,13 +1167,13 @@ export default function Patient({ params }: Params) {
               {patient?.title.split(" ")[0]}'s Flowsheet
             </Typography>
             <Button
-              // disabled={loading === true}
-              onClick={downloadPDF}
+              disabled={schedule.length === 0}
+              onClick={downloadExpandedPDF}
               autoFocus
               color='inherit'
             >
               <BsDownload className='p-2' size={35} />{" "}
-              {loading ? "Downloading..." : "Download PDF"}
+              {expandedLoading ? "Downloading..." : "Download PDF"}
             </Button>
           </Toolbar>
         </AppBar>

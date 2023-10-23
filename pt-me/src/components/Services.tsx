@@ -1,15 +1,15 @@
-import React, { ReactElement } from 'react';
-import { Quicksand } from '@next/font/google';
-import FitnessImg from '../app/images/weightlifter.png';
-import SpeedImg from '../app/images/speedometer.png';
-import PortalImg from '../app/images/healthcare.png';
-import AppointmentImg from '../app/images/booking.png';
-import Image from 'next/image';
-import { StaticImageData } from 'next/image';
+import React, { ReactElement } from "react";
+import { Quicksand } from "@next/font/google";
+import FitnessImg from "../app/images/weightlifter.png";
+import SpeedImg from "../app/images/speedometer.png";
+import PortalImg from "../app/images/healthcare.png";
+import AppointmentImg from "../app/images/booking.png";
+import Image from "next/image";
+import { StaticImageData } from "next/image";
 
 const quicksand = Quicksand({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 interface Service {
@@ -21,36 +21,33 @@ interface Service {
 const services: Array<Service> = [
   {
     logo: FitnessImg,
-    service: 'Exercise Database',
+    service: "Exercise Database",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Physical therapy practice accounts are provided with a vast library of exercises and treatment resources. Comes with easy access to a wide range of exercises, consisting of tips, description, and muscle specification. This database allows therapists to create customized exercise plans tailored to each patients needs, making it a versatile resource for individualized care.",
   },
   {
     logo: SpeedImg,
-    service: 'Instant Search',
+    service: "Instant Search",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Find a patients flowsheet in seconds and make appointments seamless. Search for a patients name and save time on digging through files. Exercises are categorized by injury type and muscle type, making exercise assignment simple.",
   },
   {
     logo: PortalImg,
-    service: 'Your Own Clinic Portal',
+    service: "Your Own Clinic Portal",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Gain access to relevant insights of your practice such as common injuries your patients have, and appointment history based on data overtime.",
   },
   {
     logo: AppointmentImg,
-    service: 'Appointment Tracking',
+    service: "Appointment Tracking",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      "Schedule and track appointments with our extensive calendar functionality, and set recurring appointments with one click. Track these appointments and send reminders to patients via email through your portal.",
   },
 ];
 
 const Services = () => {
   return (
-    <section
-      id='services'
-      className='w-full md:h-screen my-12 py-[12rem]'
-    >
+    <section id='services' className='w-full md:h-screen my-12 py-[12rem]'>
       <div className={quicksand.className}>
         <h1
           className='text-center

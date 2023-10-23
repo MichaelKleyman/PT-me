@@ -104,7 +104,7 @@ const Navbar = ({ children }: any) => {
                   smooth={true}
                   offset={-100}
                   duration={500}
-                  className='nav-link tracking-widest uppercase no-underline
+                  className='links nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   About us
@@ -116,14 +116,14 @@ const Navbar = ({ children }: any) => {
                   smooth={true}
                   offset={-100}
                   duration={500}
-                  className='nav-link tracking-widest uppercase no-underline
+                  className='links nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   Services
                 </ScrollLink>
                 <Link
                   href='/login'
-                  className='nav-link tracking-widest uppercase no-underline
+                  className='links nav-link tracking-widest uppercase no-underline
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   Sign In

@@ -172,7 +172,7 @@ export default function AppointmentsChart({ clinicId }: Props) {
   };
 
   return (
-    <div>
+    <div className='w-[80%]'>
       <div className='flex items-center justify-between'>
         <button
           onClick={handleClick}
