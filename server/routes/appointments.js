@@ -67,9 +67,14 @@ router.get("/filter-appointments/:filter/:clinicId", async (req, res, next) => {
       start.setHours(0, 0, 0, 0);
       end = new Date();
       end.setHours(23, 59, 59, 999);
-    } else {
-      // Handle other filter options here
-      // You can add more conditions for different filters
+    } else if (req.params.filter === "Last 3 Months") {
+      // Calculate start and end dates for the last 3 months
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+      start.setMonth(start.getMonth() - 2); // Subtract 2 months to go back 3 months
+      start.setDate(1); // Set to the 1st day of the month
+      end = new Date();
+      end.setHours(23, 59, 59, 999);
     }
     const appointments = await Appointments.findAll({
       where: {
