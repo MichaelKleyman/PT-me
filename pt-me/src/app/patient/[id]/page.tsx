@@ -77,7 +77,7 @@ import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import ListItemText from "@mui/material/ListItemText";
 
-export const StyledMenu = styled((props: MenuProps) => (
+const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{
