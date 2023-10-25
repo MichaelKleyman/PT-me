@@ -13,10 +13,10 @@ module.exports = {
     dialect: "postgres",
   },
   production: {
-    username: "ptme_user",
-    password: "rBeW7lwQFWnv8ZCPgBZ6JOM1GyDma49t",
-    database: "ptme",
-    use_env_variable: process.env.DATABASE_URL,
+    username: "ptme_nuxl_user",
+    password: "TituchjSp80Y2CGZZ2qyqk7og8n6MiPr",
+    database: "ptme_nuxl",
+    use_env_variable: "DATABASE_URL",
     listen_addresses: "*",
     dialect: "postgres",
     dialectOptions: {
