@@ -299,7 +299,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const today = new Date();
 
   return (
-    <div>
+    <div className='w-full'>
       <div>
         <p className='text-xl tracking-widest font-bold uppercase'>
           {clinicName} <span className='text-green-500'>Dashboard</span>{" "}

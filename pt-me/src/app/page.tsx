@@ -22,16 +22,16 @@ export default function Home() {
   }, []);
 
   return (
-    <main className='mx-auto max-w-3xl px-4 ml-[6rem] sm:px-6 md:max-w-[1300px] mt-[5rem]'>
+    <main className='mx-auto px-4 sm:px-6 mt-[5rem] text-center'>
       {!clinic?.id ? (
         <React.Fragment>
           <AboutUs />
           <Services />
         </React.Fragment>
       ) : (
-        <React.Fragment>
+        <div className='ml-[6rem]'>
           <Dashboard clinicName={clinic.clinicName} />
-        </React.Fragment>
+        </div>
       )}
       <Footer />
     </main>
