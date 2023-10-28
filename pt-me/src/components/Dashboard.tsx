@@ -160,7 +160,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   };
 
   useEffect(() => {
-    dispatch(me());
+    // dispatch(me());
     async function getPatients() {
       const { payload } = await dispatch(fetchAllPatients(clinic.id));
       const { data } = await CLIENT.get(
