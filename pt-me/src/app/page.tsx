@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
 import { me } from "../Redux/Features/auth/authSlice";
 import Dashboard from "@/components/Dashboard";
-import DnDResource from "@/components/Dashboard_fake";
 import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,7 +31,6 @@ export default function Home() {
       ) : (
         <div className='ml-[6rem]'>
           <Dashboard clinicName={clinic.clinicName} />
-          {/* <DnDResource /> */}
         </div>
       )}
       <Footer />
