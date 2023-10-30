@@ -76,6 +76,7 @@ router.post("/:clinicId", async (req, res, next) => {
       Gluteal: 9,
     };
     const { Gender, Age, Insurance, Email, Address } = req.body;
+    console.log(Gender);
     const firstName = req.body["First Name"];
     const lastName = req.body["Last Name"];
     const phoneNumber =
@@ -125,6 +126,11 @@ router.delete("/:patientId", async (req, res, next) => {
     await Patients.destroy({
       where: {
         id: req.params.patientId,
+      },
+    });
+    await Appointments.destroy({
+      where: {
+        patientId: req.params.patientId,
       },
     });
   } catch (error) {
