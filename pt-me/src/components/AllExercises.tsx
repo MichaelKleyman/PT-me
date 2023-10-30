@@ -139,7 +139,7 @@ export default function AllExercises() {
   const displaySpecificExercise = specificExercise.length ? (
     specificExercise
       .sort((a, b) => a.id - b.id)
-      .filter((ex) => ex.name.toLowerCase().includes(searchInput))
+      .filter((ex) => ex.name.toLowerCase().includes(searchInput.toLowerCase()))
       .slice(pagesVisited2, pagesVisited2 + exercisesPerPage)
       .map((exercise, i) => {
         return (
@@ -219,7 +219,7 @@ export default function AllExercises() {
   const displayAllExercises = exercises.length ? (
     exercises
       .sort((a, b) => a.id - b.id)
-      .filter((ex) => ex.name.toLowerCase().includes(searchInput))
+      .filter((ex) => ex.name.toLowerCase().includes(searchInput.toLowerCase()))
       .slice(pagesVisited, pagesVisited + exercisesPerPage)
       .map((exercise, i) => {
         return (
@@ -411,12 +411,14 @@ export default function AllExercises() {
         </div>
       ) : (
         <div className='flex items-center justify-center mb-4'>
-          {specificExercisesPageCount !== allExercisesPageCount && <Pagination
-            count={specificExercisesPageCount}
-            variant='outlined'
-            shape='rounded'
-            onChange={changePageForAllExercises}
-          />}
+          {specificExercisesPageCount !== allExercisesPageCount && (
+            <Pagination
+              count={specificExercisesPageCount}
+              variant='outlined'
+              shape='rounded'
+              onChange={changePageForSpecificExercises}
+            />
+          )}
         </div>
       )}
     </div>

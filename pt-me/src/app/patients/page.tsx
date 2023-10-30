@@ -11,7 +11,7 @@ import { IoMdAddCircle, IoIosArrowForward } from "react-icons/io";
 import { Patient } from "../../../types";
 import { BiSolidCheckbox, BiSolidSelectMultiple } from "react-icons/bi";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { Button, Checkbox } from "@mui/material";
+import { Button, Checkbox, InputAdornment, TextField } from "@mui/material";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { GoShare } from "react-icons/go";
@@ -24,6 +24,17 @@ import { TransitionProps } from "@mui/material/transitions";
 import Slide from "@mui/material/Slide";
 import { BASE_URL, CLIENT } from "@/components/api";
 import { useRouter } from "next/navigation";
+import Pagination from "@mui/material/Pagination";
+import { BsSearch } from "react-icons/bs";
+
+const style = {
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#3BE13B",
+    },
+  },
+  width: "50%",
+};
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -35,13 +46,15 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function AllPatients() {
-  const [patients, setPatients] = useState<Patient[]>();
+  const [patients, setPatients] = useState<Patient[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
   const [checked, setChecked] = useState<number[]>([]);
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [selectedPatients, setSelectedPatients] = useState<Patient[]>();
   const [clickedDelete, setClickedDelete] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(0);
+  const [searchInput, setSearchInput] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -56,6 +69,10 @@ export default function AllPatients() {
       getPatients();
     }
   }, [clinic]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
 
   const handleOpenDelete = () => {
     setClickedDelete(true);
@@ -91,6 +108,14 @@ export default function AllPatients() {
       checked.includes(patient.id)
     );
     setSelectedPatients(newPatientsArr);
+  };
+
+  const changePageForAllPatients = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setPageNumber(pageNumber - 1);
+    window.scrollTo({ top: 0 });
   };
 
   const selectAllOrNone = () => {
@@ -137,12 +162,28 @@ export default function AllPatients() {
     router.push("/");
   };
 
+  const patientsPerPage = 7;
+  const pagesVisited = pageNumber * patientsPerPage;
+
+  const searchAllPatientsResults = patients?.filter((ex: Patient) =>
+    ex.title.toLowerCase().includes(searchInput)
+  );
+
+  let allPatientsPageCount;
+  if (searchAllPatientsResults?.length) {
+    allPatientsPageCount = Math.ceil(
+      searchAllPatientsResults?.length / patientsPerPage
+    );
+  } else {
+    allPatientsPageCount = Math.ceil(patients?.length / patientsPerPage);
+  }
+
   return (
     <div className='mt-[2rem] ml-[8rem] p-9'>
       <h1 className='text-xl tracking-widest font-bold uppercase'>
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>
-      <div className='mt-8 flex items-center justify-between'>
+      <div className='mt-2 flex items-center justify-between'>
         <h1>
           Total Number of Patients: <span>{patients?.length}</span>
         </h1>
@@ -153,6 +194,24 @@ export default function AllPatients() {
           <IoMdAddCircle size={22} />
           Create New Patient
         </Link>
+      </div>
+      <div className='flex items-center justify-center my-4'>
+        <TextField
+          id='outlined-search'
+          value={searchInput}
+          onChange={handleSearch}
+          type='search'
+          focused
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <BsSearch color='#3BE13B' />
+              </InputAdornment>
+            ),
+          }}
+          sx={style}
+          placeholder='Search Patient'
+        />
       </div>
       <div className='mt-8'>
         <div className='grid md:grid-cols-6 gap-6 place-items-center text-sm bg-[#edecec] p-2 uppercase tracking-wide text-[10px] font-medium rounded-lg'>
@@ -165,98 +224,103 @@ export default function AllPatients() {
         </div>
         {patients?.length ? (
           !showSelected ? (
-            patients?.map((patient) => (
-              <div
-                key={patient.id}
-                className='grid md:grid-cols-6 gap-[4rem] place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
-              >
-                <div style={{ whiteSpace: "nowrap" }}>
-                  <div className='flex items-center gap-5'>
-                    <Checkbox
-                      {...label}
-                      checked={checked.includes(patient.id)}
-                      onClick={handleClick(patient?.id)}
-                    />
-                    <Stack direction='row' spacing={2}>
-                      <Avatar
-                        {...stringAvatar(patient.title)}
-                        sx={{
-                          width: 56,
-                          height: 56,
-                          bgcolor: `${stringToColor(patient.title)}`,
-                        }}
+            patients
+              .filter((ex) => ex.title.toLowerCase().includes(searchInput.toLowerCase()))
+              ?.slice(pagesVisited, pagesVisited + patientsPerPage)
+              .map((patient) => (
+                <div
+                  key={patient.id}
+                  className='grid md:grid-cols-6 gap-[4rem] place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
+                >
+                  <div style={{ whiteSpace: "nowrap" }}>
+                    <div className='flex items-center gap-5'>
+                      <Checkbox
+                        {...label}
+                        checked={checked.includes(patient.id)}
+                        onClick={handleClick(patient?.id)}
                       />
-                    </Stack>
-                    <div
-                      style={{ whiteSpace: "break-spaces" }}
-                      className='w-[40px] sm:w-[70px] md:w-[100px] lg:w-[150px]'
-                    >
-                      <p className='font-bold text-[18px]'>{patient.title}</p>
+                      <Stack direction='row' spacing={2}>
+                        <Avatar
+                          {...stringAvatar(patient.title)}
+                          sx={{
+                            width: 56,
+                            height: 56,
+                            bgcolor: `${stringToColor(patient.title)}`,
+                          }}
+                        />
+                      </Stack>
                       <div
-                        typeof='button'
-                        className='hover:underline cursor-pointer'
-                        onClick={showAppointment}
+                        style={{ whiteSpace: "break-spaces" }}
+                        className='w-[40px] sm:w-[70px] md:w-[100px] lg:w-[150px]'
                       >
-                        {new Date(patient?.appointments[0]?.start as Date) >
-                        new Date() ? (
-                          <div className='flex flex-col text-gray-500 text-[12px]'>
-                            <p>Next Appointment</p>
-                            {new Date(
-                              patient?.appointments[0]?.start as Date
-                            ).toDateString()}
-                          </div>
-                        ) : !patient?.appointments.length ? (
-                          <div className='flex flex-col text-gray-500 text-[12px]'>
-                            New Patient
-                          </div>
-                        ) : (
-                          <div className='flex flex-col text-gray-500 text-[12px]'>
-                            <p>Last Appointment</p>
-                            {new Date(
-                              patient?.appointments[0]?.start as Date
-                            ).toDateString()}
-                          </div>
-                        )}
+                        <p className='font-bold text-[18px]'>{patient.title}</p>
+                        <div
+                          typeof='button'
+                          className='hover:underline cursor-pointer'
+                          onClick={showAppointment}
+                        >
+                          {new Date(patient?.appointments[0]?.start as Date) >
+                          new Date() ? (
+                            <div className='flex flex-col text-gray-500 text-[12px]'>
+                              <p>Next Appointment</p>
+                              {new Date(
+                                patient?.appointments[0]?.start as Date
+                              ).toDateString()}
+                            </div>
+                          ) : !patient?.appointments.length ? (
+                            <div className='flex flex-col text-gray-500 text-[12px]'>
+                              New Patient
+                            </div>
+                          ) : (
+                            <div className='flex flex-col text-gray-500 text-[12px]'>
+                              <p>Last Appointment</p>
+                              {new Date(
+                                patient?.appointments[0]?.start as Date
+                              ).toDateString()}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
-                  <BiSolidCheckbox
-                    size={18}
-                    color={
+                  <div className='flex items-center gap-3 text-gray-500 text-[14px]'>
+                    <BiSolidCheckbox
+                      size={18}
+                      color={
+                        patient?.appointments.some(
+                          (appointment) =>
+                            new Date(appointment.start as Date) >= new Date()
+                        )
+                          ? "green"
+                          : "red"
+                      }
+                    />{" "}
+                    {`${
                       patient?.appointments.some(
                         (appointment) =>
                           new Date(appointment.start as Date) >= new Date()
                       )
-                        ? "green"
-                        : "red"
-                    }
-                  />{" "}
-                  {`${
-                    patient?.appointments.some(
-                      (appointment) =>
-                        new Date(appointment.start as Date) >= new Date()
-                    )
-                      ? "Scheduled"
-                      : "No Appointment"
-                  }`}
+                        ? "Scheduled"
+                        : "No Appointment"
+                    }`}
+                  </div>
+                  <p className='text-gray-500 text-[14px]'>{patient.address}</p>
+                  <p className='text-gray-500 text-[14px]'>
+                    {patient.phoneNumber}
+                  </p>
+                  <p className='text-[14px] text-center'>
+                    {patient.reasonForVisit}
+                  </p>
+                  <Link
+                    href={`/patient/${patient.id}`}
+                    className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
+                  >
+                    <Button variant='outlined' endIcon={<IoIosArrowForward />}>
+                      View
+                    </Button>
+                  </Link>
                 </div>
-                <p className='text-gray-500 text-[14px]'>{patient.address}</p>
-                <p className='text-gray-500 text-[14px]'>
-                  {patient.phoneNumber}
-                </p>
-                <p className='text-[14px] text-center'>{patient.reasonForVisit}</p>
-                <Link
-                  href={`/patient/${patient.id}`}
-                  className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
-                >
-                  <Button variant='outlined' endIcon={<IoIosArrowForward />}>
-                    View
-                  </Button>
-                </Link>
-              </div>
-            ))
+              ))
           ) : (
             selectedPatients?.map((patient) => (
               <div
@@ -331,7 +395,9 @@ export default function AllPatients() {
                 <p className='text-gray-500 text-[14px]'>
                   {patient.phoneNumber}
                 </p>
-                <p className='text-[14px] text-center'>{patient.reasonForVisit}</p>
+                <p className='text-[14px] text-center'>
+                  {patient.reasonForVisit}
+                </p>
                 <Link
                   href={`/patient/${patient.id}`}
                   className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
@@ -348,6 +414,14 @@ export default function AllPatients() {
             No patients in your clinic
           </div>
         )}
+        <div className='flex items-center justify-center mt-5'>
+          <Pagination
+            count={allPatientsPageCount}
+            variant='outlined'
+            shape='rounded'
+            onChange={changePageForAllPatients}
+          />
+        </div>
       </div>
       {checked.length > 0 && (
         <div className='flex items-center justify-center gap-5 bg-[#3BE13B] rounded-lg shadow-lg shadow-gray-400 text-white p-4 text-center fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[35%]'>

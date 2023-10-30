@@ -58,7 +58,17 @@ type Params = {
   params: Obj;
 };
 
-const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
+const injuryTypes = [
+  "Shoulders",
+  "Back",
+  "Knee",
+  "Hip",
+  "Neck",
+  "Wrist/Hand",
+  "Ankle/Foot",
+  "Abdominal",
+  "Gluteal",
+];
 
 export default function SpecificExercise({ params }: Params) {
   const [results, setResults] = useState<Patient[]>([]);
