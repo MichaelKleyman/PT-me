@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CLIENT, BASE_URL } from "@/components/api";
 import "../styles/exercises.css";
 import CircularProgress from "@mui/material/CircularProgress";
-import ReactPaginate from "react-paginate";
+import Pagination from "@mui/material/Pagination";
 import TextField from "@mui/material/TextField";
 import { BsSearch, BsThreeDotsVertical } from "react-icons/bs";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -323,13 +323,19 @@ export default function AllExercises() {
     specificExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
   }
 
-  const changePageForAllExercises = ({ selected }: any) => {
-    setPageNumber(selected);
+  const changePageForAllExercises = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setPageNumber(page - 1);
     window.scrollTo({ top: 0 });
   };
 
-  const changePageForSpecificExercises = ({ selected }: any) => {
-    setPageNumber2(selected);
+  const changePageForSpecificExercises = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setPageNumber2(page - 1);
     window.scrollTo({ top: 0 });
   };
 
@@ -387,38 +393,30 @@ export default function AllExercises() {
       </div>
       <div
         className={`mt-3 w-[100%] p-3 ${
-          specificExercise.length ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8" : ""
+          specificExercise.length
+            ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            : ""
         }`}
       >
         {selected !== "All" && displaySpecificExercise}
       </div>
       {selected === "All" ? (
         <div className='flex items-center justify-center mb-4'>
-          <ReactPaginate
-            previousLabel='Previous'
-            nextLabel='Next'
-            pageCount={allExercisesPageCount}
-            onPageChange={changePageForAllExercises}
-            containerClassName='paginationBttns'
-            previousClassName='previousBttn'
-            nextLinkClassName='nextBttn'
-            activeClassName='paginationActive'
-            activeLinkClassName='activeLink'
+          <Pagination
+            count={allExercisesPageCount}
+            variant='outlined'
+            shape='rounded'
+            onChange={changePageForAllExercises}
           />
         </div>
       ) : (
         <div className='flex items-center justify-center mb-4'>
-          <ReactPaginate
-            previousLabel='Previous'
-            nextLabel='Next'
-            pageCount={specificExercisesPageCount}
-            onPageChange={changePageForSpecificExercises}
-            containerClassName='paginationBttns2'
-            previousClassName='previousBttn2'
-            nextLinkClassName='nextBttn2'
-            activeClassName='paginationActive2'
-            activeLinkClassName='activeLink2'
-          />
+          {specificExercisesPageCount !== allExercisesPageCount && <Pagination
+            count={specificExercisesPageCount}
+            variant='outlined'
+            shape='rounded'
+            onChange={changePageForAllExercises}
+          />}
         </div>
       )}
     </div>
