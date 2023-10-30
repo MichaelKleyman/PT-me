@@ -132,7 +132,17 @@ interface DashboardProps {
   clinicName: string;
 }
 
-const injuryTypes = ["Shoulders", "Back", "Knee", "Hip"];
+const injuryTypes = [
+  "Shoulders",
+  "Back",
+  "Knee",
+  "Hip",
+  "Neck",
+  "Wrist/Hand",
+  "Ankle/Foot",
+  "Abdominal",
+  "Gluteal",
+];
 
 const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [events, setEvents] = useState<Appointments[]>([]);
@@ -171,7 +181,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         ...item,
         start: item.start ? new Date(item.start) : undefined,
         end: item.end ? new Date(item.end) : undefined,
-        title: item.patient.title,
+        title: item.patient?.title,
       }));
       setEvents(convertedDatabaseData);
     }
@@ -232,7 +242,6 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   };
 
   function clickEvent(data: any) {
-    console.log(data);
     setOpen(true);
     setAppointmentToDelete(data);
   }

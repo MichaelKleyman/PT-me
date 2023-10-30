@@ -331,7 +331,15 @@ export default function Account({ params }: Params) {
                       </div>
                       <div className='flex items-center justify-center text-sm'>
                         <Link
-                          href={`/patient/${appointment.id}`}
+                          href={{
+                            pathname: `/patient/${appointment.id}`,
+                            query: {
+                              openEmail: true,
+                              appointmentTime: `${new Date(
+                                appointment?.appointments?.[0]?.start as Date
+                              ).toLocaleTimeString(undefined, options)}`,
+                            },
+                          }}
                           className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
                         >
                           <Button

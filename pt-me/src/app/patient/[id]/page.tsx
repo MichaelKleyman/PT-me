@@ -139,14 +139,6 @@ const style = {
   boxShadow: "0px 0px 8px #ddd",
 };
 
-type Obj = {
-  id: number;
-};
-
-type Params = {
-  params: Obj;
-};
-
 interface ExerciseData {
   id: number;
   map: any;
@@ -184,6 +176,14 @@ interface EmailConfig {
   message: string;
 }
 
+type Obj = {
+  id: number;
+};
+
+type Params = {
+  params: Obj;
+};
+
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
     children: ReactElement<any, any>;
@@ -193,7 +193,15 @@ const Transition = forwardRef(function Transition(
   return <Slide direction='up' ref={ref} {...props} />;
 });
 
-export default function Patient({ params }: Params) {
+export default function Patient({
+  params,
+  searchParams,
+}: {
+  params: { id: number };
+  searchParams: {
+    [key: string]: string | boolean | undefined;
+  };
+}) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -214,14 +222,102 @@ export default function Patient({ params }: Params) {
   });
   const [emailConfig, setEmailConfig] = useState<EmailConfig>({
     type: "Appointment Reminder",
-    subject: "",
+    subject: "Hey! Don't forget about your Physical Therapy appointment 📆",
     message: "",
   });
   const router = useRouter();
   const open = Boolean(anchorEl);
   const clinic = useSelector((state: RootState) => state.auth.user);
 
+  useEffect(() => {
+    async function getPatient() {
+      const { payload } = await dispatch(fetchPatient(params.id));
+      if (searchParams.openEmail) {
+        setAnchorEl(document.getElementById("click-email"));
+        setEmailConfig({
+          type: "Appointment Reminder",
+          subject:
+            "Hey! Don't forget about your Physical Therapy appointment 📆",
+          message: `Hi ${
+            (payload as Patient).title
+          }, you have an appointment at ${
+            clinic && clinic.clinicName
+          } within an hour from now, at ${
+            searchParams.appointmentTime
+          }. Feel free to contact your physical therapy office at their email ${
+            clinic && clinic.email
+          } for any scheduling/appointment needs. See you soon!`,
+        });
+      }
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/appointments/latest-appointment/${
+          (payload as Patient).id
+        }`
+      );
+      if (
+        data?.some(
+          (appointment: any) =>
+            new Date(appointment.start as Date) >= new Date()
+        )
+      ) {
+        setStatus("Scheduled");
+      } else {
+        setStatus("No Appointment");
+      }
+      setPatient(payload as Patient);
+    }
+    async function getPatientExercises() {
+      const { payload } = await dispatch(fetchPatientsExercises(params.id));
+      setExercises(payload as ExerciseData[]);
+    }
+    getPatient();
+    getPatientExercises();
+  }, [setExercises]);
+
+  useEffect(() => {
+    async function getSchedule() {
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/schedule/patient/${params.id}`
+      );
+
+      let exercises = data.exercises;
+
+      setSchedule(exercises);
+    }
+    getSchedule();
+  }, [params.id, setSchedule]);
+
+  // useEffect(() => {
+  //   if (searchParams.openEmail) {
+  //     setAnchorEl(document.getElementById("click-email"));
+  //     setEmailConfig({
+  //       type: "Appointment Reminder",
+  //       subject: "Hey! Don't forget about your Physical Therapy appointment 📆",
+  //       message: `Hi ${patient && patient?.title}, you have an appointment at ${
+  //         clinic && clinic.clinicName
+  //       } within an hour from now, at ${searchParams.appointmentTime}.`,
+  //     });
+  //   }
+  // }, [searchParams.openEmail]);
+
+  const changeEmailType = (type: string) => {
+    if (type === "Appointment Reminder") {
+      setEmailConfig({
+        type,
+        subject: "Hey! Don't forget about your Physical Therapy appointment 📆",
+        message: "",
+      });
+    } else {
+      setEmailConfig({
+        type,
+        subject: "",
+        message: "",
+      });
+    }
+  };
+
   const handleClickEmail = (event: React.MouseEvent<HTMLElement>) => {
+    console.log(event.currentTarget);
     setAnchorEl(event.currentTarget);
   };
   const handleCloseEmail = () => {
@@ -281,34 +377,6 @@ export default function Patient({ params }: Params) {
     };
     setEmailConfig(obj as EmailConfig);
   };
-
-  useEffect(() => {
-    async function getPatient() {
-      const { payload } = await dispatch(fetchPatient(params.id));
-      const { data } = await CLIENT.get(
-        `${BASE_URL}/api/appointments/latest-appointment/${
-          (payload as Patient).id
-        }`
-      );
-      if (
-        data?.some(
-          (appointment: any) =>
-            new Date(appointment.start as Date) >= new Date()
-        )
-      ) {
-        setStatus("Scheduled");
-      } else {
-        setStatus("No Appointment");
-      }
-      setPatient(payload as Patient);
-    }
-    async function getPatientExercises() {
-      const { payload } = await dispatch(fetchPatientsExercises(params.id));
-      setExercises(payload as ExerciseData[]);
-    }
-    getPatient();
-    getPatientExercises();
-  }, [setExercises]);
 
   const downloadFullPDF = () => {
     const capture = document.querySelector(".patient-page");
@@ -379,19 +447,6 @@ export default function Patient({ params }: Params) {
       children: `${sanitizedName.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
     };
   }
-
-  useEffect(() => {
-    async function getSchedule() {
-      const { data } = await CLIENT.get(
-        `${BASE_URL}/api/schedule/patient/${params.id}`
-      );
-
-      let exercises = data.exercises;
-
-      setSchedule(exercises);
-    }
-    getSchedule();
-  }, [params.id, setSchedule]);
 
   const handleUpdate = () => {
     setUpdate(!update);
@@ -731,6 +786,7 @@ export default function Patient({ params }: Params) {
                   </p>
                 </div>
                 <button
+                  id='click-email'
                   onClick={handleClickEmail}
                   className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
                 >
@@ -749,14 +805,25 @@ export default function Patient({ params }: Params) {
                   open={open}
                   onClose={handleCloseEmail}
                 >
-                  <div className='flex items-center shadow-lg shadow-gray-300'>
-                    <button className='ml-5 flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg'>
+                  <div className='flex items-center gap-3 shadow-lg shadow-gray-300'>
+                    <button
+                      onClick={() => changeEmailType("Appointment Reminder")}
+                      className={`${
+                        emailConfig.type === "Appointment Reminder" &&
+                        "bg-green-200"
+                      } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                    >
                       <BsFillBellFill />
                       Appointment Reminder
                     </button>
-                    <button className=' flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg'>
+                    <button
+                      onClick={() => changeEmailType("Custom Email")}
+                      className={`${
+                        emailConfig.type === "Custom Email" && "bg-green-200"
+                      } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                    >
                       <AiOutlineEdit />
-                      Email
+                      Custom Email
                     </button>
                   </div>
                   <ListItemText className='ml-4 mt-5'>Subject</ListItemText>

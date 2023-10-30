@@ -168,7 +168,7 @@ export default function AllPatients() {
             patients?.map((patient) => (
               <div
                 key={patient.id}
-                className='grid md:grid-cols-6 gap-8 place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
+                className='grid md:grid-cols-6 gap-[4rem] place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
               >
                 <div style={{ whiteSpace: "nowrap" }}>
                   <div className='flex items-center gap-5'>
@@ -187,7 +187,10 @@ export default function AllPatients() {
                         }}
                       />
                     </Stack>
-                    <div>
+                    <div
+                      style={{ whiteSpace: "break-spaces" }}
+                      className='w-[40px] sm:w-[70px] md:w-[100px] lg:w-[150px]'
+                    >
                       <p className='font-bold text-[18px]'>{patient.title}</p>
                       <div
                         typeof='button'
@@ -243,7 +246,7 @@ export default function AllPatients() {
                 <p className='text-gray-500 text-[14px]'>
                   {patient.phoneNumber}
                 </p>
-                <p className='text-[14px]'>{patient.reasonForVisit}</p>
+                <p className='text-[14px] text-center'>{patient.reasonForVisit}</p>
                 <Link
                   href={`/patient/${patient.id}`}
                   className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
@@ -277,22 +280,25 @@ export default function AllPatients() {
                         }}
                       />
                     </Stack>
-                    <div>
+                    <div
+                      style={{ whiteSpace: "break-spaces" }}
+                      className='w-[40px] sm:w-[70px] md:w-[100px] lg:w-[150px]'
+                    >
                       <p className='font-bold text-[18px]'>{patient.title}</p>
                       <div>
-                        {new Date(patient?.appointments[0].start as Date) >
+                        {new Date(patient?.appointments[0]?.start as Date) >
                         new Date() ? (
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Next Appointment</p>
                             {new Date(
-                              patient?.appointments[0].start as Date
+                              patient?.appointments[0]?.start as Date
                             ).toDateString()}
                           </div>
                         ) : (
                           <div className='flex flex-col text-gray-500 text-[12px]'>
                             <p>Last Appointment</p>
                             {new Date(
-                              patient?.appointments[0].start as Date
+                              patient?.appointments[0]?.start as Date
                             ).toDateString()}
                           </div>
                         )}
@@ -325,7 +331,7 @@ export default function AllPatients() {
                 <p className='text-gray-500 text-[14px]'>
                   {patient.phoneNumber}
                 </p>
-                <p className='text-[14px]'>{patient.reasonForVisit}</p>
+                <p className='text-[14px] text-center'>{patient.reasonForVisit}</p>
                 <Link
                   href={`/patient/${patient.id}`}
                   className='flex items-center justify-center rounded-lg w-[50%] cursor-pointer hover:scale-110 duration-300 '
