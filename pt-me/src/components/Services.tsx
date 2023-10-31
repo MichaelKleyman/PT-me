@@ -47,7 +47,7 @@ const services: Array<Service> = [
 
 const Services = () => {
   return (
-    <section id='services' className='w-full md:h-screen my-12 py-[12rem]'>
+    <section id='services' className='w-full md:h-screen'>
       <div className={quicksand.className}>
         <h1
           className='text-center

@@ -92,7 +92,7 @@ const Page = () => {
       <div className='mt-[1rem] bg-[#fdfff5] dark:bg-[#2f2d2d] max-w-[900px] w-full mx-auto p-5 rounded-lg shadow-lg shadow-gray-400'>
         <h1 className='text-4xl font-bold pb-4'>
           Create a portal for your{' '}
-          <span className='text-green-500'>clinic</span>.
+          <span className='text-green-500'>clinic</span> 👋.
         </h1>
         <h1 className='text-sm pb-7 text-gray-400'>
           Appointments and exercises for each patient in one convenient
