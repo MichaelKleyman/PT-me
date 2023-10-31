@@ -705,7 +705,7 @@ export default function Patient({
   };
 
   return (
-    <div className='mt-[1rem] ml-[6rem] p-4'>
+    <div className='mt-[1rem] md:ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
         <Link
           href='/patients'
@@ -1086,6 +1086,7 @@ export default function Patient({
                       </button>
                       {!update ? (
                         <button
+                          disabled={schedule.length === 0}
                           onClick={handleUpdate}
                           className='text-[15px] text-blue-500 flex items-center hover:bg-[#fdfff5] hover:shadow-lg hover:shadow-gray-300 rounded-lg p-2 duration-300 hover:scale-110 cursor-pointer'
                         >

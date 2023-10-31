@@ -179,7 +179,7 @@ export default function AllPatients() {
   }
 
   return (
-    <div className='mt-[2rem] ml-[8rem] p-9'>
+    <div className='mt-[2rem] md:ml-[8rem] p-9'>
       <h1 className='text-xl tracking-widest font-bold uppercase'>
         <span className='text-green-500'>Patients</span> in your clinic
       </h1>

@@ -13,7 +13,7 @@ export default function EditExerciseHistoryComponent({
   const exerciseId = params.id;
 
   return (
-    <div className='mt-[1rem] ml-[2rem]'>
+    <div className='mt-[1rem] md:ml-[2rem]'>
       <div className='flex text-center gap-2 ml-[4rem] p-4'>
         <Link
           href='/exercises'

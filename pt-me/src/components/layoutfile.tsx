@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
 import { me } from "../Redux/Features/auth/authSlice";
 import CircularProgress from "@mui/material/CircularProgress";
-import Footer from "@/components/Footer";
 import Footer2 from "./Footer2";
+import Footer from "./Footer";
 
 export default function Layoutfile({
   children,
@@ -35,8 +35,7 @@ export default function Layoutfile({
     <>
       <Navbar2 />
       {children}
-      {/* <Footer /> */}
-      <Footer2 />
+      {user?.id ? <Footer /> : <Footer2 />}
     </>
   );
 }

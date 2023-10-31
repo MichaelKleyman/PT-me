@@ -349,7 +349,7 @@ export default function AllExercises() {
         Exercises
       </h1>
       <div className='mt-1 flex justify-between items-center'>
-        <div className='flex'>
+        <div className='flex w-[70%] overflow-x-scroll md:overflow-hidden'>
           {exerciseOptions.map((option: String, i) => (
             <button
               onClick={() => filterExercises(option)}

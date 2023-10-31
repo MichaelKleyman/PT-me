@@ -83,7 +83,7 @@ const Navbar = ({ children }: any) => {
     <header className='w-full shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
         {!user?.id ? (
-          <div className='flex justify-between items-center w-full h-full px-2 2xl:px-16'>
+          <div className='stroke flex justify-between items-center w-full h-full px-2 2xl:px-16'>
             <ScrollLink
               to='about-us'
               activeClass='active'
@@ -91,11 +91,11 @@ const Navbar = ({ children }: any) => {
               smooth={true}
               offset={-100}
               duration={500}
-              className='py-4 md:py-4 md:block'
+              className='py-4 md:py-4 md:block ml-5'
             >
               <Image alt='/' src={Logo1} width={90} height={90} />
             </ScrollLink>
-            <div className='md:flex items-center justify-between w-[60%]'>
+            <div className='md:flex items-center justify-between w-[60%] mr-6'>
               <ul className='hidden md:flex items-center justify-between w-full md:space-x-6'>
                 <ScrollLink
                   to='about-us'
@@ -155,7 +155,7 @@ const Navbar = ({ children }: any) => {
             </div>
           </div>
         ) : (
-          <div className='flex'>
+          <div className='hidden md:flex'>
             <div
               className={`fixed ${
                 open ? "w-[250px] duration-300" : "w-20"
@@ -231,20 +231,25 @@ const Navbar = ({ children }: any) => {
           </div>
         )}
 
-        <div className='md:hidden absolute right-5' onClick={openNav}>
+        <div
+          className={`${user?.id && "hidden"} md:hidden absolute top-8 right-5`}
+          onClick={openNav}
+        >
           <IoMdMenu size={35} />
         </div>
         <div
           className={
             showNav
-              ? "md:hidden fixed left-0 top-0 w-full h-screen bg-black/70"
+              ? `${
+                  user?.id && "hidden"
+                } md:hidden fixed left-0 top-0 w-full h-screen bg-black/70`
               : ""
           }
         >
           <div
             className={
               showNav
-                ? "md:hidden fixed left-0 top-0 w-[75%] sm:w-[65%] md:w-[45%] h-screen bg-[#FAF9F6] dark:bg-black p-10 ease-in duration-500"
+                ? "md:hidden fixed left-0 top-0 w-[55%] sm:w-[65%] md:w-[45%] h-screen bg-[#FAF9F6] dark:bg-black p-10 ease-in duration-500"
                 : "fixed left-[-100%] top-0 p-10 ease-in duration-500"
             }
           >
@@ -268,7 +273,7 @@ const Navbar = ({ children }: any) => {
               </div>
             </div>
             <div className='border-b border-gray-300 my-4'>
-              <p className='w-[85%] md:w-[90%] py-4'>Menu</p>
+              <p className='w-[85%] md:w-[90%] py-4 font-bold'>Menu</p>
             </div>
             <div className='py-4 flex flex-col'>
               <ul className='uppercase flex flex-col space-y-6'>
@@ -279,7 +284,7 @@ const Navbar = ({ children }: any) => {
                   smooth={true}
                   offset={-100}
                   duration={500}
-                  className='tracking-widest uppercase
+                  className='links tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   About us
@@ -291,14 +296,14 @@ const Navbar = ({ children }: any) => {
                   smooth={true}
                   offset={-100}
                   duration={500}
-                  className='tracking-widest uppercase
+                  className='links tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   Services
                 </ScrollLink>
                 <Link
                   href='/login'
-                  className='tracking-widest uppercase
+                  className='links tracking-widest uppercase
             duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
                 >
                   Sign In
@@ -306,14 +311,14 @@ const Navbar = ({ children }: any) => {
                 {currentTheme === "light" ? (
                   <button
                     onClick={() => setTheme("dark")}
-                    className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110'
+                    className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110 w-[20%] flex items-center justify-center'
                   >
                     <BsFillMoonFill size={20} />
                   </button>
                 ) : (
                   <button
                     onClick={() => setTheme("light")}
-                    className='p-2 rounded-xl duration-300 hover:scale-110'
+                    className='p-2 rounded-xl duration-300 hover:scale-110 w-[20%] flex items-center justify-center'
                   >
                     <BsSun size={20} />
                   </button>
@@ -326,7 +331,6 @@ const Navbar = ({ children }: any) => {
           </div>
         </div>
       </div>
-      {/* <main className='ml-20 w-full'>{children}</main> */}
     </header>
   );
 };

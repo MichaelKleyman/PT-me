@@ -92,11 +92,9 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     setNewComment("");
   };
 
-  console.log(comments);
-
   return (
-    <div className='flex ml-[2rem]'>
-      <div className='w-[450px] h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
+    <div className='md:flex md:ml-[2rem]'>
+      <div className='w-full md:w-[450px] md:h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
         <div className='mt-3'>
           {editHistory?.map((editor) => (
             <button
@@ -120,7 +118,7 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
         </div>
       </div>
       {selectedClinic && (
-        <div className='w-[70%]'>
+        <div className='w-full md:w-[70%]'>
           <div className='max-h-[250px] overflow-y-scroll flex gap-[1rem] shadow-lg shadow-gray-400 rounded-lg p-5'>
             <div className='flex-grow border-r-[0.5px] border-gray-400'>
               <h1 className='text-[2rem] font-bold'>

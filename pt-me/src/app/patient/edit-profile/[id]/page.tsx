@@ -9,7 +9,7 @@ export default function EditPatientInfo() {
   const res = useSearchParams().get("name");
 
   return (
-    <div className='mt-[1rem] ml-[6rem] p-4 m-4'>
+    <div className='mt-[1rem] md:ml-[6rem] p-4 m-4'>
       <div className='flex text-center gap-2'>
         <Link
           href='/patients'

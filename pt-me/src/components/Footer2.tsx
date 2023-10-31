@@ -1,10 +1,11 @@
 import "../styles/footer.css";
+import { AiOutlineCopyrightCircle } from "react-icons/ai";
 
 export default function Footer2() {
   return (
     <div>
       <footer className='footer'>
-        <div className='background'>
+        <div className='footer-background'>
           <svg
             className='svg'
             version='1.1'
@@ -79,7 +80,7 @@ export default function Footer2() {
         </div>
 
         <section className='section'>
-          <ul className='socials'>
+          {/* <ul className='socials'>
             <li>
               <a className='fa-brands fa-facebook'></a>
             </li>
@@ -109,8 +110,10 @@ export default function Footer2() {
             <li>
               <a>Contact</a>
             </li>
-          </ul>
-          <p className='legal'>© 2023 All rights reserved</p>
+          </ul> */}
+          <p className='legal flex items-center justify-center gap-2'>
+            <AiOutlineCopyrightCircle /> PT-me. 2023, All rights reserved.
+          </p>
         </section>
       </footer>
     </div>

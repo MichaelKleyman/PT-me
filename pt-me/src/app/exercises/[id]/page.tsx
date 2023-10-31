@@ -166,7 +166,7 @@ export default function SpecificExercise({ params }: Params) {
   };
 
   return (
-    <div className='mt-[1rem] ml-[6rem] p-4'>
+    <div className='mt-[1rem] md:ml-[6rem] p-4'>
       <div className='mb-2 flex text-center gap-2'>
         <Link
           href='/exercises'
