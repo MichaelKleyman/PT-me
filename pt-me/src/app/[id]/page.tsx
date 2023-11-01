@@ -239,7 +239,7 @@ export default function Account({ params }: Params) {
         <p className='mt-2'>Clinic Email: {clinic?.email}</p>
       </div> */}
       <div className='grid xl:grid-cols-2 gap-8'>
-        <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-[80%]'>
+        <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-[80%] sm:ml-[1rem] md:ml-[6rem]'>
           <div>
             <DoughnutChart patients={patients} />
           </div>
