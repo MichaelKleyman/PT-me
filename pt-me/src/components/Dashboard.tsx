@@ -410,7 +410,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
                         {scheduled.id === obj.id ? (
                           <Alert severity='success'>Scheduled</Alert>
                         ) : (
-                          <div className='flex items-center gap-4'>
+                          <div className='md:flex items-center gap-4'>
                             <Button
                               onClick={() => schedulePatient(obj)}
                               className='text-[12px] rounded-lg p-2 bg-[#313586cd] text-white duration-300 hover:scale-110'

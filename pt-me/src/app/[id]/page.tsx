@@ -245,7 +245,7 @@ export default function Account({ params }: Params) {
           </div>
         </div>
 
-        <div className='mt-1'>
+        <div className='mt-1 w-[60%] md:w-[80%] lg:w-full ml-[4rem] md:ml-0'>
           <div className='grid grid-cols-2 gap-4 m-[1.5rem]'>
             <div className='shadow-lg shadow-gray-400 rounded-lg p-4 card'>
               <h1 className='text-[40px] flex items-center gap-1'>
