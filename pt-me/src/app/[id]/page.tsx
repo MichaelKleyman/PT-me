@@ -188,7 +188,7 @@ export default function Account({ params }: Params) {
 
   return (
     <div className='md:ml-[5rem]'>
-      <div className='flex items-center justify-between shadow-lg shadow-gray-400 p-6'>
+      <div className='mt-[4rem] md:mt-0 flex items-center justify-between shadow-lg shadow-gray-400 p-6 w-full'>
         <div>
           <h1 className='text-[20px]'>Hi, {clinic?.clinicName}</h1>
           <div className='flex items-center gap-5'>
@@ -239,7 +239,7 @@ export default function Account({ params }: Params) {
         <p className='mt-2'>Clinic Email: {clinic?.email}</p>
       </div> */}
       <div className='grid xl:grid-cols-2 gap-8'>
-        <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-full'>
+        <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-[80%]'>
           <div>
             <DoughnutChart patients={patients} />
           </div>
