@@ -51,6 +51,7 @@ const Navbar = ({ children }: any) => {
   const [navbar, setNavbar] = useState<boolean>(false); //controlling if the navbar is in mobile view or desktop view.
 
   const [showNav, setShowNav] = useState<boolean>(false);
+  const [showLoggedInNav, setShowLoggedInNav] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -60,6 +61,10 @@ const Navbar = ({ children }: any) => {
 
   const openNav = () => {
     setShowNav(!showNav);
+  };
+
+  const openLoggedInNav = () => {
+    setShowLoggedInNav(!showLoggedInNav);
   };
 
   const reRoute = () => {
@@ -327,6 +332,76 @@ const Navbar = ({ children }: any) => {
                   <button>Get Started</button>
                 </div>
               </ul>
+            </div>
+          </div>
+        </div>
+        <div className={`${user?.id ? "flex md:hidden p-3" : "hidden"}`}>
+          <button
+            onClick={openLoggedInNav}
+            className='duration-300 hover:scale-110 cursor-pointer'
+          >
+            <IoMdMenu size={35} />
+          </button>
+        </div>
+        <div
+          className={
+            showLoggedInNav
+              ? `${
+                  !user?.id && "hidden"
+                } md:hidden fixed left-0 top-0 w-full h-screen bg-black/70`
+              : ""
+          }
+        >
+          <div
+            className={
+              showLoggedInNav
+                ? "md:hidden fixed left-0 top-0 w-[55%] sm:w-[45%] md:w-[45%] h-screen bg-[#FAF9F6] dark:bg-black p-10 ease-in duration-500"
+                : "fixed left-[-100%] top-0 p-10 ease-in duration-500"
+            }
+          >
+            <div className='flex items-center justify-between'>
+              <div
+                onClick={openLoggedInNav}
+                className='rounded-full shadow-lg shadow-gray-400 p-3 cursor-pointer'
+              >
+                <IoMdClose />
+              </div>
+            </div>
+            <div className='border-b border-gray-300 my-4'>
+              <p className='w-[65%] md:w-[60%] py-4 font-bold'>Menu</p>
+            </div>
+            <div className='py-4 flex flex-col'>
+              <Link
+                href={`/${user?.id}`}
+                className='bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center w-full gap-4 duration-300'
+              >
+                <RxDashboard size={20} />
+                Dashboard
+              </Link>
+              <Link
+                href='/'
+                className='w-full gap-4 duration-300
+bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center'
+              >
+                <AiOutlineSchedule size={20} />
+                Schedule
+              </Link>
+              <Link
+                href='/exercises'
+                className='w-full gap-4 duration-300
+bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center'
+              >
+                <GiMuscleUp size={20} />
+                Exercises
+              </Link>
+              <Link
+                href='/patients'
+                className='w-full gap-4 duration-300
+bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center'
+              >
+                <IoMdPeople size={20} />
+                Patients
+              </Link>
             </div>
           </div>
         </div>

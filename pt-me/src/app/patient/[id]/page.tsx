@@ -720,7 +720,7 @@ export default function Patient({
 
       <div className='patient-page'>
         <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
-          <div className='grid lg:grid-cols-2'>
+          <div className='grid xl:grid-cols-2'>
             <div className='flex gap-6 w-full'>
               <Stack direction='row' spacing={2}>
                 <Avatar
@@ -778,96 +778,129 @@ export default function Patient({
               </div>
             </div>
             <div className='relative'>
-              <div className='flex justify-center w-full gap-5'>
-                <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                  <FiPhone />
-                  <p className='hidden sm:block md:hidden lg:block'>
-                    {patient?.phoneNumber}
-                  </p>
+              <div className='flex flex-col justify-center w-full gap-5'>
+                <div className='flex justify-center w-full gap-5'>
+                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                    <FiPhone />
+                    <p className='hidden sm:block md:hidden lg:block'>
+                      {patient?.phoneNumber}
+                    </p>
+                  </div>
+                  <button
+                    id='click-email'
+                    onClick={handleClickEmail}
+                    className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
+                  >
+                    <AiOutlineMail />
+                    <p className='hidden sm:block md:hidden lg:block'>
+                      {patient?.email}
+                    </p>
+                    <BsChevronDown />
+                  </button>
+                  <StyledMenu
+                    id='demo-customized-menu'
+                    MenuListProps={{
+                      "aria-labelledby": "demo-customized-button",
+                    }}
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleCloseEmail}
+                  >
+                    <div className='flex items-center gap-3 shadow-lg shadow-gray-300'>
+                      <button
+                        onClick={() => changeEmailType("Appointment Reminder")}
+                        className={`${
+                          emailConfig.type === "Appointment Reminder" &&
+                          "bg-green-200"
+                        } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                      >
+                        <BsFillBellFill />
+                        Appointment Reminder
+                      </button>
+                      <button
+                        onClick={() => changeEmailType("Custom Email")}
+                        className={`${
+                          emailConfig.type === "Custom Email" && "bg-green-200"
+                        } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                      >
+                        <AiOutlineEdit />
+                        Custom Email
+                      </button>
+                    </div>
+                    <ListItemText className='ml-4 mt-5'>Subject</ListItemText>
+                    <input
+                      type='text'
+                      name='subject'
+                      className='w-[90%] border-b border-green-300 p-1 text-sm focus:border-blue-500 focus:outline-none m-4'
+                      placeholder='Type subject here...'
+                      value={emailConfig?.subject}
+                      onChange={handleSubject}
+                    />
+                    <ListItemText className='ml-4 mt-2'>Message</ListItemText>
+                    <textarea
+                      rows={5}
+                      cols={33}
+                      name='message'
+                      className='w-[90%] p-2 text-sm focus:border-blue-500 focus:outline-none m-4 rounded-lg shadow-lg shadow-green-300'
+                      placeholder='Type email here...'
+                      value={emailConfig?.message}
+                      onChange={handleMessage}
+                    />
+                    <div className='flex items-center gap-3 m-4'>
+                      <button
+                        onClick={handleSendEmail}
+                        className='ml-2 p-2 shadow-lg shadow-gray-400 bg-green-500 rounded-lg text-white duration-300 hover:scale-110 w-[30%]'
+                      >
+                        Send
+                      </button>
+                      <button
+                        onClick={handleCloseEmail}
+                        className='p-2 shadow-lg shadow-gray-400 rounded-lg duration-300 hover:scale-110 w-[30%]'
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </StyledMenu>
+                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                    <BsFileMedical />
+                    <p className='hidden sm:block md:hidden lg:block'>
+                      {patient?.insurance}
+                    </p>
+                  </div>
                 </div>
-                <button
-                  id='click-email'
-                  onClick={handleClickEmail}
-                  className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
-                >
-                  <AiOutlineMail />
-                  <p className='hidden sm:block md:hidden lg:block'>
-                    {patient?.email}
-                  </p>
-                  <BsChevronDown />
-                </button>
-                <StyledMenu
-                  id='demo-customized-menu'
-                  MenuListProps={{
-                    "aria-labelledby": "demo-customized-button",
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleCloseEmail}
-                >
-                  <div className='flex items-center gap-3 shadow-lg shadow-gray-300'>
+                <div className='flex xl:hidden'>
+                  <div className='flex items-center'>
                     <button
-                      onClick={() => changeEmailType("Appointment Reminder")}
-                      className={`${
-                        emailConfig.type === "Appointment Reminder" &&
-                        "bg-green-200"
-                      } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                      onClick={handleOpenDeletePatient}
+                      className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                     >
-                      <BsFillBellFill />
-                      Appointment Reminder
+                      <FiDelete className='p-2' size={35} /> Remove Patient
                     </button>
                     <button
-                      onClick={() => changeEmailType("Custom Email")}
-                      className={`${
-                        emailConfig.type === "Custom Email" && "bg-green-200"
-                      } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                      onClick={downloadFullPDF}
+                      className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                     >
-                      <AiOutlineEdit />
-                      Custom Email
+                      <BsDownload className='p-2' size={35} />{" "}
+                      {loading ? "Downloading..." : "Download"}
                     </button>
+                    {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <AiOutlineLink className='p-2' size={35} /> Share Link
+              </p> */}
+                    <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
+                    <Link
+                      href={{
+                        pathname: `/patient/edit-profile/${params.id}`,
+                        query: { name: patient?.title },
+                      }}
+                      className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
+                    >
+                      <MdOutlineEdit className='p-2' size={35} /> Edit
+                    </Link>
                   </div>
-                  <ListItemText className='ml-4 mt-5'>Subject</ListItemText>
-                  <input
-                    type='text'
-                    name='subject'
-                    className='w-[90%] border-b border-green-300 p-1 text-sm focus:border-blue-500 focus:outline-none m-4'
-                    placeholder='Type subject here...'
-                    value={emailConfig?.subject}
-                    onChange={handleSubject}
-                  />
-                  <ListItemText className='ml-4 mt-2'>Message</ListItemText>
-                  <textarea
-                    rows={5}
-                    cols={33}
-                    name='message'
-                    className='w-[90%] p-2 text-sm focus:border-blue-500 focus:outline-none m-4 rounded-lg shadow-lg shadow-green-300'
-                    placeholder='Type email here...'
-                    value={emailConfig?.message}
-                    onChange={handleMessage}
-                  />
-                  <div className='flex items-center gap-3 m-4'>
-                    <button
-                      onClick={handleSendEmail}
-                      className='ml-2 p-2 shadow-lg shadow-gray-400 bg-green-500 rounded-lg text-white duration-300 hover:scale-110 w-[30%]'
-                    >
-                      Send
-                    </button>
-                    <button
-                      onClick={handleCloseEmail}
-                      className='p-2 shadow-lg shadow-gray-400 rounded-lg duration-300 hover:scale-110 w-[30%]'
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </StyledMenu>
-                <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                  <BsFileMedical />
-                  <p className='hidden sm:block md:hidden lg:block'>
-                    {patient?.insurance}
-                  </p>
                 </div>
               </div>
-              <div className='absolute bottom-0 right-0 flex items-center'>
+
+              <div className='absolute bottom-0 right-0 hidden xl:flex items-center'>
                 <button
                   onClick={handleOpenDeletePatient}
                   className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'

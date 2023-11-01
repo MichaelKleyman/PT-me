@@ -187,7 +187,7 @@ export default function Account({ params }: Params) {
   const formattedTime = new Date().toLocaleTimeString(undefined, options);
 
   return (
-    <div className='ml-[5rem]'>
+    <div className='md:ml-[5rem]'>
       <div className='flex items-center justify-between shadow-lg shadow-gray-400 p-6'>
         <div>
           <h1 className='text-[20px]'>Hi, {clinic?.clinicName}</h1>
@@ -238,12 +238,10 @@ export default function Account({ params }: Params) {
         <p className='mt-2'>Clinic Address: {clinic?.address}</p>
         <p className='mt-2'>Clinic Email: {clinic?.email}</p>
       </div> */}
-      <div className='grid grid-cols-2 gap-8'>
-        <div className='flex items-center justify-center mt-8 m-[2rem] w-full'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-            <div>
-              <DoughnutChart patients={patients} />
-            </div>
+      <div className='grid xl:grid-cols-2 gap-8'>
+        <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-full'>
+          <div>
+            <DoughnutChart patients={patients} />
           </div>
         </div>
 

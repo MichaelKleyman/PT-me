@@ -214,7 +214,7 @@ export default function AllPatients() {
         />
       </div>
       <div className='mt-8'>
-        <div className='grid md:grid-cols-6 gap-6 place-items-center text-sm bg-[#edecec] p-2 uppercase tracking-wide text-[10px] font-medium rounded-lg'>
+        <div className='lg:grid hidden lg:grid-cols-6 gap-6 place-items-center text-sm bg-[#edecec] p-2 uppercase tracking-wide text-[10px] font-medium rounded-lg'>
           <></>
           <h1>Name</h1>
           <h1>Status</h1>
@@ -225,12 +225,14 @@ export default function AllPatients() {
         {patients?.length ? (
           !showSelected ? (
             patients
-              .filter((ex) => ex.title.toLowerCase().includes(searchInput.toLowerCase()))
+              .filter((ex) =>
+                ex.title.toLowerCase().includes(searchInput.toLowerCase())
+              )
               ?.slice(pagesVisited, pagesVisited + patientsPerPage)
               .map((patient) => (
                 <div
                   key={patient.id}
-                  className='grid md:grid-cols-6 gap-[4rem] place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
+                  className='grid lg:grid-cols-6 gap-[4rem] place-items-center p-6 border-b-[1px] border-[#eaece1] hover:bg-[#eae8e8] duration-300 cursor-pointer'
                 >
                   <div style={{ whiteSpace: "nowrap" }}>
                     <div className='flex items-center gap-5'>
