@@ -18,7 +18,7 @@ module.exports = {
     database: "ptme_nuxl",
     use_env_variable: "DATABASE_URL",
     // listen_addresses: "*",
-    listen_addresses: "0.0.0.0/0",
+    listen_addresses: "*",
     dialect: "postgres",
     dialectOptions: {
       ssl: {
