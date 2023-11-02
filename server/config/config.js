@@ -17,7 +17,8 @@ module.exports = {
     password: "TituchjSp80Y2CGZZ2qyqk7og8n6MiPr",
     database: "ptme_nuxl",
     use_env_variable: "DATABASE_URL",
-    listen_addresses: "*",
+    // listen_addresses: "*",
+    listen_addresses: "0.0.0.0/0",
     dialect: "postgres",
     dialectOptions: {
       ssl: {
