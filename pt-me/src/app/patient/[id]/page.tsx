@@ -202,6 +202,8 @@ export default function Patient({
     [key: string]: string | boolean | undefined;
   };
 }) {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingSchedule, setIsLoadingSchedule] = useState<boolean>(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -264,14 +266,18 @@ export default function Patient({
       } else {
         setStatus("No Appointment");
       }
+
       setPatient(payload as Patient);
     }
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
       setExercises(payload as ExerciseData[]);
     }
-    getPatient();
-    getPatientExercises();
+    setTimeout(() => {
+      getPatient();
+      getPatientExercises();
+      setIsLoading(false);
+    }, 2000);
   }, [setExercises]);
 
   useEffect(() => {
@@ -284,7 +290,10 @@ export default function Patient({
 
       setSchedule(exercises);
     }
-    getSchedule();
+    setTimeout(() => {
+      getSchedule();
+      setIsLoadingSchedule(false);
+    }, 2000);
   }, [params.id, setSchedule]);
 
   // useEffect(() => {
@@ -718,241 +727,252 @@ export default function Patient({
 
       <div className='patient-page'>
         <div className='bg-[#fdfff5] p-7 shadow-lg shadow-gray-200 rounded-md'>
-          <div className='grid xl:grid-cols-2'>
-            <div className='flex gap-6 w-full'>
-              <Stack direction='row' spacing={2}>
-                <Avatar
-                  {...stringAvatar(patient?.title || "")}
-                  sx={{
-                    width: 86,
-                    height: 86,
-                    bgcolor: `${stringToColor(patient?.title || "")}`,
-                    fontSize: "2rem",
-                  }}
-                />
-              </Stack>
-              <div>
-                <h1 className='font-medium text-[1.6rem] tracking-wider'>
-                  {patient?.title}
-                </h1>
-                <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
-                  <p>Age: {patient?.age}</p>
-                  <div className='hidden md:block'>
-                    <BsDot size={30} color='green' />
-                  </div>
-                  <p>{injuryDictionary[patient?.injuryId as number]}</p>
-                  <div className='hidden md:block'>
-                    <BsDot size={30} color='green' />
-                  </div>
-                  <p>{patient?.reasonForVisit}</p>
-                </div>
-                <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
-                  <div className='flex items-center'>
-                    <GrCalendar className='pr-2' size={25} />
-
-                    <div className='flex gap-3'>
-                      <p>Arrived</p>
-                      {new Date(patient?.createdAt as Date).toDateString()}
-                    </div>
-                  </div>
-                  <div className='flex items-center justify-center'>
-                    <h2 className='tracking-wide flex items-center gap-4'>
-                      Status{" "}
-                      <span
-                        onClick={showAppointment}
-                        typeof='button'
-                        className='flex items-center gap-3 hover:underline cursor-pointer'
-                      >
-                        {" "}
-                        <BiSolidCheckbox
-                          size={18}
-                          color={status === "Scheduled" ? "green" : "red"}
-                        />{" "}
-                        {status}
-                      </span>
-                    </h2>
-                  </div>
-                </div>
-              </div>
+          {isLoading ? (
+            <div className='flex items-center justify-center p-8'>
+              <span className='loader'></span>
             </div>
-            <div className='relative'>
-              <div className='flex flex-col justify-center w-full gap-5'>
-                <div className='flex justify-center w-full gap-5'>
-                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                    <FiPhone />
-                    <p className='hidden sm:block md:hidden lg:block'>
-                      {patient?.phoneNumber}
-                    </p>
-                  </div>
-                  <button
-                    id='click-email'
-                    onClick={handleClickEmail}
-                    className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
-                  >
-                    <AiOutlineMail />
-                    <p className='hidden sm:block md:hidden lg:block'>
-                      {patient?.email}
-                    </p>
-                    <BsChevronDown />
-                  </button>
-                  <StyledMenu
-                    id='demo-customized-menu'
-                    MenuListProps={{
-                      "aria-labelledby": "demo-customized-button",
+          ) : (
+            <div className='grid xl:grid-cols-2'>
+              <div className='flex gap-6 w-full'>
+                <Stack direction='row' spacing={2}>
+                  <Avatar
+                    {...stringAvatar(patient?.title || "")}
+                    sx={{
+                      width: 86,
+                      height: 86,
+                      bgcolor: `${stringToColor(patient?.title || "")}`,
+                      fontSize: "2rem",
                     }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleCloseEmail}
-                  >
-                    <div className='flex items-center gap-3 shadow-lg shadow-gray-300'>
-                      <button
-                        onClick={() => changeEmailType("Appointment Reminder")}
-                        className={`${
-                          emailConfig.type === "Appointment Reminder" &&
-                          "bg-green-200"
-                        } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
-                      >
-                        <BsFillBellFill />
-                        Appointment Reminder
-                      </button>
-                      <button
-                        onClick={() => changeEmailType("Custom Email")}
-                        className={`${
-                          emailConfig.type === "Custom Email" && "bg-green-200"
-                        } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
-                      >
-                        <AiOutlineEdit />
-                        Custom Email
-                      </button>
+                  />
+                </Stack>
+                <div>
+                  <h1 className='font-medium text-[1.6rem] tracking-wider'>
+                    {patient?.title}
+                  </h1>
+                  <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-3'>
+                    <p>Age: {patient?.age}</p>
+                    <div className='hidden md:block'>
+                      <BsDot size={30} color='green' />
                     </div>
-                    <ListItemText className='ml-4 mt-5'>Subject</ListItemText>
-                    <input
-                      type='text'
-                      name='subject'
-                      className='w-[90%] border-b border-green-300 p-1 text-sm focus:border-blue-500 focus:outline-none m-4'
-                      placeholder='Type subject here...'
-                      value={emailConfig?.subject}
-                      onChange={handleSubject}
-                    />
-                    <ListItemText className='ml-4 mt-2'>Message</ListItemText>
-                    <textarea
-                      rows={5}
-                      cols={33}
-                      name='message'
-                      className='w-[90%] p-2 text-sm focus:border-blue-500 focus:outline-none m-4 rounded-lg shadow-lg shadow-green-300'
-                      placeholder='Type email here...'
-                      value={emailConfig?.message}
-                      onChange={handleMessage}
-                    />
-                    <div className='flex items-center gap-3 m-4'>
-                      <button
-                        onClick={handleSendEmail}
-                        className='ml-2 p-2 shadow-lg shadow-gray-400 bg-green-500 rounded-lg text-white duration-300 hover:scale-110 w-[30%]'
-                      >
-                        Send
-                      </button>
-                      <button
-                        onClick={handleCloseEmail}
-                        className='p-2 shadow-lg shadow-gray-400 rounded-lg duration-300 hover:scale-110 w-[30%]'
-                      >
-                        Cancel
-                      </button>
+                    <p>{injuryDictionary[patient?.injuryId as number]}</p>
+                    <div className='hidden md:block'>
+                      <BsDot size={30} color='green' />
                     </div>
-                  </StyledMenu>
-                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
-                    <BsFileMedical />
-                    <p className='hidden sm:block md:hidden lg:block'>
-                      {patient?.insurance}
-                    </p>
+                    <p>{patient?.reasonForVisit}</p>
                   </div>
-                </div>
-                <div className='flex xl:hidden'>
-                  <div className='flex items-center'>
-                    <button
-                      onClick={handleOpenDeletePatient}
-                      className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-                    >
-                      <FiDelete className='p-2' size={35} /> Remove Patient
-                    </button>
-                    <button
-                      onClick={downloadFullPDF}
-                      className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-                    >
-                      <BsDownload className='p-2' size={35} />{" "}
-                      {loading ? "Downloading..." : "Download"}
-                    </button>
-                    {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
-                <AiOutlineLink className='p-2' size={35} /> Share Link
-              </p> */}
-                    <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
-                    <Link
-                      href={{
-                        pathname: `/patient/edit-profile/${params.id}`,
-                        query: { name: patient?.title },
-                      }}
-                      className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
-                    >
-                      <MdOutlineEdit className='p-2' size={35} /> Edit
-                    </Link>
-                  </div>
-                </div>
-              </div>
+                  <div className='mt-3 text-[12px] grid grid-cols-2 place-content-between gap-3'>
+                    <div className='flex items-center'>
+                      <GrCalendar className='pr-2' size={25} />
 
-              <div className='absolute bottom-0 right-0 hidden xl:flex items-center'>
-                <button
-                  onClick={handleOpenDeletePatient}
-                  className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-                >
-                  <FiDelete className='p-2' size={35} /> Remove Patient
-                </button>
-                <button
-                  onClick={downloadFullPDF}
-                  className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
-                >
-                  <BsDownload className='p-2' size={35} />{" "}
-                  {loading ? "Downloading..." : "Download"}
-                </button>
-                {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                      <div className='flex gap-3'>
+                        <p>Arrived</p>
+                        {new Date(patient?.createdAt as Date).toDateString()}
+                      </div>
+                    </div>
+                    <div className='flex items-center justify-center'>
+                      <h2 className='tracking-wide flex items-center gap-4'>
+                        Status{" "}
+                        <span
+                          onClick={showAppointment}
+                          typeof='button'
+                          className='flex items-center gap-3 hover:underline cursor-pointer'
+                        >
+                          {" "}
+                          <BiSolidCheckbox
+                            size={18}
+                            color={status === "Scheduled" ? "green" : "red"}
+                          />{" "}
+                          {status}
+                        </span>
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='relative'>
+                <div className='flex flex-col justify-center w-full gap-5'>
+                  <div className='flex justify-center w-full gap-5'>
+                    <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                      <FiPhone />
+                      <p className='hidden sm:block md:hidden lg:block'>
+                        {patient?.phoneNumber}
+                      </p>
+                    </div>
+                    <button
+                      id='click-email'
+                      onClick={handleClickEmail}
+                      className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
+                    >
+                      <AiOutlineMail />
+                      <p className='hidden sm:block md:hidden lg:block'>
+                        {patient?.email}
+                      </p>
+                      <BsChevronDown />
+                    </button>
+                    <StyledMenu
+                      id='demo-customized-menu'
+                      MenuListProps={{
+                        "aria-labelledby": "demo-customized-button",
+                      }}
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleCloseEmail}
+                    >
+                      <div className='flex items-center gap-3 shadow-lg shadow-gray-300'>
+                        <button
+                          onClick={() =>
+                            changeEmailType("Appointment Reminder")
+                          }
+                          className={`${
+                            emailConfig.type === "Appointment Reminder" &&
+                            "bg-green-200"
+                          } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                        >
+                          <BsFillBellFill />
+                          Appointment Reminder
+                        </button>
+                        <button
+                          onClick={() => changeEmailType("Custom Email")}
+                          className={`${
+                            emailConfig.type === "Custom Email" &&
+                            "bg-green-200"
+                          } flex items-center gap-3 duration-300 hover:scale-110 hover:bg-gray-100 p-2 rounded-lg`}
+                        >
+                          <AiOutlineEdit />
+                          Custom Email
+                        </button>
+                      </div>
+                      <ListItemText className='ml-4 mt-5'>Subject</ListItemText>
+                      <input
+                        type='text'
+                        name='subject'
+                        className='w-[90%] border-b border-green-300 p-1 text-sm focus:border-blue-500 focus:outline-none m-4'
+                        placeholder='Type subject here...'
+                        value={emailConfig?.subject}
+                        onChange={handleSubject}
+                      />
+                      <ListItemText className='ml-4 mt-2'>Message</ListItemText>
+                      <textarea
+                        rows={5}
+                        cols={33}
+                        name='message'
+                        className='w-[90%] p-2 text-sm focus:border-blue-500 focus:outline-none m-4 rounded-lg shadow-lg shadow-green-300'
+                        placeholder='Type email here...'
+                        value={emailConfig?.message}
+                        onChange={handleMessage}
+                      />
+                      <div className='flex items-center gap-3 m-4'>
+                        <button
+                          onClick={handleSendEmail}
+                          className='ml-2 p-2 shadow-lg shadow-gray-400 bg-green-500 rounded-lg text-white duration-300 hover:scale-110 w-[30%]'
+                        >
+                          Send
+                        </button>
+                        <button
+                          onClick={handleCloseEmail}
+                          className='p-2 shadow-lg shadow-gray-400 rounded-lg duration-300 hover:scale-110 w-[30%]'
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </StyledMenu>
+                    <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                      <BsFileMedical />
+                      <p className='hidden sm:block md:hidden lg:block'>
+                        {patient?.insurance}
+                      </p>
+                    </div>
+                  </div>
+                  <div className='flex xl:hidden'>
+                    <div className='flex items-center'>
+                      <button
+                        onClick={handleOpenDeletePatient}
+                        className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                      >
+                        <FiDelete className='p-2' size={35} /> Remove Patient
+                      </button>
+                      <button
+                        onClick={downloadFullPDF}
+                        className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                      >
+                        <BsDownload className='p-2' size={35} />{" "}
+                        {loading ? "Downloading..." : "Download"}
+                      </button>
+                      {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
                 <AiOutlineLink className='p-2' size={35} /> Share Link
               </p> */}
-                <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
-                <Link
-                  href={{
-                    pathname: `/patient/edit-profile/${params.id}`,
-                    query: { name: patient?.title },
-                  }}
-                  className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
-                >
-                  <MdOutlineEdit className='p-2' size={35} /> Edit
-                </Link>
-              </div>
-              <div>
-                {clickedRemove && (
-                  <Dialog
-                    open={clickedRemove}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={handleCloseDeletePatient}
-                    aria-describedby='alert-dialog-slide-description'
+                      <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
+                      <Link
+                        href={{
+                          pathname: `/patient/edit-profile/${params.id}`,
+                          query: { name: patient?.title },
+                        }}
+                        className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
+                      >
+                        <MdOutlineEdit className='p-2' size={35} /> Edit
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='absolute bottom-0 right-0 hidden xl:flex items-center'>
+                  <button
+                    onClick={handleOpenDeletePatient}
+                    className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                   >
-                    <DialogTitle className='text-red-600'>
-                      {"Warning! You are deleting a patient permanently!"}
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id='alert-dialog-slide-description'>
-                        By clicking delete, you will lose all of this patients
-                        information.
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleCloseDeletePatient}>Cancel</Button>
-                      <Button onClick={deletePatient}>Delete</Button>
-                    </DialogActions>
-                  </Dialog>
-                )}
+                    <FiDelete className='p-2' size={35} /> Remove Patient
+                  </button>
+                  <button
+                    onClick={downloadFullPDF}
+                    className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                  >
+                    <BsDownload className='p-2' size={35} />{" "}
+                    {loading ? "Downloading..." : "Download"}
+                  </button>
+                  {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
+                <AiOutlineLink className='p-2' size={35} /> Share Link
+              </p> */}
+                  <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
+                  <Link
+                    href={{
+                      pathname: `/patient/edit-profile/${params.id}`,
+                      query: { name: patient?.title },
+                    }}
+                    className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer'
+                  >
+                    <MdOutlineEdit className='p-2' size={35} /> Edit
+                  </Link>
+                </div>
+                <div>
+                  {clickedRemove && (
+                    <Dialog
+                      open={clickedRemove}
+                      TransitionComponent={Transition}
+                      keepMounted
+                      onClose={handleCloseDeletePatient}
+                      aria-describedby='alert-dialog-slide-description'
+                    >
+                      <DialogTitle className='text-red-600'>
+                        {"Warning! You are deleting a patient permanently!"}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id='alert-dialog-slide-description'>
+                          By clicking delete, you will lose all of this patients
+                          information.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseDeletePatient}>
+                          Cancel
+                        </Button>
+                        <Button onClick={deletePatient}>Delete</Button>
+                      </DialogActions>
+                    </Dialog>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
         <DragDropContext onDragEnd={onDragEnd}>
           <div className='md:flex mt-[1rem] gap-5'>
@@ -1029,67 +1049,75 @@ export default function Patient({
                         ))}
                     </div>
                   </div>
-                  <div className='mt-[1rem]'>
-                    {patientsExercises?.length ? (
-                      patientsExercises?.map(
-                        (exercise: ExerciseData, index) => (
-                          <Draggable
-                            key={exercise.id}
-                            draggableId={exercise.name.toString()}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                                className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
-                                  snapshot.isDragging ? "shadow-gray-500" : ""
-                                }`}
-                              >
-                                <h1 className='font-semibold'>
-                                  {exercise.name}
-                                </h1>
-                                <div className='relative top-3 flex justify-evenly'>
-                                  <Link
-                                    href={`/exercises/${exercise.id}`}
-                                    className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
-                                  >
-                                    <AiOutlineEye className='p-2' size={35} />
-                                    View
-                                  </Link>
-                                  <button
-                                    onClick={() => removeExercise(exercise.id)}
-                                    className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
-                                  >
-                                    <FiDelete className='p-2' size={30} />
-                                    Remove
-                                  </button>
+                  {isLoading ? (
+                    <div className='flex items-center justify-center p-8'>
+                      <span className='loader'></span>
+                    </div>
+                  ) : (
+                    <div className='mt-[1rem]'>
+                      {patientsExercises?.length ? (
+                        patientsExercises?.map(
+                          (exercise: ExerciseData, index) => (
+                            <Draggable
+                              key={exercise.id}
+                              draggableId={exercise.name.toString()}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                  className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
+                                    snapshot.isDragging ? "shadow-gray-500" : ""
+                                  }`}
+                                >
+                                  <h1 className='font-semibold'>
+                                    {exercise.name}
+                                  </h1>
+                                  <div className='relative top-3 flex justify-evenly'>
+                                    <Link
+                                      href={`/exercises/${exercise.id}`}
+                                      className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                                    >
+                                      <AiOutlineEye className='p-2' size={35} />
+                                      View
+                                    </Link>
+                                    <button
+                                      onClick={() =>
+                                        removeExercise(exercise.id)
+                                      }
+                                      className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                                    >
+                                      <FiDelete className='p-2' size={30} />
+                                      Remove
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </Draggable>
+                              )}
+                            </Draggable>
+                          )
                         )
-                      )
-                    ) : (
-                      <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
-                        {/* <p>No exercises for this patient.</p> */}
-                        <Image
-                          src={emptyImage}
-                          alt='nothing-found'
-                          height={200}
-                          width={200}
-                        />
-                        <Link
-                          href='/exercises'
-                          className='text-blue-600 hover:underline'
-                        >
-                          View Exercises
-                        </Link>
-                      </div>
-                    )}
-                    {provided.placeholder}
-                  </div>
+                      ) : (
+                        <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
+                          {/* <p>No exercises for this patient.</p> */}
+                          <Image
+                            src={emptyImage}
+                            alt='nothing-found'
+                            height={200}
+                            width={200}
+                          />
+                          <Link
+                            href='/exercises'
+                            className='text-blue-600 hover:underline'
+                          >
+                            View Exercises
+                          </Link>
+                        </div>
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
                 </div>
               )}
             </Droppable>
@@ -1135,111 +1163,119 @@ export default function Patient({
                       )}
                     </div>
                   </div>
-                  <div className='overflow-y-scroll overflow-x-scroll'>
-                    {schedule?.length ? (
-                      <table className='border-collapse m-4'>
-                        <thead>
-                          <tr>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Exercise Name
-                            </th>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Repetitions
-                            </th>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Assigned On
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {schedule.map((exerciseObj, index) => (
-                            <Draggable
-                              key={exerciseObj.id}
-                              draggableId={exerciseObj.exercise?.name.toString()}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <tr
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
-                                  className={`hover:shadow-lg ${
-                                    index % 2 === 0
-                                      ? "bg-white"
-                                      : "bg-[#faffe6]"
-                                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
-                                    snapshot.isDragging ? "shadow-gray-600" : ""
-                                  }`}
-                                >
-                                  <td className=' px-6'>
-                                    <h1 className='p-8'>
-                                      {exerciseObj.exercise?.name}
-                                    </h1>
-                                  </td>
-                                  <td className=' px-6 py-5'>
-                                    <div className='flex gap-3'>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.sets}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleSetsChange(
-                                                exerciseObj.id,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.sets}`}
-                                          />
-                                        )}
+                  {isLoadingSchedule ? (
+                    <div className='flex items-center justify-center p-8'>
+                      <span className='loader'></span>
+                    </div>
+                  ) : (
+                    <div className='overflow-y-scroll overflow-x-scroll'>
+                      {schedule?.length ? (
+                        <table className='border-collapse m-4'>
+                          <thead>
+                            <tr>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Exercise Name
+                              </th>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Repetitions
+                              </th>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Assigned On
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {schedule.map((exerciseObj, index) => (
+                              <Draggable
+                                key={exerciseObj.id}
+                                draggableId={exerciseObj.exercise?.name.toString()}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <tr
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                    className={`hover:shadow-lg ${
+                                      index % 2 === 0
+                                        ? "bg-white"
+                                        : "bg-[#faffe6]"
+                                    } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
+                                      snapshot.isDragging
+                                        ? "shadow-gray-600"
+                                        : ""
+                                    }`}
+                                  >
+                                    <td className=' px-6'>
+                                      <h1 className='p-8'>
+                                        {exerciseObj.exercise?.name}
+                                      </h1>
+                                    </td>
+                                    <td className=' px-6 py-5'>
+                                      <div className='flex gap-3'>
+                                        <div>
+                                          {!update ? (
+                                            `${exerciseObj.sets}`
+                                          ) : (
+                                            <input
+                                              onChange={(e) =>
+                                                handleSetsChange(
+                                                  exerciseObj.id,
+                                                  e
+                                                )
+                                              }
+                                              type='text'
+                                              className='border border-green-500 w-6 rounded-sm text-center'
+                                              value={`${exerciseObj.sets}`}
+                                            />
+                                          )}
+                                        </div>
+                                        <p>x</p>
+                                        <div>
+                                          {!update ? (
+                                            `${exerciseObj.reps}`
+                                          ) : (
+                                            <input
+                                              onChange={(e) =>
+                                                handleRepsChange(
+                                                  exerciseObj.id,
+                                                  exerciseObj.reps,
+                                                  e
+                                                )
+                                              }
+                                              type='text'
+                                              className='border border-green-500 w-6 rounded-sm text-center'
+                                              value={`${exerciseObj.reps}`}
+                                            />
+                                          )}
+                                        </div>
                                       </div>
-                                      <p>x</p>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.reps}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleRepsChange(
-                                                exerciseObj.id,
-                                                exerciseObj.reps,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.reps}`}
-                                          />
-                                        )}
+                                    </td>
+                                    <td className='text-[15px] text-blue-600'>
+                                      <div className='flex items-center justify-center gap-5'>
+                                        <FaRegCalendarCheck />
+                                        <p>
+                                          {new Date(
+                                            exerciseObj.createdAt
+                                          ).toDateString()}
+                                        </p>
                                       </div>
-                                    </div>
-                                  </td>
-                                  <td className='text-[15px] text-blue-600'>
-                                    <div className='flex items-center justify-center gap-5'>
-                                      <FaRegCalendarCheck />
-                                      <p>
-                                        {new Date(
-                                          exerciseObj.createdAt
-                                        ).toDateString()}
-                                      </p>
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </Draggable>
-                          ))}
-                        </tbody>
-                        {/* </Droppable> */}
-                      </table>
-                    ) : (
-                      <div className='mt-4 normal-case'>
-                        Make a schedule for patient.
-                      </div>
-                    )}
-                    {provided.placeholder}
-                  </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </Draggable>
+                            ))}
+                          </tbody>
+                          {/* </Droppable> */}
+                        </table>
+                      ) : (
+                        <div className='mt-4 normal-case'>
+                          Make a schedule for patient.
+                        </div>
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
                 </div>
               )}
             </Droppable>
