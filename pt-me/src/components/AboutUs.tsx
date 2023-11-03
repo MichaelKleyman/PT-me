@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import PtImage from '../app/images/homepage.jpg';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import PtImage from "../app/images/homepage.jpg";
+import { useRouter } from "next/navigation";
 
 // const fetchData = async () => {
 //   try {
@@ -17,7 +17,7 @@ const AboutUs = () => {
   return (
     <section id='about-us'>
       <div className='flex flex-col text-center items-center justify-center my-10 py-16 h-full'>
-        <div className='w-[100%] md:mt-2'>
+        <div className='w-[100%] md:mt-2 flex items-center justify-center'>
           <Image src={PtImage} alt='/' width={1300} height={1300} />
         </div>
         <div className='py-8'>
@@ -35,7 +35,7 @@ const AboutUs = () => {
         </div>
       </div>
       <div
-        onClick={() => router.push('/login')}
+        onClick={() => router.push("/login")}
         className='flex items-center justify-center'
       >
         <div className='md:hidden bg-[#3BE13B] p-2 rounded-xl w-[60%] text-center font-bold duration-300 hover:scale-110 '>

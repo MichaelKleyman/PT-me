@@ -58,8 +58,7 @@ const Page = () => {
       user === 'Successful signup'
     ) {
       setError(false);
-      router.push('/');
-      console.log('Rerouting');
+      router.push('/login');
       setCredentials({
         email: '',
         clinicName: '',

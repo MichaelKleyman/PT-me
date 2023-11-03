@@ -42,7 +42,6 @@ const Page = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     const newObject = { ...credentials, [e.target.name]: e.target.value };
     setCredentials(newObject);
   };
@@ -65,19 +64,20 @@ const Page = () => {
 
     // Dispatch the login action and wait for the response
     const response: any = await dispatch(login(credentials));
-
+    console.log(response);
     // If the login is unsuccessful, show an error message
     if (response.payload?.errorStatus === "Unauthorized") {
       setError("Incorrect email or password.");
       console.log("There was an error!");
       return;
+    } else {
+      // Here you can navigate to the dashboard or any other page of your app
+      router.push("/");
     }
 
     // If the login is successful, clear the error message and navigate to the dashboard
     setError("");
     console.log("Logging in");
-    // Here you can navigate to the dashboard or any other page of your app
-    router.push("/");
   };
 
   return (

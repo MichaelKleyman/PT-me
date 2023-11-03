@@ -47,7 +47,7 @@ const services: Array<Service> = [
 
 const Services = () => {
   return (
-    <section id='services' className='w-full md:h-screen'>
+    <section id='services' className='w-full md:h-screen mt-8'>
       <div className={quicksand.className}>
         <h1
           className='text-center
