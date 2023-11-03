@@ -73,11 +73,9 @@ export const login = createAsyncThunk(
         email,
         password,
       });
-      console.log("res", res);
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
     } catch (error: any) {
-      console.log(">>>>", error.response.statusText);
       return { errorStatus: error.response.statusText };
     }
   }

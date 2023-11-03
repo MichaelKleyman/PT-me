@@ -16,6 +16,7 @@ import Input from "@mui/material/Input";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
+import { useSearchParams } from "next/navigation";
 
 interface Credentials {
   email: string;
@@ -32,6 +33,8 @@ const Page = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -59,7 +62,6 @@ const Page = () => {
     // If fields are empty, show error message
     if (!credentials.email.length || !credentials.password.length) {
       setError("Fill in all fields.");
-      console.log("Fill in all fields!");
       return;
     }
 
@@ -70,16 +72,13 @@ const Page = () => {
     // if (response.payload?.errorStatus === "Unauthorized") {
     if (response.payload) {
       setError("Incorrect email or password.");
-      console.log("There was an error!");
       return;
     } else {
       // Here you can navigate to the dashboard or any other page of your app
       router.push("/");
     }
-
     // If the login is successful, clear the error message and navigate to the dashboard
     setError("");
-    console.log("Logging in");
   };
 
   return (
@@ -104,7 +103,7 @@ const Page = () => {
                 type='email'
                 name='email'
                 onChange={handleChange}
-                value={credentials.email}
+                value={email ? email : credentials.email}
                 id='email-login'
                 label='Email'
                 variant='standard'

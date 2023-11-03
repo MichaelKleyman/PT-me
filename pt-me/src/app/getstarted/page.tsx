@@ -1,16 +1,16 @@
-'use client';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '../../Redux/store';
-import { signup } from '../../Redux/Features/auth/authSlice';
-import TextField from '@mui/material/TextField';
-import { BiArrowBack } from 'react-icons/bi';
-import { useRouter } from 'next/navigation';
-import { Roboto } from 'next/font/google';
+"use client";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../Redux/store";
+import { signup } from "../../Redux/Features/auth/authSlice";
+import TextField from "@mui/material/TextField";
+import { BiArrowBack } from "react-icons/bi";
+import { useRouter } from "next/navigation";
+import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 interface Credentials {
@@ -24,13 +24,12 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.error);
-  console.log(user);
   const [error, setError] = useState(false);
   const [credentials, setCredentials] = useState({
-    email: '',
-    clinicName: '',
-    address: '',
-    password: '',
+    email: "",
+    clinicName: "",
+    address: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,15 +54,16 @@ const Page = () => {
       credentials.clinicName.length &&
       credentials.address.length &&
       credentials.password.length &&
-      user === 'Successful signup'
+      user === "Successful signup"
     ) {
+      router.push(`/`);
       setError(false);
-      router.push('/login');
+      // router.push(`/login?email=${credentials.email}`);
       setCredentials({
-        email: '',
-        clinicName: '',
-        address: '',
-        password: '',
+        email: "",
+        clinicName: "",
+        address: "",
+        password: "",
       });
       //if either one of the fields are empty AND if the user variable doesnt have a length, then tell the user to fill in all fields.
     } else {
@@ -82,7 +82,7 @@ const Page = () => {
     <div className='h-screen'>
       <button
         type='button'
-        onClick={() => router.push('/')}
+        onClick={() => router.push("/")}
         className='mt-[9rem] px-4 cursor-pointer flex items-center hover:scale-110 duration-300'
       >
         <BiArrowBack size={32} />
@@ -90,7 +90,7 @@ const Page = () => {
       </button>
       <div className='mt-[1rem] bg-[#fdfff5] dark:bg-[#2f2d2d] max-w-[900px] w-full mx-auto p-5 rounded-lg shadow-lg shadow-gray-400'>
         <h1 className='text-4xl font-bold pb-4'>
-          Create a portal for your{' '}
+          Create a portal for your{" "}
           <span className='text-green-500'>clinic</span> 👋.
         </h1>
         <h1 className='text-sm pb-7 text-gray-400'>
@@ -105,7 +105,7 @@ const Page = () => {
             value={credentials.email}
             onChange={handleChange}
             label='Email'
-            sx={{ width: '100%', borderRadius: '10px' }}
+            sx={{ width: "100%", borderRadius: "10px" }}
           />
           <TextField
             required
@@ -114,7 +114,7 @@ const Page = () => {
             name='clinicName'
             onChange={handleChange}
             label='Clinic Name'
-            sx={{ width: '100%', borderRadius: '10px' }}
+            sx={{ width: "100%", borderRadius: "10px" }}
           />
           <TextField
             required
@@ -123,7 +123,7 @@ const Page = () => {
             name='address'
             onChange={handleChange}
             label='Address'
-            sx={{ width: '100%', borderRadius: '10px' }}
+            sx={{ width: "100%", borderRadius: "10px" }}
           />
           <TextField
             required
@@ -132,7 +132,7 @@ const Page = () => {
             name='password'
             onChange={handleChange}
             label='Password'
-            sx={{ width: '100%', borderRadius: '10px' }}
+            sx={{ width: "100%", borderRadius: "10px" }}
           />
         </form>
         <div
