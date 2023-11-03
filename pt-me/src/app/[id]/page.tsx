@@ -9,6 +9,7 @@ import { FiSettings, FiLogOut } from "react-icons/fi";
 import { Avatar, Button, Stack } from "@mui/material";
 import { BsChevronDown } from "react-icons/bs";
 import { FcClock, FcCalendar } from "react-icons/fc";
+import { AiOutlineMail, AiOutlineEdit } from "react-icons/ai";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled, alpha } from "@mui/material/styles";
@@ -16,6 +17,7 @@ import { Patient } from "../../../types";
 import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import Badge from "@mui/material/Badge";
 import { IoIosArrowForward, IoMdNotificationsOutline } from "react-icons/io";
+import { MdLocationOn } from "react-icons/md";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import noAppointmentsImage from "../../images/none.jpg";
@@ -143,11 +145,11 @@ export default function Account({ params }: Params) {
   };
 
   useEffect(() => {
+    dispatch(me());
     if (clinic?.id) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
-
         const todaysPatients = (payload as Patient[]).filter((patient) => {
           const appointmentDate = new Date(
             patient?.appointments[0]?.start as Date
@@ -167,7 +169,7 @@ export default function Account({ params }: Params) {
       }
       getPatients();
     }
-  }, [clinic]);
+  }, []);
 
   const handleLogout = () => {
     try {
@@ -204,6 +206,14 @@ export default function Account({ params }: Params) {
               <FcClock size={20} />
               <span className='text-gray-400'>{formattedTime}</span>
             </p>
+            <p className='text-[15px] mt-2 flex items-center gap-2'>
+              <AiOutlineMail size={20} />
+              <span className='text-gray-400'>@{clinic?.email}</span>
+            </p>
+            <p className='text-[15px] mt-2 flex items-center gap-2'>
+              <MdLocationOn size={20} />
+              <span className='text-gray-400'>@{clinic?.address}</span>
+            </p>
           </div>
         </div>
         <div className='flex items-center gap-8'>
@@ -234,6 +244,22 @@ export default function Account({ params }: Params) {
             >
               <FiLogOut />
               Log Out
+            </MenuItem>
+            <MenuItem disableRipple>
+              <Link
+                href={{
+                  pathname: `/${params.id}/edit-portal`,
+                  query: {
+                    clinicName: `${clinic?.clinicName}`,
+                    address: `${clinic?.address}`,
+                    email: `${clinic?.email}`,
+                  },
+                }}
+                className='flex gap-6'
+              >
+                <AiOutlineEdit />
+                Edit Portal
+              </Link>
             </MenuItem>
           </StyledMenu>
         </div>

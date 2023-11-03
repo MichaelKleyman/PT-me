@@ -480,8 +480,6 @@ export default function Patient({
 
     updatedSchedule[exerciseIndex].sets = Number(e.target.value);
 
-    console.log("New sets", Number(e.target.value));
-
     setSchedule(updatedSchedule);
     setNewRepetitions({
       ...newRepetitions,

@@ -89,9 +89,6 @@ export default function EditPatient({ patientId }: Props) {
           injuryTypeOptions[i]?.value ===
           injuryTypeOptions[payload?.injuryId - 1]?.value
         ) {
-          console.log(payload?.injuryId);
-          console.log(injuryTypeOptions[payload?.injuryId - 1]?.value);
-          console.log(injuryTypeOptions[i]?.value);
           setInjuryIndex(i);
           break;
         }

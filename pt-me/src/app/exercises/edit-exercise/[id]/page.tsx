@@ -11,7 +11,7 @@ export default function EditExercisePage() {
     <div className='mt-[1rem] ml-[6rem] p-4'>
       <div className='flex text-center gap-2'>
         <Link
-          href='/exercises'
+          href={``}
           className='mb-5 text-sm text-gray-400 hover:underline duration-300 hover:scale-110 flex items-center gap-2'
         >
           <AiOutlineFileSearch />
