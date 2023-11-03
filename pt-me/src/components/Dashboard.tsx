@@ -154,6 +154,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
   const [scheduled, setScheduled] = useState({ clicked: false, id: -1 });
   const [appointment, setAppointmentToDelete] = useState<Appointment>();
   const [appointmentTime, setAppointmentTime] = useState<SlotInfo>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -186,6 +187,7 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
       setEvents(convertedDatabaseData);
     }
     getPatients();
+    setIsLoading(false);
   }, []);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -307,6 +309,13 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
 
   const today = new Date();
 
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-9 h-screen'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
   return (
     <div className='w-full'>
       <div>
