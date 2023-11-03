@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
 import { me } from "../Redux/Features/auth/authSlice";
 import Dashboard from "@/components/Dashboard";
-import CircularProgress from "@mui/material/CircularProgress";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +25,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className='flex items-center justify-center p-9 h-screen'>
-        <CircularProgress />
+        <span className='loader'></span>
       </div>
     );
   }

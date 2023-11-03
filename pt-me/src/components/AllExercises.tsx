@@ -34,6 +34,7 @@ const style = {
 };
 
 export default function AllExercises() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageNumber2, setPageNumber2] = useState<number>(0);
@@ -62,6 +63,7 @@ export default function AllExercises() {
 
   useEffect(() => {
     getAllExercises();
+    setIsLoading(false);
   }, []);
 
   const filterExercises = async (exerciseType: String) => {
@@ -343,6 +345,13 @@ export default function AllExercises() {
     setSearchInput(e.target.value);
   };
 
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-9 h-screen'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
   return (
     <div>
       <h1 className='text-green-500 text-xl uppercase tracking-widest m-4'>

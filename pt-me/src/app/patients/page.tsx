@@ -55,6 +55,7 @@ export default function AllPatients() {
   const [clickedDelete, setClickedDelete] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [searchInput, setSearchInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function AllPatients() {
       }
       getPatients();
     }
+    setIsLoading(false);
   }, [clinic]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,6 +180,13 @@ export default function AllPatients() {
     allPatientsPageCount = Math.ceil(patients?.length / patientsPerPage);
   }
 
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-9'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
   return (
     <div className='mt-[2rem] md:ml-[8rem] p-9'>
       <h1 className='text-xl tracking-widest font-bold uppercase'>
