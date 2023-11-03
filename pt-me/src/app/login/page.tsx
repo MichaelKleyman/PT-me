@@ -67,7 +67,8 @@ const Page = () => {
     const response: any = await dispatch(login(credentials));
     console.log(response);
     // If the login is unsuccessful, show an error message
-    if (response.payload?.errorStatus === "Unauthorized") {
+    // if (response.payload?.errorStatus === "Unauthorized") {
+    if (response.payload) {
       setError("Incorrect email or password.");
       console.log("There was an error!");
       return;
