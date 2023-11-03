@@ -68,8 +68,10 @@ export default function AllPatients() {
         setPatients(sortedPayload);
       }
       getPatients();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
-    setIsLoading(false);
   }, [clinic]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,7 +184,7 @@ export default function AllPatients() {
 
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center p-9'>
+      <div className='flex items-center justify-center p-9 h-screen'>
         <span className='loader'></span>
       </div>
     );

@@ -59,11 +59,13 @@ export default function AllExercises() {
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
     setExercises(data);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   };
 
   useEffect(() => {
     getAllExercises();
-    setIsLoading(false);
   }, []);
 
   const filterExercises = async (exerciseType: String) => {

@@ -184,10 +184,12 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
         end: item.end ? new Date(item.end) : undefined,
         title: item.patient?.title,
       }));
-      setEvents(convertedDatabaseData);
+      setTimeout(() => {
+        setEvents(convertedDatabaseData);
+        setIsLoading(false);
+      }, 1000);
     }
     getPatients();
-    setIsLoading(false);
   }, []);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -323,25 +325,39 @@ const Dashboard: FC<DashboardProps> = ({ clinicName }) => {
           {clinicName} <span className='text-green-500'>Dashboard</span>{" "}
         </p>
 
-        <DnDCalendar
-          dayLayoutAlgorithm='no-overlap'
-          onSelectSlot={handleSelectSlot}
-          onSelectEvent={clickEvent}
-          defaultView='week'
-          events={events}
-          localizer={localizer}
-          onEventDrop={onEventDrop}
-          onEventResize={onEventResize}
-          resizable
-          selectable
-          min={
-            new Date(today.getFullYear(), today.getMonth(), today.getDate(), 7)
-          }
-          max={
-            new Date(today.getFullYear(), today.getMonth(), today.getDate(), 22)
-          }
-          style={{ height: "100%" }}
-        />
+        {events ? (
+          <DnDCalendar
+            dayLayoutAlgorithm='no-overlap'
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={clickEvent}
+            defaultView='week'
+            events={events}
+            localizer={localizer}
+            onEventDrop={onEventDrop}
+            onEventResize={onEventResize}
+            resizable
+            selectable
+            min={
+              new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                7
+              )
+            }
+            max={
+              new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate(),
+                22
+              )
+            }
+            style={{ height: "100%" }}
+          />
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
       <div>
         <Dialog
