@@ -47,6 +47,7 @@ const Page = () => {
   };
 
   useEffect(() => {
+    console.log(user);
     if (user && user.errorStatus === "Unauthorized") {
       setError("Incorrect email or password.");
     } else {

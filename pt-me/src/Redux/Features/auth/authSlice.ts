@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Axios from 'axios';
-import { CLIENT, BASE_URL } from '@/components/api';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Axios from "axios";
+import { CLIENT, BASE_URL } from "@/components/api";
 
-const TOKEN = 'token';
+const TOKEN = "token";
 
 interface AuthState {
   user: any; // Replace 'any' with your user type
@@ -43,7 +43,7 @@ export const me = createAsyncThunk(
 );
 
 export const signup = createAsyncThunk(
-  'auth/signup',
+  "auth/signup",
   async (
     { clinicName, address, email, password }: SignupPayload,
     { dispatch }
@@ -58,7 +58,7 @@ export const signup = createAsyncThunk(
       console.log(res);
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
-      return { error: 'Successful signup' };
+      return { error: "Successful signup" };
     } catch (authError: any) {
       return { error: authError.response.data };
     }
@@ -66,17 +66,18 @@ export const signup = createAsyncThunk(
 );
 
 export const login = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async ({ email, password }: LoginPayload, { dispatch }) => {
     try {
       const res = await CLIENT.post(`${BASE_URL}/auth/login`, {
         email,
         password,
       });
+      console.log("res", res);
       window.localStorage.setItem(TOKEN, res.data.token);
       await dispatch(me());
     } catch (error: any) {
-      console.log('>>>>', error.response.statusText);
+      console.log(">>>>", error.response.statusText);
       return { errorStatus: error.response.statusText };
     }
   }
@@ -87,7 +88,7 @@ export const logout = () => {
 };
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
