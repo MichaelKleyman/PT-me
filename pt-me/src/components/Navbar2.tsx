@@ -12,7 +12,7 @@ import { BsSun, BsFillMoonFill } from "react-icons/bs";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/Redux/store";
-import { me, logout } from "@/Redux/Features/auth/authSlice";
+import { me, logout, login } from "@/Redux/Features/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { BiClinic, BiCaretDown } from "react-icons/bi";
 import Menu from "@mui/material/Menu";
@@ -59,6 +59,20 @@ const Navbar = ({ children }: any) => {
     dispatch(me());
   }, []);
 
+  const demoAccountLogin = async () => {
+    const email = process.env.DEMO_EMAIL as string;
+    const password = process.env.DEMO_PASSWORD as string;
+    const credentials: {
+      email: string;
+      password: string;
+    } = {
+      email,
+      password,
+    };
+    await dispatch(login(credentials));
+    router.push("/");
+  };
+
   const openNav = () => {
     setShowNav(!showNav);
   };
@@ -101,7 +115,7 @@ const Navbar = ({ children }: any) => {
               <Image alt='/' src={Logo1} width={90} height={90} />
             </ScrollLink>
             <div className='md:flex items-center justify-between w-[60%] mr-6'>
-              <ul className='hidden md:flex items-center justify-between w-full md:space-x-6'>
+              <ul className='hidden md:flex items-center justify-between w-full md:space-x-12'>
                 <ScrollLink
                   to='about-us'
                   activeClass='active'
@@ -133,7 +147,15 @@ const Navbar = ({ children }: any) => {
                 >
                   Sign In
                 </Link>
-                <>
+                <button
+                  onClick={demoAccountLogin}
+                  style={{ whiteSpace: "nowrap" }}
+                  className='links nav-link tracking-widest uppercase no-underline
+            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+                >
+                  Demo Account
+                </button>
+                {/* <>
                   {currentTheme === "light" ? (
                     <button
                       onClick={() => setTheme("dark")}
@@ -149,7 +171,7 @@ const Navbar = ({ children }: any) => {
                       <BsSun size={20} />
                     </button>
                   )}
-                </>
+                </> */}
                 <Link
                   href='/getstarted'
                   className='nav-link bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110'
@@ -313,7 +335,15 @@ const Navbar = ({ children }: any) => {
                 >
                   Sign In
                 </Link>
-                {currentTheme === "light" ? (
+                <button
+                  onClick={demoAccountLogin}
+                  style={{ whiteSpace: "nowrap" }}
+                  className='links tracking-widest uppercase
+            duration-300 hover:scale-110 hover:font-bold cursor-pointer w-full'
+                >
+                  Demo Account
+                </button>
+                {/* {currentTheme === "light" ? (
                   <button
                     onClick={() => setTheme("dark")}
                     className='bg-slate-100 p-2 rounded-xl duration-300 hover:scale-110 w-[20%] flex items-center justify-center'
@@ -327,7 +357,7 @@ const Navbar = ({ children }: any) => {
                   >
                     <BsSun size={20} />
                   </button>
-                )}
+                )} */}
                 <div className='bg-[#3BE13B] p-2 rounded-xl w-[100%] text-center font-bold duration-300 hover:scale-110 '>
                   <button>Get Started</button>
                 </div>

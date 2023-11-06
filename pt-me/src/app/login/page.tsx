@@ -67,7 +67,6 @@ const Page = () => {
 
     // Dispatch the login action and wait for the response
     const response: any = await dispatch(login(credentials));
-    console.log(response);
     // If the login is unsuccessful, show an error message
     // if (response.payload?.errorStatus === "Unauthorized") {
     if (response.payload) {
