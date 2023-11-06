@@ -18,8 +18,11 @@ export default function Home() {
   console.log(clinic);
 
   useEffect(() => {
-    dispatch(me());
-    setIsLoading(false);
+    async function fetchData() {
+      await dispatch(me());
+      setIsLoading(false);
+    }
+    fetchData();
   }, []);
 
   if (isLoading) {
