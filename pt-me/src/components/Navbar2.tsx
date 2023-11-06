@@ -56,7 +56,10 @@ const Navbar = ({ children }: any) => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
-    dispatch(me());
+    async function fetchData() {
+      await dispatch(me());
+    }
+    fetchData();
   }, []);
 
   const demoAccountLogin = async () => {
@@ -65,7 +68,7 @@ const Navbar = ({ children }: any) => {
       password: string;
     } = {
       email: "feelgoodptclinic@gmail.com",
-      password: '123456',
+      password: "123456",
     };
     const response: any = await dispatch(login(credentials));
     if (!response.payload) {

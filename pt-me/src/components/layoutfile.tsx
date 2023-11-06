@@ -18,8 +18,11 @@ export default function Layoutfile({
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
-    dispatch(me());
-    setLoading(false);
+    async function fetchData() {
+      await dispatch(me());
+      setLoading(false);
+    }
+    fetchData();
   }, []);
 
   if (isLoading) {
@@ -34,7 +37,7 @@ export default function Layoutfile({
       <Navbar2 />
       <div className='h-screen'>
         {children}
-          <Footer />
+        <Footer />
       </div>
       {/* {user?.id ? <Footer /> : <Footer2 />} */}
       {/* <Footer /> */}
