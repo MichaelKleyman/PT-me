@@ -49,7 +49,6 @@ const Navbar = ({ children }: any) => {
   const currentTheme = theme === "system" ? systemTheme : theme;
   const [open, setOpenSideBar] = useState<boolean>(false);
   const [navbar, setNavbar] = useState<boolean>(false); //controlling if the navbar is in mobile view or desktop view.
-  const [loading, setLoading] = useState<boolean>(false);
   const [showNav, setShowNav] = useState<boolean>(false);
   const [showLoggedInNav, setShowLoggedInNav] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -63,7 +62,6 @@ const Navbar = ({ children }: any) => {
   }, []);
 
   const demoAccountLogin = async () => {
-    setLoading(true);
     const credentials: {
       email: string;
       password: string;
@@ -102,13 +100,6 @@ const Navbar = ({ children }: any) => {
     setOpenSideBar(false);
   };
 
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center mt-[20rem]'>
-        <span className='loader'></span>
-      </div>
-    );
-  }
   return (
     <header className='w-full shadow-lg shadow-gray-300 fixed top-0 z-50 bg-[#fdfff5] dark:bg-black'>
       <div className='justify-between md:items-center md:flex'>
