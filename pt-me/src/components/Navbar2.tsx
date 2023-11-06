@@ -60,14 +60,12 @@ const Navbar = ({ children }: any) => {
   }, []);
 
   const demoAccountLogin = async () => {
-    const email = process.env.DEMO_EMAIL as string;
-    const password = process.env.DEMO_PASSWORD as string;
     const credentials: {
       email: string;
       password: string;
     } = {
-      email,
-      password,
+      email: "feelgoodptclinic@gmail.com",
+      password: '123456',
     };
     const response: any = await dispatch(login(credentials));
     if (!response.payload) {
