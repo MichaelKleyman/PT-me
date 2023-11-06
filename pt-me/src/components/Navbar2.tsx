@@ -69,8 +69,10 @@ const Navbar = ({ children }: any) => {
       email,
       password,
     };
-    await dispatch(login(credentials));
-    router.push("/");
+    const response: any = await dispatch(login(credentials));
+    if (!response.payload) {
+      location.reload();
+    }
   };
 
   const openNav = () => {
