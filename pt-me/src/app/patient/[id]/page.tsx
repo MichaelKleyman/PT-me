@@ -234,41 +234,43 @@ export default function Patient({
   useEffect(() => {
     async function getPatient() {
       const { payload } = await dispatch(fetchPatient(params.id));
-      setIsLoading(false);
-      if (searchParams.openEmail) {
-        setAnchorEl(document.getElementById("click-email"));
-        setEmailConfig({
-          type: "Appointment Reminder",
-          subject:
-            "Hey! Don't forget about your Physical Therapy appointment 📆",
-          message: `Hi ${
-            (payload as Patient).title
-          }, you have an appointment at ${
-            clinic && clinic.clinicName
-          } within an hour from now, at ${
-            searchParams.appointmentTime
-          }. Feel free to contact your physical therapy office at their email ${
-            clinic && clinic.email
-          } for any scheduling/appointment needs. See you soon!`,
-        });
-      }
-      const { data } = await CLIENT.get(
-        `${BASE_URL}/api/appointments/latest-appointment/${
-          (payload as Patient).id
-        }`
-      );
-      if (
-        data?.some(
-          (appointment: any) =>
-            new Date(appointment.start as Date) >= new Date()
-        )
-      ) {
-        setStatus("Scheduled");
-      } else {
-        setStatus("No Appointment");
-      }
+      if (payload) {
+        setIsLoading(false);
+        if (searchParams.openEmail) {
+          setAnchorEl(document.getElementById("click-email"));
+          setEmailConfig({
+            type: "Appointment Reminder",
+            subject:
+              "Hey! Don't forget about your Physical Therapy appointment 📆",
+            message: `Hi ${
+              (payload as Patient).title
+            }, you have an appointment at ${
+              clinic && clinic.clinicName
+            } within an hour from now, at ${
+              searchParams.appointmentTime
+            }. Feel free to contact your physical therapy office at their email ${
+              clinic && clinic.email
+            } for any scheduling/appointment needs. See you soon!`,
+          });
+        }
+        const { data } = await CLIENT.get(
+          `${BASE_URL}/api/appointments/latest-appointment/${
+            (payload as Patient).id
+          }`
+        );
+        if (
+          data?.some(
+            (appointment: any) =>
+              new Date(appointment.start as Date) >= new Date()
+          )
+        ) {
+          setStatus("Scheduled");
+        } else {
+          setStatus("No Appointment");
+        }
 
-      setPatient(payload as Patient);
+        setPatient(payload as Patient);
+      }
     }
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
@@ -285,10 +287,12 @@ export default function Patient({
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/schedule/patient/${params.id}`
       );
-      setIsLoadingSchedule(false);
-      let exercises = data.exercises;
+      if (data) {
+        setIsLoadingSchedule(false);
+        let exercises = data.exercises;
 
-      setSchedule(exercises);
+        setSchedule(exercises);
+      }
     }
     setTimeout(() => {
       getSchedule();

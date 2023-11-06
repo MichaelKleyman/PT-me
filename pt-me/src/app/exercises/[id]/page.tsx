@@ -76,6 +76,7 @@ export default function SpecificExercise({ params }: Params) {
   const [assigned, setAssigned] = useState<boolean>(false);
   const [patients, setPatients] = useState<Patient[]>();
   const [ids, setIds] = useState<number[]>([]);
+  const [pageLoading, setPageLoading] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [credential, setCredential] = useState<Credential>();
@@ -93,13 +94,14 @@ export default function SpecificExercise({ params }: Params) {
   const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
-    dispatch(me());
     const getExercise = async () => {
       const { data } = await CLIENT.get(
         `${BASE_URL}/api/exercises/${params.id}`
       );
-
-      setExercise(data);
+      if (data) {
+        setPageLoading(false);
+        setExercise(data);
+      }
     };
     const getExerciseCredentialsHistory = async () => {
       const amountOfCredentials = "One";
@@ -164,6 +166,14 @@ export default function SpecificExercise({ params }: Params) {
       setLoading(false);
     }
   };
+
+  if (pageLoading) {
+    return (
+      <div className='flex items-center justify-center p-9 h-screen'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
 
   return (
     <div className='mt-[1rem] md:ml-[6rem] p-4'>
@@ -262,7 +272,9 @@ export default function SpecificExercise({ params }: Params) {
           </div>
           <div className='h-[200px] overflow-y-scroll'>
             {loading ? (
-              <div>Loading...</div>
+              <div className='flex items-center justify-center p-9 h-screen'>
+                <span className='loader'></span>
+              </div>
             ) : (
               <div>
                 {patients?.length ? (

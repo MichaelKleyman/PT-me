@@ -18,6 +18,7 @@ type Props = {
 };
 
 export default function ExerciseEditHistory({ exerciseId }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [editHistory, setEditHistory] = useState<Credential[]>([]);
   const [selectEditor, setSelected] = useState<Credential>();
   const [selectedClinic, setClinic] = useState<Clinic>();
@@ -33,7 +34,10 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
       const { data } = await CLIENT.get<Credential[]>(
         `${BASE_URL}/api/exEditCredentials/credential-history/${exerciseId}/${amountOfCredentials}`
       );
-      setEditHistory(data);
+      if (data) {
+        setIsLoading(false);
+        setEditHistory(data);
+      }
     };
     getExerciseCredentialsHistory();
   }, []);
@@ -92,6 +96,13 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     setNewComment("");
   };
 
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-9 h-screen'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
   return (
     <div className='md:flex md:ml-[2rem]'>
       <div className='w-full md:w-[450px] md:h-screen shadow-xl shadow-gray-400 flex flex-col justify-between overflow-y-scroll'>
