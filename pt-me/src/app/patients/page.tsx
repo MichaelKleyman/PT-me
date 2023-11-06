@@ -63,14 +63,12 @@ export default function AllPatients() {
       // If clinic data is available, fetch the patients
       async function getPatients() {
         const { payload } = await dispatch(fetchAllPatients(clinic.id));
+        setIsLoading(false);
         const arrayToSort = [...(payload as Patient[])];
         const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
         setPatients(sortedPayload);
       }
       getPatients();
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
     }
   }, [clinic]);
 

@@ -145,7 +145,10 @@ export default function Account({ params }: Params) {
   };
 
   useEffect(() => {
-    dispatch(me());
+    async function fetchData() {
+      await dispatch(me());
+    }
+    fetchData();
     if (clinic?.id) {
       // If clinic data is available, fetch the patients
       async function getPatients() {
