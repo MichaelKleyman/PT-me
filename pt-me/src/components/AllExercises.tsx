@@ -35,7 +35,7 @@ const style = {
 
 export default function AllExercises() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSpecificLoading, setIsSpecificLoading] = useState<boolean>(false);
+  const [isSpecificLoading, setIsSpecificLoading] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageNumber2, setPageNumber2] = useState<number>(0);
@@ -59,18 +59,19 @@ export default function AllExercises() {
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
-    setExercises(data);
-    setTimeout(() => {
+    if (data) {
+      console.log(data);
+      setExercises(data);
       setIsLoading(false);
-    }, 1000);
+      setIsSpecificLoading(false);
+    }
   };
 
   useEffect(() => {
     getAllExercises();
-  }, []);
+  }, [setExercises]);
 
   const filterExercises = async (exerciseType: String) => {
-    setIsSpecificLoading(true);
     setSelected(exerciseType);
     setPageNumber(0);
     setPageNumber2(0);
