@@ -49,7 +49,7 @@ export default function Layoutfile({
         closeSideBar={closeSideBar}
       />
       <div className='h-screen'>
-        <div className={`${open && user?.id ? "ml-[10rem]" : "ml-0"}`}>
+        <div className={`${open && user?.id ? "ml-0 lg:ml-[10rem]" : "ml-0"}`}>
           {children}
         </div>
         <Footer />

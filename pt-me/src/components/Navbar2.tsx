@@ -184,7 +184,7 @@ const Navbar = ({ open, openSidebar, closeSideBar }: Props) => {
           <div className='hidden md:flex'>
             <div
               className={`fixed ${
-                open ? "w-[250px] duration-300" : "w-20"
+                open ? "w-20 lg:w-[250px] duration-300" : "w-20"
               } h-screen p-9 bg-[#eaece1] flex flex-col justify-between`}
             >
               {open ? (
@@ -206,47 +206,55 @@ const Navbar = ({ open, openSidebar, closeSideBar }: Props) => {
                 <Link
                   href={`/${user?.id}`}
                   className={`bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center ${
-                    open ? "w-[190px] gap-4 duration-300" : ""
+                    open ? "lg:w-[190px] gap-4 duration-300" : ""
                   }`}
                 >
                   <div>
                     <RxDashboard size={20} />
                   </div>
-                  {open && <p className='duration-300'>Dashboard</p>}
+                  {open && (
+                    <p className='hidden lg:flex duration-300'>Dashboard</p>
+                  )}
                 </Link>{" "}
                 <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
                   href='/'
                   className={`${
-                    open ? "w-[190px] gap-4 duration-300" : ""
+                    open ? "lg:w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div className='text-[#3BE13B]'>
                     <AiOutlineSchedule size={20} />
                   </div>
-                  {open && <p className='duration-300'>Schedule</p>}
+                  {open && (
+                    <p className='hidden lg:flex duration-300'>Schedule</p>
+                  )}
                 </Link>
                 <Link
                   href='/exercises'
                   className={`${
-                    open ? "w-[190px] gap-4 duration-300" : ""
+                    open ? "lg:w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div className='text-[#3BE13B]'>
                     <GiMuscleUp size={20} />
                   </div>
-                  {open && <p className='duration-300'>Exercises</p>}
+                  {open && (
+                    <p className='hidden lg:flex duration-300'>Exercises</p>
+                  )}
                 </Link>
                 <Link
                   href='/patients'
                   className={`${
-                    open ? "w-[190px] gap-4 duration-300" : ""
+                    open ? "lg:w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
                 >
                   <div className='text-[#3BE13B]'>
                     <IoMdPeople size={20} />
                   </div>
-                  {open && <p className='duration-300'>Patients</p>}
+                  {open && (
+                    <p className='hidden lg:flex duration-300'>Patients</p>
+                  )}
                 </Link>
               </div>
             </div>

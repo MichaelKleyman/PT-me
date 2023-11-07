@@ -198,7 +198,10 @@ export default function Account({ params }: Params) {
   return (
     <div className='md:ml-[5rem]'>
       <div className='mt-[4rem] md:mt-0 flex items-center justify-between shadow-lg shadow-gray-400 p-6 w-full'>
-        <div>
+        <div
+          style={{ whiteSpace: "nowrap" }}
+          className='w-full overflow-x-scroll lg:overflow-hidden'
+        >
           <h1 className='text-[20px]'>Hi, {clinic?.clinicName}</h1>
           <div className='flex items-center gap-5'>
             <p className='text-[15px] mt-2 flex items-center gap-2'>
@@ -267,22 +270,17 @@ export default function Account({ params }: Params) {
           </StyledMenu>
         </div>
       </div>
-      {/* <div className='p-4 text-[14px]'>
-        <p className='mt-2'>Clinic Address: {clinic?.address}</p>
-        <p className='mt-2'>Clinic Email: {clinic?.email}</p>
-      </div> */}
       <div className='grid xl:grid-cols-2 gap-8'>
         <div className='flex items-center justify-center mt-8 sm:p-[4rem] p-0 m-[2rem] w-[70%] md:w-[80%] sm:ml-[1rem] md:ml-[6rem]'>
           <div>
             <DoughnutChart patients={patients} />
           </div>
         </div>
-
         <div className='mt-1 w-[60%] md:w-[80%] lg:w-full ml-[4rem] md:ml-0'>
           {isLoading ? (
             <div className='grid grid-cols-2 gap-4 m-[1.5rem]'>
-              <Skeleton variant='rounded' width={310} height={110} />
-              <Skeleton variant='rounded' width={310} height={110} />
+              <Skeleton variant='rounded' width={"100%"} height={110} />
+              <Skeleton variant='rounded' width={"100%"} height={110} />
             </div>
           ) : (
             <div className='grid grid-cols-2 gap-4 m-[1.5rem]'>
@@ -308,7 +306,7 @@ export default function Account({ params }: Params) {
 
           {isLoading ? (
             <div className='m-[1.5rem]'>
-              <Skeleton variant='rounded' width={630} height={290} />
+              <Skeleton variant='rounded' width={"100%"} height={290} />
             </div>
           ) : (
             <div className='relative m-[1.5rem] shadow-lg shadow-gray-400 rounded-lg'>
