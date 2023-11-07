@@ -204,7 +204,7 @@ export default function Patient({
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingSchedule, setIsLoadingSchedule] = useState<boolean>(true);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ExerciseData[]>([]);
@@ -228,31 +228,31 @@ export default function Patient({
     message: "",
   });
   const router = useRouter();
-  const open = Boolean(anchorEl);
+  let open = Boolean(anchorEl);
   const clinic = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     async function getPatient() {
       const { payload } = await dispatch(fetchPatient(params.id));
+      if (searchParams.openEmail) {
+        setAnchorEl(document.getElementById("click-email"));
+        setEmailConfig({
+          type: "Appointment Reminder",
+          subject:
+            "Hey! Don't forget about your Physical Therapy appointment 📆",
+          message: `Hi ${
+            (payload as Patient).title
+          }, you have an appointment at ${
+            clinic && clinic.clinicName
+          } within an hour from now, at ${
+            searchParams.appointmentTime
+          }. Feel free to contact your physical therapy office at their email ${
+            clinic && clinic.email
+          } for any scheduling/appointment needs. See you soon!`,
+        });
+      }
       if (payload) {
         setIsLoading(false);
-        if (searchParams.openEmail) {
-          setAnchorEl(document.getElementById("click-email"));
-          setEmailConfig({
-            type: "Appointment Reminder",
-            subject:
-              "Hey! Don't forget about your Physical Therapy appointment 📆",
-            message: `Hi ${
-              (payload as Patient).title
-            }, you have an appointment at ${
-              clinic && clinic.clinicName
-            } within an hour from now, at ${
-              searchParams.appointmentTime
-            }. Feel free to contact your physical therapy office at their email ${
-              clinic && clinic.email
-            } for any scheduling/appointment needs. See you soon!`,
-          });
-        }
         const { data } = await CLIENT.get(
           `${BASE_URL}/api/appointments/latest-appointment/${
             (payload as Patient).id
@@ -280,7 +280,7 @@ export default function Patient({
       getPatient();
       getPatientExercises();
     }, 1000);
-  }, [setExercises]);
+  }, [setAnchorEl]);
 
   useEffect(() => {
     async function getSchedule() {
@@ -328,7 +328,9 @@ export default function Patient({
     }
   };
 
-  const handleClickEmail = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClickEmail = (
+    event: React.MouseEvent<HTMLElement>
+  ) => {
     console.log(event.currentTarget);
     setAnchorEl(event.currentTarget);
   };
@@ -797,13 +799,17 @@ export default function Patient({
             <div className='relative'>
               <div className='flex flex-col justify-center w-full gap-5'>
                 <div className='flex justify-center w-full gap-5'>
-                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                  <div
+                    style={{ whiteSpace: "nowrap" }}
+                    className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'
+                  >
                     <FiPhone />
                     <p className='hidden sm:block md:hidden lg:block'>
                       {patient?.phoneNumber}
                     </p>
                   </div>
                   <button
+                    style={{ whiteSpace: "nowrap" }}
                     id='click-email'
                     onClick={handleClickEmail}
                     className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base flex items-center justify-evenly gap-3'
@@ -878,7 +884,10 @@ export default function Patient({
                       </button>
                     </div>
                   </StyledMenu>
-                  <div className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'>
+                  <div
+                    style={{ whiteSpace: "nowrap" }}
+                    className='cursor-pointer shadow-lg shadow-green-400 rounded-lg h-10 p-2 text-center text-xs md:text-base w-[40%] flex items-center justify-evenly'
+                  >
                     <BsFileMedical />
                     <p className='hidden sm:block md:hidden lg:block'>
                       {patient?.insurance}

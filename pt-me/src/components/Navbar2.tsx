@@ -32,6 +32,12 @@ interface NavItem {
   page: string;
 }
 
+interface Props {
+  open: boolean;
+  openSidebar: () => void;
+  closeSideBar: () => void;
+}
+
 const navItems: Array<NavItem> = [
   {
     label: "About Us",
@@ -43,11 +49,10 @@ const navItems: Array<NavItem> = [
   },
 ];
 
-const Navbar = ({ children }: any) => {
+const Navbar = ({ open, openSidebar, closeSideBar }: Props) => {
   const router = useRouter();
-  const { systemTheme, theme, setTheme } = useTheme();
-  const currentTheme = theme === "system" ? systemTheme : theme;
-  const [open, setOpenSideBar] = useState<boolean>(false);
+  // const { systemTheme, theme, setTheme } = useTheme();
+  // const currentTheme = theme === "system" ? systemTheme : theme;
   const [navbar, setNavbar] = useState<boolean>(false); //controlling if the navbar is in mobile view or desktop view.
   const [showNav, setShowNav] = useState<boolean>(false);
   const [showLoggedInNav, setShowLoggedInNav] = useState<boolean>(false);
@@ -90,14 +95,6 @@ const Navbar = ({ children }: any) => {
   const handleLogout = () => {
     dispatch(logout);
     router.push("/");
-  };
-
-  const openSidebar = () => {
-    setOpenSideBar(!open);
-  };
-
-  const closeSideBar = () => {
-    setOpenSideBar(false);
   };
 
   return (
@@ -208,7 +205,6 @@ const Navbar = ({ children }: any) => {
               <div className='flex flex-col items-center'>
                 <Link
                   href={`/${user?.id}`}
-                  onClick={closeSideBar}
                   className={`bg-[#3BE13B] text-white p-3 rounded-lg flex justify-center no-underline items-center ${
                     open ? "w-[190px] gap-4 duration-300" : ""
                   }`}
@@ -221,7 +217,6 @@ const Navbar = ({ children }: any) => {
                 <span className='border-b-[1px] border-gray-300 w-full p-2'></span>
                 <Link
                   href='/'
-                  onClick={closeSideBar}
                   className={`${
                     open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
@@ -233,7 +228,6 @@ const Navbar = ({ children }: any) => {
                 </Link>
                 <Link
                   href='/exercises'
-                  onClick={closeSideBar}
                   className={`${
                     open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}
@@ -245,7 +239,6 @@ const Navbar = ({ children }: any) => {
                 </Link>
                 <Link
                   href='/patients'
-                  onClick={closeSideBar}
                   className={`${
                     open ? "w-[190px] gap-4 duration-300" : ""
                   } bg-gray-100 nav-link hover:bg-gray-200 no-underline cursor-pointer my-4 p-3 rounded-lg flex justify-center items-center`}

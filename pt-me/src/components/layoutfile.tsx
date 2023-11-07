@@ -14,6 +14,7 @@ export default function Layoutfile({
   children: React.ReactNode;
 }) {
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [open, setOpenSideBar] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -25,6 +26,14 @@ export default function Layoutfile({
     fetchData();
   }, []);
 
+  const openSidebar = () => {
+    setOpenSideBar(!open);
+  };
+
+  const closeSideBar = () => {
+    setOpenSideBar(false);
+  };
+
   if (isLoading) {
     return (
       <div className='flex items-center justify-center mt-[20rem]'>
@@ -34,13 +43,17 @@ export default function Layoutfile({
   }
   return (
     <>
-      <Navbar2 />
+      <Navbar2
+        open={open}
+        openSidebar={openSidebar}
+        closeSideBar={closeSideBar}
+      />
       <div className='h-screen'>
-        {children}
+        <div className={`${open && user?.id ? "ml-[10rem]" : "ml-0"}`}>
+          {children}
+        </div>
         <Footer />
       </div>
-      {/* {user?.id ? <Footer /> : <Footer2 />} */}
-      {/* <Footer /> */}
     </>
   );
 }
