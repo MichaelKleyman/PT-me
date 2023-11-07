@@ -118,7 +118,7 @@ export default function AllPatients() {
     event: React.ChangeEvent<unknown>,
     page: number
   ) => {
-    setPageNumber(pageNumber - 1);
+    setPageNumber(page - 1);
     window.scrollTo({ top: 0 });
   };
 
