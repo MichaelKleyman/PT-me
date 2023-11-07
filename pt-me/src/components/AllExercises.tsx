@@ -60,7 +60,6 @@ export default function AllExercises() {
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
     if (data) {
-      console.log(data);
       setExercises(data);
       setIsLoading(false);
       setIsSpecificLoading(false);
@@ -389,8 +388,8 @@ export default function AllExercises() {
       <h1 className='text-green-500 text-xl uppercase tracking-widest m-4'>
         Exercises
       </h1>
-      <div className='mt-1 flex justify-between items-center'>
-        <div className='flex w-[70%] overflow-x-scroll md:overflow-hidden'>
+      <div className='mt-1 flex justify-between items-center gap-8'>
+        <div className='flex w-[90%] overflow-x-scroll md:overflow-hidden'>
           {exerciseOptions.map((option: String, i) => (
             <button
               onClick={() => filterExercises(option)}
@@ -405,6 +404,7 @@ export default function AllExercises() {
         </div>
         <Link
           href='/exercises/new-exercise'
+          style={{ whiteSpace: "nowrap" }}
           className='mr-[3rem] p-2 bg-[#3BE13B] rounded-lg shadow-green-400 shadow-lg duration-300 hover:scale-110 text-white flex items-center gap-3'
         >
           <IoMdAddCircle size={22} />
