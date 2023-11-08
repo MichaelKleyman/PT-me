@@ -191,7 +191,6 @@ router.post(
   "/recurring-appointments/:patientId/:clinicId",
   async (req, res, next) => {
     try {
-      console.log(req.body);
       const { appointments } = req.body;
       const arr = [];
       for (let i = 0; i < req.body.frequency; i++) {

@@ -13,7 +13,6 @@ router.get(
           },
           order: [["createdAt", "DESC"]], //Latest edits to oldest edits
         });
-        console.log(credential);
         if (credential) {
           return res.send(credential);
         } else {
@@ -94,8 +93,6 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
       };
       allEditedData.push(obj);
     });
-
-    console.log(allEditedData);
     const editedCredentials = await Exercise_Edited_Credentials.create({
       ex_id: req.params.exerciseId,
       clinicName: req.body.clinicName,
@@ -117,7 +114,6 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
 //POST a comment for the specific exercise
 router.post("/comment/:id", async (req, res, next) => {
   try {
-    console.log(req.body);
     const credential = await Exercise_Edited_Credentials.findByPk(
       req.params.id
     );

@@ -32,7 +32,6 @@ router.put(
   "/patient/:patientId/exercise-sets/:scheduleExerciseId",
   async (req, res, next) => {
     try {
-      console.log(req.body);
       const exercise = await Schedule.findOne({
         where: {
           patientId: req.params.patientId,
@@ -61,7 +60,6 @@ router.put(
   "/patient/:patientId/exercise-reps/:scheduleExerciseId",
   async (req, res, next) => {
     try {
-      console.log(req.body);
       const exercise = await Schedule.findOne({
         where: {
           patientId: req.params.patientId,

@@ -142,7 +142,6 @@ router.delete("/:patientId", async (req, res, next) => {
 //UPDATE a patients information
 router.put("/update/:patientId", async (req, res, next) => {
   try {
-    console.log(req.body);
     const typeOfInjuryId = typeof req.body["Injury Type"];
     const injuryOptions = [
       "Shoulders",
@@ -155,7 +154,6 @@ router.put("/update/:patientId", async (req, res, next) => {
       "Abdominal",
       "Gluteal",
     ];
-    console.log(req.body);
     const newPatientData = await Patients.update(
       {
         title: req.body["First Name"] + " " + req.body["Last Name"],
