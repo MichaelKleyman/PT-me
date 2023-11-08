@@ -188,7 +188,7 @@ export default function SpecificExercise({ params }: Params) {
         <div>/</div>
         <div className='text-sm'>Exercise</div>
       </div>
-      <div className='grid lg:grid-cols-2 gap-4 mt-[1rem] place-items-center'>
+      <div className='grid lg:grid-cols-2 gap-4 mt-[1rem] place-items-start'>
         <div>
           <h1 className='uppercase tracking-widest text-2xl font-medium'>
             {exercise?.name}

@@ -225,6 +225,7 @@ export default function AllExercises() {
                   </p>
                 </div>
                 <Link
+                  style={{ whiteSpace: "nowrap" }}
                   href={`/exercises/${exercise.id}`}
                   className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
                 >
@@ -305,6 +306,7 @@ export default function AllExercises() {
                   </p>
                 </div>
                 <Link
+                  style={{ whiteSpace: "nowrap" }}
                   href={`/exercises/${exercise.id}`}
                   className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
                 >
