@@ -200,4 +200,24 @@ router.put("/update/:exerciseId", async (req, res, next) => {
   }
 });
 
+//DELETE exercise
+router.delete("/delete/:exerciseId", async (req, res, next) => {
+  try {
+    const deletedExercise = await Exercises.findOne({
+      where: {
+        id: req.params.exerciseId,
+      },
+    });
+    if (deletedExercise) {
+      await deletedExercise.destroy();
+      res.status(200).json({ message: "Exercise deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Exercise not found" });
+    }
+  } catch (error) {
+    console.log("Error updating exercise: ", error);
+    next(error);
+  }
+});
+
 module.exports = router;
