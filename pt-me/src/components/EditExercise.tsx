@@ -154,6 +154,7 @@ export default function EditExercise({ exerciseId }: Props) {
   const deleteTip = (index: number) => {
     const newTipsArray = tips.filter((_, i) => index !== i);
     setTips(newTipsArray);
+    handleFieldChange("exerciseTips", "");
   };
 
   const handleVideoLink = (e: React.ChangeEvent<HTMLInputElement>) => {

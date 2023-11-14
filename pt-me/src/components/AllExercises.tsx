@@ -304,7 +304,7 @@ export default function AllExercises() {
                           <Typography sx={{ p: 2 }}>
                             <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                               <Link
-                                href={`/exercises/edit-exercise/${exercise.id}`}
+                                href={`/exercises/edit-exercise/${exercise.id}?name=${exercise.name}`}
                               >
                                 Edit
                               </Link>
@@ -395,7 +395,7 @@ export default function AllExercises() {
                           <Typography sx={{ p: 2 }}>
                             <div className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
                               <Link
-                                href={`/exercises/edit-exercise/${exercise.id}`}
+                                href={`/exercises/edit-exercise/${exercise.id}?name=${exercise.name}`}
                               >
                                 Edit
                               </Link>
