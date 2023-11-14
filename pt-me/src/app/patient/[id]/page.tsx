@@ -153,7 +153,7 @@ interface ExerciseData {
   length: number | null;
 }
 
-interface Exercise {
+export interface Exercise {
   id: number;
   scheduleId: number | undefined;
   exerciseId: number;

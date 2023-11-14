@@ -3,18 +3,7 @@ import { ExerciseData } from "../../types";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import Image from "next/legacy/image";
 import emptyImage from "../images/empty.jpg";
-
-interface Exercise {
-  id: number;
-  scheduleId: number | undefined;
-  exerciseId: number;
-  // date: string;
-  sets: number;
-  reps: number;
-  createdAt: Date;
-  updatedAt: Date;
-  exercise: ExerciseData;
-}
+import { Exercise } from "@/app/patient/[id]/page";
 
 interface Props {
   schedule: Exercise[];
