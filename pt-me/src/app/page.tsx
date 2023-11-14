@@ -15,7 +15,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
-  console.log(clinic);
 
   useEffect(() => {
     async function fetchData() {

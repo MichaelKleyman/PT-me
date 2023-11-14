@@ -57,7 +57,7 @@ export default function CreateExerciseForm() {
     Gluteal: 9,
   };
 
-  const onSubmit = async (formData: any) => {
+  const onSubmit = async (formData: any): Promise<void> => {
     const {
       exerciseName,
       exerciseType,

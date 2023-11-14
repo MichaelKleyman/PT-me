@@ -7,6 +7,16 @@ import Navbar2 from "../components/Navbar2";
 import { ThemeProvider } from "next-themes";
 import { Providers } from "../Redux/provider";
 import Layoutfile from "@/components/layoutfile";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function RootLayout({
   children,
@@ -17,11 +27,16 @@ export default function RootLayout({
     <>
       <html lang='en'>
         <body>
-          <ThemeProvider enableSystem={true} attribute='class'>
-            <Providers>
-              <Layoutfile>{children}</Layoutfile>
-            </Providers>
-          </ThemeProvider>
+          {/* <ThemeProvider enableSystem={true} attribute='class'> */}
+          <Providers>
+            <Layoutfile>
+              <QueryClientProvider client={queryClient}>
+                {children}
+                <ReactQueryDevtools />
+              </QueryClientProvider>
+            </Layoutfile>
+          </Providers>
+          {/* </ThemeProvider> */}
         </body>
       </html>
     </>

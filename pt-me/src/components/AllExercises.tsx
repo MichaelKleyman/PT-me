@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, ReactElement, forwardRef, Ref } from "react";
 import { CLIENT, BASE_URL } from "@/components/api";
 import "../styles/exercises.css";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -15,12 +15,21 @@ import Popover from "@mui/material/Popover";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import Image from "next/legacy/image";
 import emptyImage from "../images/empty.jpg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Button } from "@mui/material";
+import { TransitionProps } from "@mui/material/transitions";
+import Slide from "@mui/material/Slide";
 
 interface Exercise {
   id: number;
   map: any;
-  name: String;
-  injuryId: Number;
+  name: string;
+  injuryId: number;
   videoLink: string;
 }
 
@@ -33,17 +42,29 @@ const style = {
   width: "50%",
 };
 
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: ReactElement<any, any>;
+  },
+  ref: Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />;
+});
+
 export default function AllExercises() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSpecificLoading, setIsSpecificLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isSpecificLoading, setIsSpecificLoading] = useState<boolean>(true);
   const [searchInput, setSearchInput] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [pageNumber2, setPageNumber2] = useState<number>(0);
   //exercises state is an array, where each key is a exercise object
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  // const [exercises, setExercises] = useState<Exercise[]>([]);
   //specific exercises state is an array of objects where each key is a string and each value is a a string.
   const [specificExercise, setSpecificExercise] = useState<Exercise[]>([]);
-  const [exerciseOptions, setOptions] = useState<String[]>([
+  const [clickedRemove, setClickedRemove] = useState<boolean>(false);
+  const [exerciseId, setExerciseId] = useState<number>();
+  const [injury, setInjury] = useState<string>();
+  const [exerciseOptions, setOptions] = useState<string[]>([
     "All",
     "Shoulders",
     "Back",
@@ -55,22 +76,167 @@ export default function AllExercises() {
     "Abdominal",
     "Gluteal",
   ]);
-  const [selected, setSelected] = useState<String>("All");
+  const [selected, setSelected] = useState<string>("All");
+  const queryClient = useQueryClient();
+
+  const fetchExerciseTypeInjuryId = {
+    Shoulders: 1,
+    Back: 2,
+    Knee: 3,
+    Hip: 4,
+    Neck: 5,
+    "Wrist/Hand": 6,
+    "Ankle/Foot": 7,
+    Abdominal: 8,
+    Gluteal: 9,
+  };
 
   const getAllExercises = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises`);
     if (data) {
-      setExercises(data);
-      setIsLoading(false);
-      setIsSpecificLoading(false);
+      return data;
     }
   };
 
-  useEffect(() => {
-    getAllExercises();
-  }, [setExercises]);
+  const { data: exercises, isLoading: isLoadingAll } = useQuery({
+    queryFn: () => getAllExercises(),
+    queryKey: ["allExercises"],
+  });
+  const { data: shoulderExercises, isLoading: isLoadingShoulders } = useQuery({
+    queryFn: () => getShoulders(),
+    queryKey: ["Shoulder"],
+  });
+  const { data: backExercises, isLoading: isLoadingBack } = useQuery({
+    queryFn: () => getBack(),
+    queryKey: ["Back"],
+  });
+  const { data: kneeExercises, isLoading: isLoadingKnee } = useQuery({
+    queryFn: () => getKnee(),
+    queryKey: ["Knee"],
+  });
+  const { data: hipExercises, isLoading: isLoadingHip } = useQuery({
+    queryFn: () => getHip(),
+    queryKey: ["Hip"],
+  });
+  const { data: neckExercises, isLoading: isLoadingNeck } = useQuery({
+    queryFn: () => getNeck(),
+    queryKey: ["Neck"],
+  });
+  const { data: wristHandExercises, isLoading: isLoadingWristHand } = useQuery({
+    queryFn: () => getWristHand(),
+    queryKey: ["Wrist/Hand"],
+  });
+  const { data: ankleFootExercises, isLoading: isLoadingAnkleFoot } = useQuery({
+    queryFn: () => getAnkleFoot(),
+    queryKey: ["Ankle/Foot"],
+  });
+  const { data: abdominalExercises, isLoading: isLoadingAbdominal } = useQuery({
+    queryFn: () => getAbdominal(),
+    queryKey: ["Abdominal"],
+  });
+  const { data: glutealExercises, isLoading: isLoadingGluteal } = useQuery({
+    queryFn: () => getGluteal(),
+    queryKey: ["Gluteal"],
+  });
 
-  const filterExercises = async (exerciseType: String) => {
+  const getShoulders = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Shoulders"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getBack = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Back"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getKnee = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Knee"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getHip = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Hip"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getNeck = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Neck"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getWristHand = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Wrist/Hand"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getAnkleFoot = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Ankle/Foot"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const getAbdominal = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Abdominal"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+  const getGluteal = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Gluteal"]}`
+    );
+    if (data) {
+      return data;
+    }
+  };
+
+  const handleDeleteExerciseModal = (exerciseId: number, injuryId: number) => {
+    setClickedRemove(true);
+    setExerciseId(exerciseId);
+    setInjury(exerciseOptions[injuryId]);
+  };
+
+  const handleCloseDeleteExerciseModal = () => {
+    setClickedRemove(false);
+    setInjury("");
+  };
+
+  const deleteExercise = async () => {
+    await CLIENT.delete(`${BASE_URL}/api/exercises/delete/${exerciseId}`);
+    setClickedRemove(false);
+    setInjury("");
+  };
+
+  const filterExercises = async (exerciseType: string) => {
     setSelected(exerciseType);
     setPageNumber(0);
     setPageNumber2(0);
@@ -78,89 +244,24 @@ export default function AllExercises() {
       getAllExercises();
       setSpecificExercise([]);
     } else {
-      const fetchExerciseTypeInjuryId = {
-        Shoulders: 1,
-        Back: 2,
-        Knee: 3,
-        Hip: 4,
-        Neck: 5,
-        "Wrist/Hand": 6,
-        "Ankle/Foot": 7,
-        Abdominal: 8,
-        Gluteal: 9,
-      };
       if (exerciseType === "Shoulders") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Shoulders"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(shoulderExercises);
       } else if (exerciseType === "Back") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Back"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(backExercises);
       } else if (exerciseType === "Knee") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Knee"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(kneeExercises);
       } else if (exerciseType === "Hip") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Hip"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(hipExercises);
       } else if (exerciseType === "Neck") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Neck"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(neckExercises);
       } else if (exerciseType === "Wrist/Hand") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Wrist/Hand"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(wristHandExercises);
       } else if (exerciseType === "Ankle/Foot") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Ankle/Foot"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(ankleFootExercises);
       } else if (exerciseType === "Abdominal") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Abdominal"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(abdominalExercises);
       } else if (exerciseType === "Gluteal") {
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/exercises/injury/${fetchExerciseTypeInjuryId["Gluteal"]}`
-        );
-        if (data) {
-          setIsSpecificLoading(false);
-          setSpecificExercise(data);
-        }
+        setSpecificExercise(glutealExercises);
       }
     }
   };
@@ -208,7 +309,15 @@ export default function AllExercises() {
                                 Edit
                               </Link>
                             </div>
-                            <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                            <button
+                              onClick={() =>
+                                handleDeleteExerciseModal(
+                                  exercise.id,
+                                  exercise.injuryId
+                                )
+                              }
+                              className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
+                            >
                               Remove
                             </button>
                           </Typography>
@@ -232,7 +341,7 @@ export default function AllExercises() {
                   View Exercise
                 </Link>
               </div>
-              <div className='ratio ratio-1x1 p-6'>
+              <div className='flex items-center justify-center ratio ratio-1x1 p-6'>
                 <Iframe
                   url={exercise.videoLink}
                   width='360'
@@ -250,12 +359,14 @@ export default function AllExercises() {
     </div>
   );
 
-  const displayAllExercises = exercises.length ? (
+  const displayAllExercises = exercises?.length ? (
     exercises
-      .sort((a, b) => a.id - b.id)
-      .filter((ex) => ex.name.toLowerCase().includes(searchInput.toLowerCase()))
+      .sort((a: any, b: any) => a.id - b.id)
+      .filter((ex: Exercise) =>
+        ex.name.toLowerCase().includes(searchInput.toLowerCase())
+      )
       .slice(pagesVisited, pagesVisited + exercisesPerPage)
-      .map((exercise, i) => {
+      .map((exercise: Exercise, i: number) => {
         return (
           <div key={i} className='p-2'>
             <div className='bg-[#fdfff5] shadow-lg shadow-[#fdfff5] rounded-lg'>
@@ -289,7 +400,15 @@ export default function AllExercises() {
                                 Edit
                               </Link>
                             </div>
-                            <button className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'>
+                            <button
+                              onClick={() =>
+                                handleDeleteExerciseModal(
+                                  exercise.id,
+                                  exercise.injuryId
+                                )
+                              }
+                              className='text-center my-1 shadow-lg shadow-gray-300 bg-slate-100 text-sm self-center p-2 rounded-lg hover:bg-slate-200 hover:shadow-gray-400 duration-300 hover:scale-110'
+                            >
                               Remove
                             </button>
                           </Typography>
@@ -313,7 +432,7 @@ export default function AllExercises() {
                   View Exercise
                 </Link>
               </div>
-              <div className='ratio ratio-1x1 flex items-center justify-center'>
+              <div className='ratio ratio-1x1 flex items-center justify-center p-6'>
                 <Iframe
                   url={exercise.videoLink}
                   width='360'
@@ -331,7 +450,7 @@ export default function AllExercises() {
     </div>
   );
 
-  const searchAllExercisesResults = exercises.filter((ex: Exercise) =>
+  const searchAllExercisesResults = exercises?.filter((ex: Exercise) =>
     ex.name.toLowerCase().includes(searchInput)
   );
 
@@ -342,20 +461,22 @@ export default function AllExercises() {
   let allExercisesPageCount;
   let specificExercisesPageCount;
 
-  if (searchAllExercisesResults.length) {
+  if (searchAllExercisesResults?.length) {
     allExercisesPageCount = Math.ceil(
-      searchAllExercisesResults.length / exercisesPerPage
+      searchAllExercisesResults?.length / exercisesPerPage
     );
   } else {
-    allExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+    allExercisesPageCount = Math.ceil(exercises?.length / exercisesPerPage);
   }
 
-  if (searchSpecificExercisesResults.length) {
+  if (searchSpecificExercisesResults?.length) {
     specificExercisesPageCount = Math.ceil(
-      searchSpecificExercisesResults.length / exercisesPerPage
+      searchSpecificExercisesResults?.length / exercisesPerPage
     );
   } else {
-    specificExercisesPageCount = Math.ceil(exercises.length / exercisesPerPage);
+    specificExercisesPageCount = Math.ceil(
+      exercises?.length / exercisesPerPage
+    );
   }
 
   const changePageForAllExercises = (
@@ -378,7 +499,32 @@ export default function AllExercises() {
     setSearchInput(e.target.value);
   };
 
-  if (isLoading || isSpecificLoading) {
+  const deleteExerciseMutation = useMutation({
+    mutationFn: deleteExercise,
+    onSuccess: () => {
+      console.log("Exercise deleted successfully");
+      queryClient.invalidateQueries({ queryKey: [injury] });
+    },
+  });
+
+  const handleDeleteExercise = () => {
+    if (deleteExerciseMutation.status === "idle") {
+      deleteExerciseMutation.mutate();
+    }
+  };
+
+  if (
+    isLoadingAll ||
+    isLoadingShoulders ||
+    isLoadingBack ||
+    isLoadingKnee ||
+    isLoadingHip ||
+    isLoadingNeck ||
+    isLoadingWristHand ||
+    isLoadingAnkleFoot ||
+    isLoadingAbdominal ||
+    isLoadingGluteal
+  ) {
     return (
       <div className='flex items-center justify-center p-9 h-screen'>
         <span className='loader'></span>
@@ -392,7 +538,7 @@ export default function AllExercises() {
       </h1>
       <div className='mt-1 flex justify-between items-center gap-8'>
         <div className='flex w-[90%] overflow-x-scroll md:overflow-hidden'>
-          {exerciseOptions.map((option: String, i) => (
+          {exerciseOptions.map((option: string, i) => (
             <button
               onClick={() => filterExercises(option)}
               key={i}
@@ -464,6 +610,31 @@ export default function AllExercises() {
           )}
         </div>
       )}
+      <div>
+        {clickedRemove && (
+          <Dialog
+            open={clickedRemove}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseDeleteExerciseModal}
+            aria-describedby='alert-dialog-slide-description'
+          >
+            <DialogTitle className='text-red-600'>
+              {"Warning! You are deleting an exercise permanently!"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-slide-description'>
+                By clicking delete, you will lose this entire exercise and it
+                will be removed from every patients flow sheet.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteExerciseModal}>Cancel</Button>
+              <Button onClick={handleDeleteExercise}>Delete</Button>
+            </DialogActions>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }
