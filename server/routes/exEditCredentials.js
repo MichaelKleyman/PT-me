@@ -72,9 +72,8 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
       exerciseTips: "tips",
     };
 
-    const { editedFields, currentExercise } = req.body;
+    const { editedFields, currentExercise, tips } = req.body;
     const allEditedData = [];
-
     //first KV pair is the previous fields, second KV pair is the updated fields
     Object.entries(editedFields).forEach((arrayElem) => {
       const obj = {
@@ -83,16 +82,17 @@ router.post(`/new-edit/:exerciseId`, async (req, res, next) => {
             ? injuryOptions[currentExercise[databaseNameMap[arrayElem[0]]]]
             : databaseNameMap[arrayElem[0]] === "tips"
             ? `${currentExercise[databaseNameMap[arrayElem[0]]]}
-              }`
+              `
             : currentExercise[databaseNameMap[arrayElem[0]]],
         [fieldNameTranslation[arrayElem[0]]]:
           databaseNameMap[arrayElem[0]] === "tips"
-            ? `${currentExercise[databaseNameMap[arrayElem[0]]]}
-      } ${arrayElem[1]}`
+            ? `${tips}
+       ${arrayElem[1]}`
             : arrayElem[1],
       };
       allEditedData.push(obj);
     });
+
     const editedCredentials = await Exercise_Edited_Credentials.create({
       ex_id: req.params.exerciseId,
       clinicName: req.body.clinicName,
