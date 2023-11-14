@@ -502,8 +502,13 @@ export default function AllExercises() {
   const deleteExerciseMutation = useMutation({
     mutationFn: deleteExercise,
     onSuccess: () => {
-      console.log("Exercise deleted successfully");
       queryClient.invalidateQueries({ queryKey: [injury] });
+      const newSpecificExerciseArr = specificExercise.filter((exercise) => {
+        if (exercise.id !== exerciseId) {
+          return exercise
+        }
+      })
+      setSpecificExercise(newSpecificExerciseArr)
     },
   });
 
@@ -512,6 +517,8 @@ export default function AllExercises() {
       deleteExerciseMutation.mutate();
     }
   };
+
+  console.log(specificExercise)
 
   if (
     isLoadingAll ||
