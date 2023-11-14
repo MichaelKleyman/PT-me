@@ -24,6 +24,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import { me } from "@/Redux/Features/auth/authSlice";
 import { ExerciseData, Patient, Credential } from "../../../../types";
+import { FaArrowDown } from "react-icons/fa";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -190,9 +191,16 @@ export default function SpecificExercise({ params }: Params) {
       </div>
       <div className='grid lg:grid-cols-2 gap-4 mt-[1rem] place-items-start'>
         <div>
-          <h1 className='uppercase tracking-widest text-2xl font-medium'>
-            {exercise?.name}
-          </h1>
+          <div className='flex items-center gap-5'>
+            <h1 className='uppercase tracking-widest text-2xl font-medium'>
+              {exercise?.name}
+            </h1>
+            {credential && (
+              <p className='flex items-center gap-3 text-green-500 text-[12px]'>
+                Click to view <FaArrowDown className="animate-bounce"/>
+              </p>
+            )}
+          </div>
           <div className='mt-2 text-[12px] text-gray-400'>
             {credential ? (
               <Link

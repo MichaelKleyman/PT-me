@@ -43,12 +43,12 @@ export interface Appointments {
 export interface ExerciseData {
   id: number;
   map: any;
-  name: String;
-  injuryId: Number;
+  name: string;
+  injuryId: number;
   videoLink: string;
-  tips: String;
-  description: String;
-  musclesWorked: String;
+  tips: string;
+  description: string;
+  musclesWorked: string;
 }
 
 export interface Credential {

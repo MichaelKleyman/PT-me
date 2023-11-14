@@ -96,6 +96,8 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
     setNewComment("");
   };
 
+  console.log(comments);
+
   if (isLoading) {
     return (
       <div className='flex items-center justify-center p-9 h-screen'>
@@ -204,10 +206,8 @@ export default function ExerciseEditHistory({ exerciseId }: Props) {
                   value={newComment}
                   onChange={handleNewComment}
                 />
+                <Button onClick={submitComment}>Comment</Button>
               </div>
-              <Button onClick={submitComment} className='absolute right-3'>
-                Comment
-              </Button>
             </div>
             <div className='m-8 lg:h-[250px] xl:h-[320px] overflow-y-scroll shadow-sm shadow-gray-400 rounded-lg p-3'>
               {comments ? (

@@ -23,6 +23,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { me } from "../Redux/Features/auth/authSlice";
 import { FieldValues } from "react-hook-form";
 import { AnyARecord } from "dns";
+import {
+  InvalidateQueryFilters,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -100,6 +105,7 @@ export default function EditExercise({ exerciseId }: Props) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     dispatch(me());
@@ -164,6 +170,45 @@ export default function EditExercise({ exerciseId }: Props) {
     });
   };
 
+  const editExercise = async () => {
+    if (editorName) {
+      const updateStatus = await CLIENT.put(
+        `${BASE_URL}/api/exercises/update/${exercise?.id}`,
+        editedData
+      );
+      const credentialStatus = await CLIENT.post(
+        `${BASE_URL}/api/exEditCredentials/new-edit/${exercise?.id}`,
+        {
+          clinicName: clinic?.clinicName,
+          editorName,
+          editedFields,
+          currentExercise: exercise,
+          tips: editedData?.tips,
+        }
+      );
+      if (updateStatus.status === 200 && credentialStatus.status === 200) {
+        router.push(`/exercises/${exercise?.id}`);
+        setError(null);
+      }
+    } else {
+      setError("Please type editor name*");
+    }
+  };
+
+  const editExerciseMutation = useMutation({
+    mutationFn: async () => editExercise(),
+    onSuccess: () => {
+      // Invalidate the relevant query on successful mutation
+      if (editedData) {
+        queryClient.invalidateQueries(
+          `${
+            exerciseTypeOptions[editedData?.injuryId].value
+          }` as InvalidateQueryFilters
+        );
+      }
+    },
+  });
+
   const onSubmit = (data: any) => {
     const { exerciseName, exerciseType, musclesWorked, exerciseDescription } =
       data;
@@ -191,28 +236,7 @@ export default function EditExercise({ exerciseId }: Props) {
   };
 
   const onSubmit2 = async () => {
-    if (editorName) {
-      const updateStatus = await CLIENT.put(
-        `${BASE_URL}/api/exercises/update/${exercise?.id}`,
-        editedData
-      );
-      const credentialStatus = await CLIENT.post(
-        `${BASE_URL}/api/exEditCredentials/new-edit/${exercise?.id}`,
-        {
-          clinicName: clinic?.clinicName,
-          editorName,
-          editedFields,
-          currentExercise: exercise,
-          tips: editedData?.tips,
-        }
-      );
-      if (updateStatus.status === 200 && credentialStatus.status === 200) {
-        router.push(`/exercises/${exercise?.id}`);
-        setError(null);
-      }
-    } else {
-      setError("Please type editor name*");
-    }
+    editExerciseMutation.mutate();
   };
 
   const handleClose = () => {
