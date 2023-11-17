@@ -61,7 +61,6 @@ router.post("/create-exercise", async (req, res, next) => {
     const { name, injuryId, videoLink, tips, description, musclesWorked } =
       req.body;
     const newExercise = await Exercises.create({
-      returning: true,
       name,
       injuryId,
       videoLink,
