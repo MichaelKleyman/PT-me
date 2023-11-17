@@ -66,8 +66,7 @@ type Obj = {
 type Params = {
   params: Obj;
 };
-
-export const injuryTypes = [
+const injuryTypes = [
   "Shoulders",
   "Back",
   "Knee",
