@@ -2,10 +2,41 @@ import { useQuery } from "@tanstack/react-query";
 import { CLIENT, BASE_URL } from "./api";
 import { Patient } from "../../types";
 import Link from "next/link";
-import { stringToColor, stringAvatar } from "@/app/[id]/page";
 import { Avatar, Button, Stack } from "@mui/material";
 import { IoIosArrowForward } from "react-icons/io";
 import { injuryTypes } from "@/app/exercises/[id]/page";
+
+function stringToColor(string: string) {
+    if (!string) return "";
+    let hash = 0;
+    let i;
+  
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    let color = "#";
+  
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+  
+    return color;
+  }
+  
+  function stringAvatar(name: string) {
+    const sanitizedName = name || "";
+  
+    return {
+      sx: {
+        bgcolor: stringToColor(sanitizedName),
+      },
+      children: `${sanitizedName.split(" ")[0][0]}${name.split(" ")[1]?.[0]}`,
+    };
+  }
 
 export default function ExerciseAssignees({
   exerciseId,
