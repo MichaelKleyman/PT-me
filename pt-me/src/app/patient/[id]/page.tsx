@@ -1158,7 +1158,9 @@ export default function Patient({
                   </div>
 
                   {scheduleLoading ? (
-                    <div className='loader'></div>
+                    <div className='flex items-center justify-center p-9'>
+                      <span className='loader'></span>
+                    </div>
                   ) : (
                     <div className='overflow-y-scroll overflow-x-scroll'>
                       {schedule?.length ? (
