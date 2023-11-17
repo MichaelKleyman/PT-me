@@ -74,11 +74,11 @@ export default function CreateExerciseForm() {
       videoLink: videoLink,
     };
 
-    const exercise = await CLIENT.post(
+    const { data } = await CLIENT.post(
       `${BASE_URL}/api/exercises/create-exercise`,
       finalFormData
     );
-    if (exercise) router.push("/exercises");
+    if (data) router.push(`/exercises/${data.id}`);
   };
 
   const handleExerciseTypeSelectChange = (option: any) => {
