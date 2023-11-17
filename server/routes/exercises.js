@@ -1,5 +1,11 @@
 const router = require("express").Router();
-const { Exercises, Patients, PatientExercises } = require("../models");
+const {
+  Exercises,
+  Patients,
+  PatientExercises,
+  ScheduleExercise,
+  Schedule,
+} = require("../models");
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
@@ -150,19 +156,6 @@ router.post(
     try {
       const { patientId, exerciseId } = req.params;
 
-      // const exerciseAlreadyExists = await PatientExercises.findOne({
-      //   where: {
-      //     patientId: patientId,
-      //     exerciseId: exerciseId,
-      //   },
-      // });
-
-      // if (exerciseAlreadyExists) {
-      //   return res.send({
-      //     message: "Exercise is already in the exercise list.",
-      //   });
-      // }
-
       const addedExercise = await PatientExercises.create({
         patientId: patientId,
         exerciseId: exerciseId,
@@ -215,7 +208,50 @@ router.delete("/delete/:exerciseId", async (req, res, next) => {
       res.status(404).json({ message: "Exercise not found" });
     }
   } catch (error) {
-    console.log("Error updating exercise: ", error);
+    console.log("Error deleting exercise: ", error);
+    next(error);
+  }
+});
+
+//GET patients who have the specific exercise in their exercise list or flow sheet
+router.get("/assigned-to/:exerciseId/:clinicId", async (req, res, next) => {
+  try {
+    const { clinicId, exerciseId } = req.params;
+    const allPatients = await Patients.findAll({
+      where: {
+        clinicId: clinicId,
+      },
+    });
+    const allPatientIds = allPatients.map((patient) => patient.id);
+    const arr1 = await PatientExercises.findAll({
+      where: {
+        exerciseId: exerciseId,
+      },
+    });
+    const finalPatientIds = [];
+    const arr1PatientIds = arr1.map((object) => object.patientId);
+    for (let i = 0; i < allPatientIds.length; i++) {
+      if (arr1PatientIds.includes(allPatientIds[i])) {
+        finalPatientIds.push(allPatientIds[i]);
+      }
+    }
+    const patientsAssignedPromises = finalPatientIds.map(async (id) => {
+      const data = await Patients.findOne({
+        where: {
+          clinicId: clinicId,
+          id,
+        },
+      });
+      if (data) {
+        return data;
+      }
+    });
+
+    // Wait for all promises to resolve
+    const patientsAssigned = await Promise.all(patientsAssignedPromises);
+    res.send(patientsAssigned);
+  } catch (error) {
+    console.log("Error fetching patients: ", error);
     next(error);
   }
 });

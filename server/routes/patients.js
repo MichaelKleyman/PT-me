@@ -1,5 +1,13 @@
 const router = require("express").Router();
-const { Patients, Schedule, Appointments } = require("../models");
+const Sequelize = require("sequelize");
+const {
+  Patients,
+  Schedule,
+  Appointments,
+  PatientExercises,
+  Exercises,
+  ScheduleExercise,
+} = require("../models");
 
 //GET all patients with specific clinic ID
 router.get("/:clinicId", async (req, res, next) => {
@@ -196,6 +204,67 @@ router.put("/update/:patientId", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+});
+
+//GET patients who do not have the exercise in their exercise list or flow sheet
+router.get(`/not-assigned/:clinicId/:exerciseId`, async (req, res, next) => {
+  try {
+    const { clinicId, exerciseId } = req.params;
+    const allPatients = await Patients.findAll({
+      where: {
+        clinicId: clinicId,
+      },
+    });
+    const allPatientIds = allPatients.map((patient) => patient.id);
+    const arr1 = await PatientExercises.findAll({
+      where: {
+        exerciseId: exerciseId,
+      },
+    });
+    //   const arr2 = await Schedule.findAll({
+    //     where: {
+    //       patientId: {
+    //         [Sequelize.Op.not]: patientId,
+    //       },
+    //     },
+    //     include: [
+    //       {
+    //         model: ScheduleExercise,
+    //         as: "exercises",
+    //         where: {
+    //           exerciseId: {
+    //             [Sequelize.Op.not]: exerciseId,
+    //           },
+    //         },
+    //         include: [{ model: Exercises, as: "exercise" }],
+    //       },
+    //     ],
+    //   });
+    const finalPatientIds = [];
+    const arr1PatientIds = arr1.map((object) => object.patientId);
+    for (let i = 0; i < allPatientIds.length; i++) {
+      if (!arr1PatientIds.includes(allPatientIds[i])) {
+        finalPatientIds.push(allPatientIds[i]);
+      }
+    }
+    const patientsToAssignPromises = finalPatientIds.map(async (id) => {
+      const data = await Patients.findOne({
+        where: {
+          clinicId: clinicId,
+          id,
+        },
+      });
+      if (data) {
+        return data;
+      }
+    });
+
+    // Wait for all promises to resolve
+    const patientsToAssign = await Promise.all(patientsToAssignPromises);
+    res.send(patientsToAssign);
+  } catch (error) {
+    console.log(">>>", error);
   }
 });
 
