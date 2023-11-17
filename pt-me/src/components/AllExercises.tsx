@@ -544,7 +544,7 @@ export default function AllExercises() {
         Exercises
       </h1>
       <div className='mt-1 flex justify-between items-center gap-8'>
-        <div className='flex w-[90%] overflow-x-scroll md:overflow-hidden'>
+        <div className='flex w-[90%] overflow-x-scroll'>
           {exerciseOptions.map((option: string, i) => (
             <button
               onClick={() => filterExercises(option)}

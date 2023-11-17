@@ -18,7 +18,10 @@ import { BsSearch } from "react-icons/bs";
 import InputAdornment from "@mui/material/InputAdornment";
 import type { AppDispatch, RootState } from "../../../Redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
+import {
+  fetchAllPatients,
+  fetchAssignPatients,
+} from "@/Redux/Features/patients/patientSlice";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
@@ -29,7 +32,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { CustomTabPanel, a11yProps } from "@/components/MUITabFunctions";
 import Box from "@mui/material/Box";
-import { TabPanelProps } from "../../../../types";
 import ExerciseAssignees from "@/components/ExerciseAssignees";
 
 const style = {
@@ -65,7 +67,7 @@ type Params = {
   params: Obj;
 };
 
-const injuryTypes = [
+export const injuryTypes = [
   "Shoulders",
   "Back",
   "Knee",
@@ -145,8 +147,8 @@ export default function SpecificExercise({ params }: Params) {
 
   const submitAssignExercise = async () => {
     for (let i = 0; i < ids.length; i++) {
-      const res = await CLIENT.post(
-        `${BASE_URL}/api/exercises//patient/add-exercise/${ids[i]}/${exercise.id}`
+      const { data } = await CLIENT.post(
+        `${BASE_URL}/api/exercises/patient/add-exercise/${ids[i]}/${exercise.id}`
       );
     }
     setAssigned(true);
@@ -161,7 +163,9 @@ export default function SpecificExercise({ params }: Params) {
     setLoading(true);
 
     try {
-      const { payload } = await dispatch(fetchAllPatients(clinic.id));
+      const { payload } = await dispatch(
+        fetchAssignPatients({ clinicId: clinic.id, exerciseId: exercise.id })
+      );
       setPatients(payload as Patient[]);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -249,7 +253,7 @@ export default function SpecificExercise({ params }: Params) {
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <ExerciseAssignees />
+            <ExerciseAssignees exerciseId={exercise.id} clinicId={clinic.id} />
           </CustomTabPanel>
         </Box>
       </div>

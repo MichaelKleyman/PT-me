@@ -58,6 +58,22 @@ export const fetchAllPatients = createAsyncThunk<PatientData, number>(
   }
 );
 
+export const fetchAssignPatients = createAsyncThunk<
+  PatientData,
+  { clinicId: number; exerciseId: number }>(
+  "patients/fetchAssignPatients",
+  async ({ clinicId, exerciseId }, thunkAPI) => {
+    try {
+      const res = await CLIENT.get(
+        `${BASE_URL}/api/patients/not-assigned/${clinicId}/${exerciseId}`
+      );
+      return res.data;
+    } catch (error) {
+      console.log("Redux error: ", error);
+    }
+  }
+);
+
 export const fetchPatient = createAsyncThunk<PatientData, number>(
   "patients/fetchPatient",
   async (id: number, thunkAPI) => {
@@ -102,6 +118,21 @@ export const patientSlice = createSlice({
         }
       )
       .addCase(fetchAllPatients.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchAssignPatients.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchAssignPatients.fulfilled,
+        (state, action: PayloadAction<PatientData>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchAssignPatients.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

@@ -25,7 +25,7 @@ import DoughnutChart from "@/components/DoughnutChart";
 import AppointmentsChart from "@/components/AppointmentsChart";
 import Skeleton from "@mui/material/Skeleton";
 
-function stringToColor(string: string) {
+export function stringToColor(string: string) {
   if (!string) return "";
   let hash = 0;
   let i;
@@ -46,7 +46,7 @@ function stringToColor(string: string) {
   return color;
 }
 
-function stringAvatar(name: string) {
+export function stringAvatar(name: string) {
   const sanitizedName = name || "";
 
   return {
