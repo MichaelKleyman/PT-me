@@ -210,6 +210,7 @@ export default function Patient({
   const [open, setOpen] = useState<boolean>(Boolean(anchorEl));
   const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [scheduleLoading, setScheduleLoading] = useState<boolean>(true);
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [status, setStatus] = useState<string>();
   const [searchInput, setSearchInput] = useState<string>("");
@@ -296,6 +297,7 @@ export default function Patient({
       if (data) {
         let exercises = data.exercises;
         setSchedule(exercises);
+        setScheduleLoading(false);
       }
     }
     getSchedule();
@@ -1155,111 +1157,117 @@ export default function Patient({
                     </div>
                   </div>
 
-                  <div className='overflow-y-scroll overflow-x-scroll'>
-                    {schedule?.length ? (
-                      <table className='border-collapse m-4'>
-                        <thead>
-                          <tr>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Exercise Name
-                            </th>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Repetitions
-                            </th>
-                            <th className='text-start px-6 py-5 font-normal text-green-600'>
-                              Assigned On
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {schedule.map((exerciseObj, index) => (
-                            <Draggable
-                              key={exerciseObj.id}
-                              draggableId={exerciseObj.exercise?.name.toString()}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <tr
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
-                                  className={`hover:shadow-lg ${
-                                    index % 2 === 0
-                                      ? "bg-white"
-                                      : "bg-[#faffe6]"
-                                  } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
-                                    snapshot.isDragging ? "shadow-gray-600" : ""
-                                  }`}
-                                >
-                                  <td className=' px-6'>
-                                    <h1 className='p-8'>
-                                      {exerciseObj.exercise?.name}
-                                    </h1>
-                                  </td>
-                                  <td className=' px-6 py-5'>
-                                    <div className='flex gap-3'>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.sets}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleSetsChange(
-                                                exerciseObj.id,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.sets}`}
-                                          />
-                                        )}
+                  {scheduleLoading ? (
+                    <div className='loader'></div>
+                  ) : (
+                    <div className='overflow-y-scroll overflow-x-scroll'>
+                      {schedule?.length ? (
+                        <table className='border-collapse m-4'>
+                          <thead>
+                            <tr>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Exercise Name
+                              </th>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Repetitions
+                              </th>
+                              <th className='text-start px-6 py-5 font-normal text-green-600'>
+                                Assigned On
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {schedule.map((exerciseObj, index) => (
+                              <Draggable
+                                key={exerciseObj.id}
+                                draggableId={exerciseObj.exercise?.name.toString()}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <tr
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                    className={`hover:shadow-lg ${
+                                      index % 2 === 0
+                                        ? "bg-white"
+                                        : "bg-[#faffe6]"
+                                    } hover:shadow-gray-400 w-full my-4 cursor-pointer tracking-normal rounded-lg duration-300 ${
+                                      snapshot.isDragging
+                                        ? "shadow-gray-600"
+                                        : ""
+                                    }`}
+                                  >
+                                    <td className=' px-6'>
+                                      <h1 className='p-8'>
+                                        {exerciseObj.exercise?.name}
+                                      </h1>
+                                    </td>
+                                    <td className=' px-6 py-5'>
+                                      <div className='flex gap-3'>
+                                        <div>
+                                          {!update ? (
+                                            `${exerciseObj.sets}`
+                                          ) : (
+                                            <input
+                                              onChange={(e) =>
+                                                handleSetsChange(
+                                                  exerciseObj.id,
+                                                  e
+                                                )
+                                              }
+                                              type='text'
+                                              className='border border-green-500 w-6 rounded-sm text-center'
+                                              value={`${exerciseObj.sets}`}
+                                            />
+                                          )}
+                                        </div>
+                                        <p>x</p>
+                                        <div>
+                                          {!update ? (
+                                            `${exerciseObj.reps}`
+                                          ) : (
+                                            <input
+                                              onChange={(e) =>
+                                                handleRepsChange(
+                                                  exerciseObj.id,
+                                                  exerciseObj.reps,
+                                                  e
+                                                )
+                                              }
+                                              type='text'
+                                              className='border border-green-500 w-6 rounded-sm text-center'
+                                              value={`${exerciseObj.reps}`}
+                                            />
+                                          )}
+                                        </div>
                                       </div>
-                                      <p>x</p>
-                                      <div>
-                                        {!update ? (
-                                          `${exerciseObj.reps}`
-                                        ) : (
-                                          <input
-                                            onChange={(e) =>
-                                              handleRepsChange(
-                                                exerciseObj.id,
-                                                exerciseObj.reps,
-                                                e
-                                              )
-                                            }
-                                            type='text'
-                                            className='border border-green-500 w-6 rounded-sm text-center'
-                                            value={`${exerciseObj.reps}`}
-                                          />
-                                        )}
+                                    </td>
+                                    <td className='text-[15px] text-blue-600'>
+                                      <div className='flex items-center justify-center gap-5'>
+                                        <FaRegCalendarCheck />
+                                        <p>
+                                          {new Date(
+                                            exerciseObj.createdAt
+                                          ).toDateString()}
+                                        </p>
                                       </div>
-                                    </div>
-                                  </td>
-                                  <td className='text-[15px] text-blue-600'>
-                                    <div className='flex items-center justify-center gap-5'>
-                                      <FaRegCalendarCheck />
-                                      <p>
-                                        {new Date(
-                                          exerciseObj.createdAt
-                                        ).toDateString()}
-                                      </p>
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </Draggable>
-                          ))}
-                        </tbody>
-                        {/* </Droppable> */}
-                      </table>
-                    ) : (
-                      <div className='mt-4 normal-case'>
-                        Make a schedule for patient.
-                      </div>
-                    )}
-                    {provided.placeholder}
-                  </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </Draggable>
+                            ))}
+                          </tbody>
+                          {/* </Droppable> */}
+                        </table>
+                      ) : (
+                        <div className='mt-4 normal-case'>
+                          Make a schedule for patient.
+                        </div>
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
                 </div>
               )}
             </Droppable>
