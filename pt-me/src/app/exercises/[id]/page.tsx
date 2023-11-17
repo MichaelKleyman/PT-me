@@ -23,8 +23,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import { me } from "@/Redux/Features/auth/authSlice";
-import { ExerciseData, Patient, Credential } from "../../../../types";
+import { Patient, Credential } from "../../../../types";
 import { FaArrowDown } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -77,33 +78,27 @@ export default function SpecificExercise({ params }: Params) {
   const [assigned, setAssigned] = useState<boolean>(false);
   const [patients, setPatients] = useState<Patient[]>();
   const [ids, setIds] = useState<number[]>([]);
-  const [pageLoading, setPageLoading] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [credential, setCredential] = useState<Credential>();
-  const [exercise, setExercise] = useState<ExerciseData>({
-    name: "",
-    id: 0,
-    injuryId: 0,
-    videoLink: "",
-    map: "",
-    tips: "",
-    description: "",
-    musclesWorked: "",
-  });
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
 
+  const getExercise = async () => {
+    const { data } = await CLIENT.get(
+      `${BASE_URL}/api/exercises/${params.id}`
+    );
+    if (data) {
+      return data
+    }
+  };
+
+  const { data: exercise, isLoading: isLoading } = useQuery({
+    queryFn: () => getExercise(),
+    queryKey: ["exercise"],
+  });
+
   useEffect(() => {
-    const getExercise = async () => {
-      const { data } = await CLIENT.get(
-        `${BASE_URL}/api/exercises/${params.id}`
-      );
-      if (data) {
-        setPageLoading(false);
-        setExercise(data);
-      }
-    };
     const getExerciseCredentialsHistory = async () => {
       const amountOfCredentials = "One";
       const { data } = await CLIENT.get(
@@ -111,7 +106,6 @@ export default function SpecificExercise({ params }: Params) {
       );
       setCredential(data);
     };
-    getExercise();
     getExerciseCredentialsHistory();
   }, []);
 
@@ -168,7 +162,7 @@ export default function SpecificExercise({ params }: Params) {
     }
   };
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className='flex items-center justify-center p-9 h-screen'>
         <span className='loader'></span>

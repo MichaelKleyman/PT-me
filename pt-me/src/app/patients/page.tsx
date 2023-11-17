@@ -26,6 +26,7 @@ import { BASE_URL, CLIENT } from "@/components/api";
 import { useRouter } from "next/navigation";
 import Pagination from "@mui/material/Pagination";
 import { BsSearch } from "react-icons/bs";
+import { useQuery } from "@tanstack/react-query";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -46,7 +47,7 @@ const Transition = forwardRef(function Transition(
 });
 
 export default function AllPatients() {
-  const [patients, setPatients] = useState<Patient[]>([]);
+  // const [patients, setPatients] = useState<Patient[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
   const [checked, setChecked] = useState<number[]>([]);
@@ -55,24 +56,40 @@ export default function AllPatients() {
   const [clickedDelete, setClickedDelete] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(0);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  useEffect(() => {
+  const getPatients = async () => {
     if (clinic?.id) {
-      // If clinic data is available, fetch the patients
-      async function getPatients() {
-        const { payload } = await dispatch(fetchAllPatients(clinic.id));
-        if (payload) {
-          const arrayToSort = [...(payload as Patient[])];
-          const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
-          setPatients(sortedPayload);
-          setIsLoading(false);
-        }
+      const { payload } = await dispatch(fetchAllPatients(clinic.id));
+      if (payload) {
+        const arrayToSort = [...(payload as Patient[])];
+        const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
+        return sortedPayload;
       }
-      getPatients();
     }
-  }, [clinic]);
+  };
+
+  const { data: patients, isLoading: isLoading } = useQuery({
+    queryFn: () => getPatients(),
+    queryKey: ["patients"],
+  });
+
+  // useEffect(() => {
+  //   if (clinic?.id) {
+  //     // If clinic data is available, fetch the patients
+  // async function getPatients() {
+  //   const { payload } = await dispatch(fetchAllPatients(clinic.id));
+  //   if (payload) {
+  //     const arrayToSort = [...(payload as Patient[])];
+  //     const sortedPayload = arrayToSort.sort((a, b) => a.id - b.id);
+  //     setPatients(sortedPayload);
+  //     setIsLoading(false);
+  //   }
+  // }
+  //     getPatients();
+  //   }
+  // }, [clinic]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -179,7 +196,7 @@ export default function AllPatients() {
       searchAllPatientsResults?.length / patientsPerPage
     );
   } else {
-    allPatientsPageCount = Math.ceil(patients?.length / patientsPerPage);
+    allPatientsPageCount = Math.ceil((patients?.length || 0) / patientsPerPage);
   }
 
   if (isLoading) {

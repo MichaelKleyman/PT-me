@@ -77,6 +77,7 @@ import { MenuItem } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import ListItemText from "@mui/material/ListItemText";
+import { useQuery } from "@tanstack/react-query";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -211,7 +212,6 @@ export default function Patient({
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [status, setStatus] = useState<string>();
-  const [patient, setPatient] = useState<Patient | undefined>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [patientsExercises, setExercises] = useState<ExerciseData[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -233,54 +233,58 @@ export default function Patient({
   const clickEmailRef = useRef<HTMLButtonElement | null>(null);
   const clinic = useSelector((state: RootState) => state.auth.user);
 
-  useEffect(() => {
-    async function getPatient() {
-      const { payload } = await dispatch(fetchPatient(params.id));
-      if (payload) {
-        if (searchParams.openEmail) {
-          setAnchorEl(document.getElementById("click-email"));
-          // setAnchorEl(clickEmailRef.current);
-          setOpen(true);
-          setEmailConfig({
-            type: "Appointment Reminder",
-            subject:
-              "Hey! Don't forget about your Physical Therapy appointment 📆",
-            message: `Hi ${
-              (payload as Patient).title
-            }, you have an appointment at ${
-              clinic && clinic.clinicName
-            } within an hour from now, at ${
-              searchParams.appointmentTime
-            }. Feel free to contact your physical therapy office at their email ${
-              clinic && clinic.email
-            } for any scheduling/appointment needs. See you soon!`,
-          });
-        }
-
-        const { data } = await CLIENT.get(
-          `${BASE_URL}/api/appointments/latest-appointment/${
-            (payload as Patient).id
-          }`
-        );
-        if (
-          data?.some(
-            (appointment: any) =>
-              new Date(appointment.start as Date) >= new Date()
-          )
-        ) {
-          setStatus("Scheduled");
-        } else {
-          setStatus("No Appointment");
-        }
-
-        setPatient(payload as Patient);
+  const getPatient = async () => {
+    const { payload } = await dispatch(fetchPatient(params.id));
+    if (payload) {
+      if (searchParams.openEmail) {
+        setAnchorEl(document.getElementById("click-email"));
+        setOpen(true);
+        setEmailConfig({
+          type: "Appointment Reminder",
+          subject:
+            "Hey! Don't forget about your Physical Therapy appointment 📆",
+          message: `Hi ${
+            (payload as Patient).title
+          }, you have an appointment at ${
+            clinic && clinic.clinicName
+          } within an hour from now, at ${
+            searchParams.appointmentTime
+          }. Feel free to contact your physical therapy office at their email ${
+            clinic && clinic.email
+          } for any scheduling/appointment needs. See you soon!`,
+        });
       }
+
+      const { data } = await CLIENT.get(
+        `${BASE_URL}/api/appointments/latest-appointment/${
+          (payload as Patient).id
+        }`
+      );
+      if (
+        data?.some(
+          (appointment: any) =>
+            new Date(appointment.start as Date) >= new Date()
+        )
+      ) {
+        setStatus("Scheduled");
+      } else {
+        setStatus("No Appointment");
+      }
+
+      return payload as Patient;
     }
+  };
+
+  const { data: patient, isLoading } = useQuery({
+    queryFn: () => getPatient(),
+    queryKey: ["patient"],
+  });
+
+  useEffect(() => {
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
       setExercises(payload as ExerciseData[]);
     }
-    getPatient();
     getPatientExercises();
   }, []);
 
@@ -699,6 +703,14 @@ export default function Patient({
   const showAppointment = () => {
     router.push("/");
   };
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-9 h-screen'>
+        <span className='loader'></span>
+      </div>
+    );
+  }
 
   return (
     <div className='mt-[1rem] md:ml-[6rem] p-4'>
