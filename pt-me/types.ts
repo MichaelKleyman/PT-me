@@ -67,3 +67,9 @@ export interface Clinic {
   clinicName: string;
   address: string;
 }
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}

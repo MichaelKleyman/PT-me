@@ -22,10 +22,15 @@ import { fetchAllPatients } from "@/Redux/Features/patients/patientSlice";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
-import { me } from "@/Redux/Features/auth/authSlice";
 import { Patient, Credential } from "../../../../types";
 import { FaArrowLeft } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { CustomTabPanel, a11yProps } from "@/components/MUITabFunctions";
+import Box from "@mui/material/Box";
+import { TabPanelProps } from "../../../../types";
+import ExerciseAssignees from "@/components/ExerciseAssignees";
 
 const style = {
   "& .MuiOutlinedInput-root": {
@@ -83,6 +88,11 @@ export default function SpecificExercise({ params }: Params) {
   const [credential, setCredential] = useState<Credential>();
   const dispatch = useDispatch<AppDispatch>();
   const clinic = useSelector((state: RootState) => state.auth.user);
+  const [value, setValue] = useState(0);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const getExercise = async () => {
     const { data } = await CLIENT.get(`${BASE_URL}/api/exercises/${params.id}`);
@@ -219,14 +229,29 @@ export default function SpecificExercise({ params }: Params) {
             <p>{exercise?.musclesWorked}</p>
           </div>
         </div>
-        <div>
-          <Iframe
-            url={exercise?.videoLink}
-            width='560'
-            height='315'
-            allowFullScreen
-          />
-        </div>
+        <Box sx={{ width: "100%" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleTabChange}
+              aria-label='basic tabs example'
+            >
+              <Tab label='Instructional Video' {...a11yProps(0)} />
+              <Tab label='Assigned To' {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <CustomTabPanel value={value} index={0}>
+            <Iframe
+              url={exercise?.videoLink}
+              width='540'
+              height='315'
+              allowFullScreen
+            />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <ExerciseAssignees />
+          </CustomTabPanel>
+        </Box>
       </div>
 
       <button
