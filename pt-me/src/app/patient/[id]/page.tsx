@@ -211,6 +211,7 @@ export default function Patient({
   const [expandedLoading, setExpandedLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [scheduleLoading, setScheduleLoading] = useState<boolean>(true);
+  const [exerciseListLoading, setExerciseListLoading] = useState<boolean>(true);
   const [results, setResults] = useState<ExerciseData[]>([]);
   const [status, setStatus] = useState<string>();
   const [searchInput, setSearchInput] = useState<string>("");
@@ -285,6 +286,7 @@ export default function Patient({
     async function getPatientExercises() {
       const { payload } = await dispatch(fetchPatientsExercises(params.id));
       setExercises(payload as ExerciseData[]);
+      setExerciseListLoading(false);
     }
     getPatientExercises();
   }, []);
@@ -1050,67 +1052,75 @@ export default function Patient({
                     </div>
                   </div>
 
-                  <div className='mt-[1rem]'>
-                    {patientsExercises?.length ? (
-                      patientsExercises?.map(
-                        (exercise: ExerciseData, index) => (
-                          <Draggable
-                            key={exercise.id}
-                            draggableId={exercise.name.toString()}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
-                                className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
-                                  snapshot.isDragging ? "shadow-gray-500" : ""
-                                }`}
-                              >
-                                <h1 className='font-semibold'>
-                                  {exercise.name}
-                                </h1>
-                                <div className='relative top-3 flex justify-evenly'>
-                                  <Link
-                                    href={`/exercises/${exercise.id}`}
-                                    className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
-                                  >
-                                    <AiOutlineEye className='p-2' size={35} />
-                                    View
-                                  </Link>
-                                  <button
-                                    onClick={() => removeExercise(exercise.id)}
-                                    className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
-                                  >
-                                    <FiDelete className='p-2' size={30} />
-                                    Remove
-                                  </button>
+                  {exerciseListLoading ? (
+                    <div className='flex items-center justify-center p-9'>
+                      <span className='loader'></span>
+                    </div>
+                  ) : (
+                    <div className='mt-[1rem]'>
+                      {patientsExercises?.length ? (
+                        patientsExercises?.map(
+                          (exercise: ExerciseData, index) => (
+                            <Draggable
+                              key={exercise.id}
+                              draggableId={exercise.name.toString()}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                  className={`bg-[#fdfff5] shadow-lg shadow-gray-200 rounded-md m-3 p-7 duration-300 hover:scale-110 cursor-pointer ${
+                                    snapshot.isDragging ? "shadow-gray-500" : ""
+                                  }`}
+                                >
+                                  <h1 className='font-semibold'>
+                                    {exercise.name}
+                                  </h1>
+                                  <div className='relative top-3 flex justify-evenly'>
+                                    <Link
+                                      href={`/exercises/${exercise.id}`}
+                                      className='text-blue-500 hover:underline cursor-pointer flex items-center w-[30%]'
+                                    >
+                                      <AiOutlineEye className='p-2' size={35} />
+                                      View
+                                    </Link>
+                                    <button
+                                      onClick={() =>
+                                        removeExercise(exercise.id)
+                                      }
+                                      className='text-red-500 hover:underline cursor-pointer flex items-center w-[40%]'
+                                    >
+                                      <FiDelete className='p-2' size={30} />
+                                      Remove
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </Draggable>
+                              )}
+                            </Draggable>
+                          )
                         )
-                      )
-                    ) : (
-                      <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
-                        {/* <p>No exercises for this patient.</p> */}
-                        <Image
-                          src={emptyImage}
-                          alt='nothing-found'
-                          height={200}
-                          width={200}
-                        />
-                        <Link
-                          href='/exercises'
-                          className='text-blue-600 hover:underline'
-                        >
-                          View Exercises
-                        </Link>
-                      </div>
-                    )}
-                    {provided.placeholder}
-                  </div>
+                      ) : (
+                        <div className='m-1 tracking-widest flex flex-col items-center justify-center w-[100%]'>
+                          {/* <p>No exercises for this patient.</p> */}
+                          <Image
+                            src={emptyImage}
+                            alt='nothing-found'
+                            height={200}
+                            width={200}
+                          />
+                          <Link
+                            href='/exercises'
+                            className='text-blue-600 hover:underline'
+                          >
+                            View Exercises
+                          </Link>
+                        </div>
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )}
                 </div>
               )}
             </Droppable>
