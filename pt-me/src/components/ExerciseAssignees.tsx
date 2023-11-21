@@ -74,7 +74,7 @@ export default function ExerciseAssignees({
 
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center p-9 h-screen'>
+      <div className='flex items-center justify-center p-9'>
         <span className='loader'></span>
       </div>
     );

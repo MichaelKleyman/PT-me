@@ -52,7 +52,7 @@ import {
 import { DM_Sans } from "next/font/google";
 import TextField from "@mui/material/TextField";
 import { BsSearch } from "react-icons/bs";
-import { MdAddBox } from "react-icons/md";
+import { MdAddBox, MdLowPriority } from "react-icons/md";
 import InputAdornment from "@mui/material/InputAdornment";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -896,6 +896,13 @@ export default function Patient({
                     >
                       <FiDelete className='p-2' size={35} /> Remove Patient
                     </button>
+                    <Link
+                      href={`/patient/${patient?.id}/appointments`}
+                      className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                    >
+                      <MdLowPriority className='p-2' size={35} /> Previous
+                      Appointments
+                    </Link>
                     <button
                       onClick={downloadFullPDF}
                       className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
@@ -903,9 +910,6 @@ export default function Patient({
                       <BsDownload className='p-2' size={35} />{" "}
                       {loading ? "Downloading..." : "Download"}
                     </button>
-                    {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
-                <AiOutlineLink className='p-2' size={35} /> Share Link
-              </p> */}
                     <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
                     <Link
                       href={{
@@ -927,6 +931,12 @@ export default function Patient({
                 >
                   <FiDelete className='p-2' size={35} /> Remove Patient
                 </button>
+                <Link
+                  href={`/patient/${patient?.id}/appointments`}
+                  className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
+                >
+                  <MdLowPriority className='p-2' size={35} /> Previous Appointments
+                </Link>
                 <button
                   onClick={downloadFullPDF}
                   className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'

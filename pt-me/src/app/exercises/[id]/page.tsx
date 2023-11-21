@@ -298,7 +298,7 @@ export default function SpecificExercise({ params }: Params) {
           </div>
           <div className='h-[200px] overflow-y-scroll'>
             {loading ? (
-              <div className='flex items-center justify-center p-9 h-screen'>
+              <div className='flex items-center justify-center p-9'>
                 <span className='loader'></span>
               </div>
             ) : (
