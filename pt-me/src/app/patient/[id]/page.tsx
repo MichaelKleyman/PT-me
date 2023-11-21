@@ -73,7 +73,6 @@ import emptyImage from "../../../images/empty.jpg";
 import ExpandedView from "@/components/ExpandedView";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { MenuItem } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
 import ListItemText from "@mui/material/ListItemText";
@@ -891,12 +890,14 @@ export default function Patient({
                 <div className='flex xl:hidden'>
                   <div className='flex items-center'>
                     <button
+                      style={{ whiteSpace: "nowrap" }}
                       onClick={handleOpenDeletePatient}
                       className='text-red-600 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                     >
                       <FiDelete className='p-2' size={35} /> Remove Patient
                     </button>
                     <Link
+                      style={{ whiteSpace: "nowrap" }}
                       href={`/patient/${patient?.id}/appointments`}
                       className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                     >
@@ -935,7 +936,8 @@ export default function Patient({
                   href={`/patient/${patient?.id}/appointments`}
                   className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'
                 >
-                  <MdLowPriority className='p-2' size={35} /> Previous Appointments
+                  <MdLowPriority className='p-2' size={35} /> Previous
+                  Appointments
                 </Link>
                 <button
                   onClick={downloadFullPDF}
@@ -944,9 +946,6 @@ export default function Patient({
                   <BsDownload className='p-2' size={35} />{" "}
                   {loading ? "Downloading..." : "Download"}
                 </button>
-                {/* <p className='text-blue-500 flex items-center hover:underline duration-300 hover:scale-110 cursor-pointer mr-4'>
-                <AiOutlineLink className='p-2' size={35} /> Share Link
-              </p> */}
                 <span className='border-l-[1px] border-gray-300 h-full p-2'></span>
                 <Link
                   href={{
