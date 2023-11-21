@@ -24,6 +24,27 @@ router.get("/:clinicId", async (req, res, next) => {
   }
 });
 
+//GET all appointments for the patient
+router.get("/all-patient-appointments/:patientId", async (req, res, next) => {
+  try {
+    const appointments = await Appointments.findAll({
+      where: {
+        patientId: req.params.patientId,
+      },
+    });
+    const currentDate = new Date();
+    appointments.sort((a, b) => {
+      const timeDifferenceA = Math.abs(new Date(a.start) - currentDate);
+      const timeDifferenceB = Math.abs(new Date(b.start) - currentDate);
+      return timeDifferenceA - timeDifferenceB;
+    });
+    res.send(appointments);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //GET appointments for the current week
 router.get("/filter-appointments/:filter/:clinicId", async (req, res, next) => {
   try {
